@@ -73,6 +73,16 @@ def get_tool_schemas() -> Dict[str, Dict[str, object]]:
             },
             "required": ["alert_id"],
         },
+        "write_plan": {
+            "type": "object",
+            "properties": {
+                "plan": {
+                    "type": "array",
+                    "items": {"type": "object"},
+                },
+            },
+            "required": ["plan"],
+        },
     }
 
 
