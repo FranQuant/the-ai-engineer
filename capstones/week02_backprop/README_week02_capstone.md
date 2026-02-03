@@ -24,7 +24,7 @@ The goal is to implement a tiny <strong>1-hidden-layer MLP</strong>, step-by-ste
 All notebooks use:
 
 - Deterministic seeds  
-- Same XOR-style synthetic dataset  
+- Same XOR-style synthetic data-generating process  
 - Same MLP architecture  
 
 Forward pass:
@@ -35,11 +35,16 @@ h_1 = \mathrm{ReLU}(a_1),\qquad
 f = W_2 h_1 + b_2
 $$
 
-Loss:
+Loss (per sample in Notebooks 01–03):
 
 $$
-L = \frac{1}{2}(f - y)^2
+L = \tfrac{1}{2}(f - y)^2
 $$
+
+In Notebook 04, PyTorch’s built-in `MSELoss(reduction="mean")` is used, which
+computes the batch mean of $(f - y)^2$. This introduces a constant rescaling
+(and batch averaging) but does not change the optimization objective’s fixed
+points.
 
 
 <table>
@@ -57,7 +62,7 @@ $$
 <b>Features:</b><br>
 – Manual ReLU + derivative<br>
 – Full chain-rule backprop<br>
-– Gradient checks<br>
+– Finite-difference gradient checks (NumPy)<br>
 – Source-of-truth implementation
 
 </td>
@@ -74,7 +79,7 @@ $$
 <b>Features:</b><br>
 – <code>requires_grad = False</code><br>
 – Forward consistency vs NumPy<br>
-– Ensures math alignment before autograd<br>
+– Ensures algebraic and numerical alignment before enabling autograd<br>
 – Same seeds + dataset
 
 </td>
