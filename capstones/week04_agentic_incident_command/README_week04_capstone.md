@@ -122,6 +122,21 @@ Replay available via:
 python cli.py --replay artifacts/telemetry.jsonl
 ```
 
+#### Telemetry Artifact Location & Correlation
+
+Telemetry is intentionally written to a **shared repository-level `artifacts/` directory**, rather than a per-run or per-capstone subfolder.
+
+This design supports:
+- Multiple agents (local and remote) writing to the same sink
+- Deterministic replay across executions
+- Cross-capstone inspection when running several demos in sequence
+
+Individual runs are disambiguated using:
+- `correlation_id` — unique per execution
+- `loop_id` — identifies OPAL loops within a run
+
+When reviewing telemetry, filter events by `correlation_id` to isolate a single execution trace.
+
 ---
 
 ## 4. Usage
