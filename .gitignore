@@ -105,3 +105,8 @@ resources/*.pdf
 *.secret
 *.keys
 *.token
+
+# ----------------------------
+# Claude Code
+# ----------------------------
+CLAUDE.md
