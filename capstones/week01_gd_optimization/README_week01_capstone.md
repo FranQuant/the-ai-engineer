@@ -19,43 +19,29 @@ methods on simple 1-D functions.
 
 ## Overview
 
-This notebook explores the behavior of Gradient Descent (GD) and Stochastic Gradient Descent (SGD) on two instructional objectives:
+This notebook studies gradient descent on the piecewise non-smooth objective
 
-1. **Quadratic baseline**
-   • Convex and smooth  
-   • Used to study stability and learning-rate effects  
-   • Includes the required step-size sweep
+$$f(x) = \left|\tfrac{1}{2}x^3 - \tfrac{3}{2}x^2\right| + \tfrac{1}{2}x$$
 
-2. **Cubic non-convex function**
-   • Exhibits multiple basins of attraction  
-   • Highlights divergence vs. convergence paths  
-   • Demonstrates noisy vs. diminishing-noise SGD trajectories  
+which has a kink (non-differentiability) at $x = 3$ and a global minimizer at
+$x^\star = 1 - \tfrac{2\sqrt{3}}{3} \approx -0.155$.
 
-All experiments are one-dimensional, enabling direct visualization of optimization dynamics.
+A convex quadratic baseline $q(x) = \tfrac{1}{2}x^2$ is included as a clean
+stability reference for step-size analysis.
 
 ---
 
 ## What’s Implemented
 
-• Deterministic Gradient Descent  
-• Stochastic Gradient Descent with:
-  – Constant step size  
-  – Diminishing step size  
-
-• **Single shared NumPy RNG for reproducibility**  
-  (`rng = np.random.default_rng(SEED)`)  
-  Fresh trajectories can be produced by supplying a new RNG instance.
-
-• Convergence diagnostics:
-  – Final gap  
-  – Best gap  
-  – Steps-to-tolerance  
-
-• Visualizations:
-  – GD step-size sweep (quadratic)  
-  – Cubic function and derivative  
-  – GD trajectories from multiple initializations  
-  – SGD vs. diminishing-SGD trajectories
+- Piecewise non-smooth objective `f(x) = |½x³ − (3/2)x²| + ½x`
+- Analytic piecewise derivative with kink handling at `x = 3`
+- Finite-difference gradient check (both smooth branches, max error < 1e-8)
+- Deterministic GD with convergence and divergence guards
+- GD trajectories from 6 initializations revealing basin structure
+  (basin boundary at x_max = 1 + (2√3)/3 ≈ 2.155)
+- Step-size sweep η ∈ {0.01, 0.05, 0.10, 0.20, 0.50} with log-gap diagnostics
+- Quadratic baseline `q(x) = ½x²` — stable (η < 2) vs divergent (η = 2.1)
+- Global minimizer x★ identified analytically and verified numerically
 
 ---
 
