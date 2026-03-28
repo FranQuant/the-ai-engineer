@@ -31,7 +31,7 @@ Each week builds a complete, self-contained project with a clean software-engine
 | **1** | **Gradient Descent Optimization** | Implement GD & SGD from scratch, analyze convergence, step-size sensitivity, and basin-dependent dynamics. | [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb) |
 | **2** | **Backpropagation** | Manual chain rule, custom autograd, tiny MLP, PyTorch autograd, and nn.Module training loop. | [01](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/01_numpy_manual.ipynb) • [02](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/02_pytorch_no_autograd.ipynb) • [03](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/03_pytorch_autograd.ipynb) • [04](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/04_pytorch_nn_module.ipynb) |
 | **3** | **Tiny Transformer** | Build tokenizer, SDPA, MHA, pre-LN transformer block, decoder-only model, training loop, sampling, and a full diagnostics suite. | [Diagnostics Notebook](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/mini_gpt_diagnostics.ipynb) |
-| **4** | **Agent Demo** | Minimal LLM-powered agent with clean abstractions, tracing, telemetry, and a deterministic OPAL loop implementation. | [README](https://github.com/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week04_agentic_incident_command/README_week04_capstone.md) |
+| **4** | **Agent Demo** | Minimal LLM-powered agent with clean abstractions, tracing, telemetry, and a deterministic OPAL loop implementation. | Local only — [README](capstones/week04_agentic_incident_command/README_week04_capstone.md) |
 
 ---
 
@@ -39,6 +39,8 @@ Each week builds a complete, self-contained project with a clean software-engine
 
 ```text
 the_ai_engineer
+    ├── artifacts
+    │   └── telemetry.jsonl                      # Accumulated OPAL telemetry (all Week 4 runs)
     ├── assets
     │   ├── mcp_server_startup.png
     │   ├── remote_opal_loop.png
@@ -53,21 +55,35 @@ the_ai_engineer
     │   │   ├── 02_pytorch_no_autograd.ipynb
     │   │   ├── 03_pytorch_autograd.ipynb
     │   │   ├── 04_pytorch_nn_module.ipynb
+    │   │   ├── two_layer_xor.pt                 # Saved checkpoint from nb04
     │   │   └── README_week02_capstone.md
     │   ├── week03_transformers                   # Tiny Transformer capstone
     │   │   ├── mini_gpt_diagnostics.ipynb
+    │   │   ├── mini_gpt.pt                      # Saved model checkpoint
     │   │   ├── mini_transformer.py
     │   │   ├── multihead_attention.py
     │   │   ├── README_week03_capstone.md
+    │   │   ├── run_record.json                  # Auto-generated training run record
     │   │   ├── scaled_dot_product_attention.py
     │   │   ├── train_mini_gpt.py
     │   │   └── transformer_block.py
     │   └── week04_agentic_incident_command       # MCP/Agent demo + OPAL loop
     │       ├── 01_tool_harness
     │       ├── 02_incident_command_agent
+    │       │   ├── cli.py
+    │       │   ├── demo_remote.py
+    │       │   ├── incident_agent.py
+    │       │   ├── incident_memory.py
+    │       │   ├── incident_planner.py          # Adaptive FSM planner
+    │       │   ├── incident_schemas.py
+    │       │   ├── mcp_client.py
+    │       │   ├── mcp_server.py                # 8 tools incl. append_memory_delta
+    │       │   ├── replay.py
+    │       │   ├── telemetry.py
+    │       │   └── test_tools.py                # pytest suite for tool handlers
     │       ├── artifacts
-    │       ├── README_week04_capstone.md
-    │       └── samples
+    │       │   └── telemetry.jsonl
+    │       └── README_week04_capstone.md
     ├── README.md
     └── requirements.txt
 
