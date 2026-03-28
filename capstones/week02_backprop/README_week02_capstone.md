@@ -115,10 +115,13 @@ points.
 
 <b>Goal:</b> Wrap the model in <code>nn.Module</code> and train with mini-batch SGD.<br>
 <b>Features:</b><br>
-– Custom <code>TwoLayerXOR</code><br>
-– <code>DataLoader</code> shuffling<br>
-– SGD training loop (~200 epochs)<br>
-– Loss + gradient-norm diagnostics
+– Custom <code>TwoLayerXOR</code> with <code>last_h1</code> ReLU activity tracking<br>
+– 80/20 stratified train–validation split (<code>sklearn.model_selection</code>)<br>
+– Separate <code>train_loader</code> / <code>val_loader</code> (<code>BATCH_SIZE=16</code>)<br>
+– SGD training loop (200 epochs) with per-epoch val loss<br>
+– Three-panel diagnostics: train/val loss, gradient norms, ReLU activity fraction<br>
+– <code>nn.Sequential</code> weight-parity check (diff &lt; 1e-5)<br>
+– Checkpoint save/load round-trip (<code>two_layer_xor.pt</code>, verified &lt; 1e-6)
 
 </td>
 
@@ -154,6 +157,7 @@ Minimal packages used in Week 02:
 numpy
 matplotlib
 torch
+scikit-learn   # train_test_split used in Notebook 04
 ```
 
 For the full environment used during development, see the root-level `requirements.txt`.
