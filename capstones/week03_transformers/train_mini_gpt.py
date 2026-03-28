@@ -189,6 +189,35 @@ torch.save(model.state_dict(), "mini_gpt.pt")
 print("\nModel checkpoint saved → mini_gpt.pt\n")
 
 # -------------------------------------------------------------------------
+# 9b. Run record
+# -------------------------------------------------------------------------
+import json
+import time
+from pathlib import Path
+
+final_losses = estimate_loss()
+train_loss = final_losses["train"]
+val_loss   = final_losses["val"]
+
+run_record = {
+    "timestamp":        time.strftime("%Y-%m-%dT%H:%M:%S"),
+    "seed":             0,
+    "d_model":          64,
+    "num_heads":        4,
+    "num_layers":       4,
+    "block_size":       block_size,
+    "batch_size":       32,
+    "learning_rate":    3e-4,
+    "steps":            max_iters,
+    "final_train_loss": round(float(train_loss), 4),
+    "final_val_loss":   round(float(val_loss), 4),
+    "checkpoint":       "mini_gpt.pt",
+}
+record_path = Path(__file__).parent / "run_record.json"
+record_path.write_text(json.dumps(run_record, indent=2))
+print(f"Run record saved to {record_path}")
+
+# -------------------------------------------------------------------------
 # 10. Sampling helper (GPT-style generation)
 # -------------------------------------------------------------------------
 @torch.no_grad()

@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-03-28T06:13:29",
+  "seed": 0,
+  "d_model": 64,
+  "num_heads": 4,
+  "num_layers": 4,
+  "block_size": 4,
+  "batch_size": 32,
+  "learning_rate": 0.0003,
+  "steps": 1000,
+  "final_train_loss": 0.2595,
+  "final_val_loss": 8.8906,
+  "checkpoint": "mini_gpt.pt"
+}
