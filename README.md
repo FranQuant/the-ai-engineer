@@ -16,10 +16,9 @@ Each week builds a complete, self-contained project with a clean software-engine
 </table>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white">
-  <img src="https://img.shields.io/badge/Colab-Friendly-brightgreen?logo=googlecolab&logoColor=white">
-  <img src="https://img.shields.io/badge/License-Educational%20Use-lightgrey">
-  <img src="https://img.shields.io/badge/Last%20Updated-December%202025-purple">
+  <img src="https://img.shields.io/badge/Python-3.11-yellow?logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/Colab-Friendly-blue?logo=googlecolab&logoColor=white">
+  <img src="https://img.shields.io/badge/License-Educational%20Use-green">
 </p>
 
 ---
