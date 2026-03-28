@@ -1,16 +1,22 @@
 """
 Planner for the Incident Command Agent.
 
-Now MCP-compliant:
+Implements an adaptive FSM that uses observation content to select
+the appropriate tool sequence for each OPAL loop, rather than always
+returning a fixed hardcoded plan.
+
+MCP-compliant:
 - Uses `arguments` (not `input`)
 - Adds step metadata (step_id, type)
-- Produces deterministic OPAL plan
-- Saves plan to the memory store (memory://plans/current)
-- Compatible with standardized tool envelopes (Fix #7)
+- Produces observation-driven OPAL plan
 """
 
 from __future__ import annotations
+
+import logging
 from typing import Any, Dict, List
+
+logger = logging.getLogger(__name__)
 
 
 class IncidentPlanner:
@@ -26,61 +32,67 @@ class IncidentPlanner:
         observations: Dict[str, Any],
         budget: Any,
     ) -> List[Dict[str, Any]]:
+        """Select a tool sequence based on observation content.
+
+        Returns an ordered list of OPAL step dicts:
+          [{"step_id": "...", "type": "callTool", "name": "...", "arguments": {...}}, ...]
         """
-        Produce an ordered OPAL plan:
-        [
-          { "step_id": "...", "type": "callTool", "name": "...", "arguments": {...} },
-          ...
+        obs_text = str(observations).lower()
+
+        # High-severity CPU / memory incidents → full diagnostic path
+        if any(kw in obs_text for kw in ["cpu", "memory", "spike", "high"]):
+            tool_sequence = [
+                "retrieve_runbook",
+                "run_diagnostic",
+                "summarize_incident",
+            ]
+        # Deployment / crashloop → runbook + summary (no raw diagnostic)
+        elif any(kw in obs_text for kw in ["deploy", "crash", "pod", "fail"]):
+            tool_sequence = [
+                "retrieve_runbook",
+                "summarize_incident",
+            ]
+        # Default fallback
+        else:
+            tool_sequence = [
+                "retrieve_runbook",
+                "run_diagnostic",
+                "summarize_incident",
+            ]
+
+        logger.info("Plan selected: %s", tool_sequence)
+
+        # Extract alert context from observations to populate step arguments
+        alert = observations.get("alerts_latest") or {}
+        alert_id = alert.get("id", "ALRT-0001") if isinstance(alert, dict) else "ALRT-0001"
+        service = alert.get("service", "staging-api") if isinstance(alert, dict) else "staging-api"
+        symptom = alert.get("symptom", "incident") if isinstance(alert, dict) else "incident"
+
+        _step_args: Dict[str, Dict[str, Any]] = {
+            "retrieve_runbook": {"query": symptom, "top_k": 2},
+            "run_diagnostic": {"command": "kubectl top pod", "host": service},
+            "create_incident": {
+                "id": "INC-001",
+                "title": f"Investigate {symptom}",
+                "severity": "medium",
+            },
+            "add_evidence": {
+                "id": "EV-001",
+                "content": "Diagnostics and runbook retrieved",
+                "source": "system",
+            },
+            "summarize_incident": {
+                "alert_id": alert_id,
+                "evidence": list(tool_sequence),
+            },
+        }
+
+        return [
+            {
+                "step_id": f"step-{i}",
+                "type": "callTool",
+                "name": name,
+                "arguments": _step_args.get(name, {}),
+            }
+            for i, name in enumerate(tool_sequence, 1)
         ]
-        """
-
-        del observations, budget  # unused for now
-
-        steps = [
-            {
-                "step_id": "step-1",
-                "type": "callTool",
-                "name": "retrieve_runbook",
-                "arguments": {"query": "CPU", "top_k": 2},
-            },
-            {
-                "step_id": "step-2",
-                "type": "callTool",
-                "name": "run_diagnostic",
-                "arguments": {"command": "kubectl top pod", "host": "staging-api"},
-            },
-            {
-                "step_id": "step-3",
-                "type": "callTool",
-                "name": "create_incident",
-                "arguments": {
-                    "id": "INC-001",
-                    "title": "Investigate incident",
-                    "severity": "medium",
-                },
-            },
-            {
-                "step_id": "step-4",
-                "type": "callTool",
-                "name": "add_evidence",
-                "arguments": {
-                    "id": "EV-001",
-                    "content": "Diagnostics and runbook retrieved",
-                    "source": "system",
-                },
-            },
-            {
-                "step_id": "step-5",
-                "type": "callTool",
-                "name": "summarize_incident",
-                "arguments": {
-                    "alert_id": "ALRT-0001",
-                    "evidence": [
-                        "run_diagnostic",
-                        "retrieve_runbook",
-                    ],
-                },
-            },
-        ]
-
-        return steps

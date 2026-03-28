@@ -174,7 +174,36 @@ python 02_incident_command_agent/cli.py --replay artifacts/telemetry.jsonl
 
 ---
 
-### 6. Run Screenshots
+---
+
+## 6. Known Limitations
+
+- **`SERVER_BUDGET` is a module-level singleton** — it is decremented with every
+  `callTool` invocation (`SERVER_BUDGET.tokens -= 10`). Restart the MCP server
+  between test runs or across demo sessions to reset the budget counter to its
+  initial value; otherwise consecutive runs will exhaust the budget and may trigger
+  guardrail errors mid-loop.
+
+- **`telemetry.jsonl` grows unboundedly** — every run appends to
+  `artifacts/telemetry.jsonl` with no rotation or size cap. Truncate or archive
+  the file manually if it becomes large:
+  ```bash
+  # Truncate (keep file, clear contents)
+  > artifacts/telemetry.jsonl
+  # Or archive and start fresh
+  mv artifacts/telemetry.jsonl artifacts/telemetry_$(date +%Y%m%d).jsonl
+  ```
+
+- **Planner is deterministic but observation-driven** — the FSM selects a
+  tool path based on keywords in the observation (CPU/memory vs deploy/crash),
+  but it does not learn across loops. Each OPAL loop replans from scratch.
+
+- **`RemoteIncidentAgent.learn()` writes a delta per loop** — the
+  `append_memory_delta` tool call in the remote Learn phase persists loop
+  outcomes back to the server. If the server is unreachable, the write is
+  silently skipped (non-fatal).
+
+---
 
 #### A. MCP Server Startup
 <img src="../../assets/mcp_server_startup.png" width="700">

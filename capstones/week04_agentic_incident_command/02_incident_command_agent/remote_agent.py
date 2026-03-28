@@ -4,7 +4,8 @@ Remote Incident Agent that drives planning and action through an MCP client with
 
 from __future__ import annotations
 
-from typing import Any, Dict, List
+import time
+from typing import Any, Dict, List, Optional
 
 from telemetry import Budget, RunContext, TelemetryEvent, TelemetryLogger
 
@@ -232,8 +233,14 @@ class RemoteIncidentAgent:
     # ------------------------------------------------------------------
     # OPAL: Learn
     # ------------------------------------------------------------------
-    async def learn(self, ctx: RunContext) -> Dict[str, Any]:
-        """Fetch recent deltas and current plan from server memory resources."""
+    async def learn(
+        self,
+        ctx: RunContext,
+        observations: Optional[Dict[str, Any]] = None,
+        plan: Optional[List[Dict[str, Any]]] = None,
+        action_result: Optional[List[Dict[str, Any]]] = None,
+    ) -> Dict[str, Any]:
+        """Fetch recent deltas and plan from server memory, then write this loop's outcome."""
         self.telemetry.log(
             TelemetryEvent(
                 correlation_id=ctx.correlation_id,
@@ -248,9 +255,22 @@ class RemoteIncidentAgent:
         )
 
         deltas = await self.client.get_resource("memory://deltas/recent")
-        plan = await self.client.get_resource("memory://plans/current")
+        current_plan = await self.client.get_resource("memory://plans/current")
 
-        learn_result = {"deltas": deltas, "plan": plan}
+        # Write the outcome of this loop back to memory
+        delta = {
+            "loop_id": ctx.loop_id,
+            "timestamp": time.time(),
+            "observation_summary": str(observations)[:200] if observations else "",
+            "plan": str(plan)[:200] if plan else "",
+            "outcome": str(action_result)[:200] if action_result else "",
+        }
+        try:
+            await self.client.call_tool("append_memory_delta", {"delta": delta})
+        except Exception:
+            pass  # non-fatal: telemetry continues even if write fails
+
+        learn_result = {"deltas": deltas, "plan": current_plan, "delta_written": delta}
 
         self.telemetry.log(
             TelemetryEvent(
@@ -276,7 +296,12 @@ class RemoteIncidentAgent:
         observations = await self.observe(ctx)
         plan_steps = await self.plan(ctx, observations)
         results = await self.act(ctx, plan_steps)
-        learn_result = await self.learn(ctx)
+        learn_result = await self.learn(
+            ctx,
+            observations=observations,
+            plan=plan_steps,
+            action_result=results,
+        )
 
         return {
             "observations": observations,

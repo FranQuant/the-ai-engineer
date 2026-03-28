@@ -177,18 +177,26 @@ def tool_write_plan(arguments: Dict[str, Any], memory: IncidentMemoryStore):
     return _envelope({"written": True, "plan_length": len(plan)}, latency_ms=1)
 
 
+def tool_append_memory_delta(arguments: Dict[str, Any], memory: IncidentMemoryStore):
+    """Append a structured loop-outcome delta to memory://deltas/recent."""
+    delta = arguments.get("delta", arguments)
+    result = memory.append_delta(delta)
+    return _envelope({"appended": True, "delta": result}, latency_ms=2)
+
+
 # ---------------------------------------------------------------------------
-# TOOL_DISPATCH 
+# TOOL_DISPATCH
 # ---------------------------------------------------------------------------
 
 TOOL_DISPATCH = {
     "retrieve_runbook": tool_retrieve_runbook,
     "run_diagnostic": tool_run_diagnostic,
     "summarize_incident": tool_summarize_incident,
-    "create_incident": None,   # handled dynamically
-    "add_evidence": None,      # handled dynamically
-    "append_delta": None,      # handled dynamically
-    "write_plan": tool_write_plan,  # <-- NEW FIX #5A
+    "create_incident": None,          # handled dynamically
+    "add_evidence": None,             # handled dynamically
+    "append_delta": None,             # handled dynamically
+    "write_plan": tool_write_plan,
+    "append_memory_delta": None,      # handled dynamically (requires memory)
 }
 
 
@@ -243,6 +251,9 @@ def call_tool(memory, name, arguments):
     if name == "append_delta":
         result = memory.append_delta(arguments)
         return _envelope(result, latency_ms=2)
+
+    if name == "append_memory_delta":
+        return tool_append_memory_delta(arguments, memory)
 
     # Normal tools
     if name in TOOL_DISPATCH and TOOL_DISPATCH[name] is not None:
