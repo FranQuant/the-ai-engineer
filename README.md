@@ -28,7 +28,7 @@ Each week builds a complete, self-contained project with a clean software-engine
 | Week | Capstone | Summary | Colab Link |
 |------|----------|---------|------------|
 | **1** | **Gradient Descent Optimization** | Implement GD & SGD from scratch, analyze convergence, step-size sensitivity, and basin-dependent dynamics. | [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb) |
-| **2** | **Backpropagation** | Manual chain rule, custom autograd, tiny MLP, PyTorch autograd, and nn.Module training loop. | [01](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/01_numpy_manual.ipynb) • [02](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/02_pytorch_no_autograd.ipynb) • [03](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/03_pytorch_autograd.ipynb) • [04](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/04_pytorch_nn_module.ipynb) |
+| **2** | **Backpropagation** | Execution-verified master submission notebook for manual backprop, Torch parity, autograd, and nn.Module validation training. | [Master Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb) • supporting: [01](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/01_numpy_manual.ipynb) • [02](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/02_pytorch_no_autograd.ipynb) • [03](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/03_pytorch_autograd.ipynb) • [04](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/04_pytorch_nn_module.ipynb) |
 | **3** | **Tiny Transformer** | Build tokenizer, SDPA, MHA, pre-LN transformer block, decoder-only model, training loop, sampling, and a full diagnostics suite. | [Diagnostics Notebook](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/mini_gpt_diagnostics.ipynb) |
 | **4** | **Agent Demo** | Minimal LLM-powered agent with clean abstractions, tracing, telemetry, and a deterministic OPAL loop implementation. | Local only — [README](capstones/week04_agentic_incident_command/README_week04_capstone.md) |
 
@@ -50,11 +50,12 @@ the_ai_engineer
     │   │   ├── gd_capstone.ipynb
     │   │   └── README_week01_capstone.md
     │   ├── week02_backprop                       # Backpropagation capstone
-    │   │   ├── 01_numpy_manual.ipynb
-    │   │   ├── 02_pytorch_no_autograd.ipynb
-    │   │   ├── 03_pytorch_autograd.ipynb
-    │   │   ├── 04_pytorch_nn_module.ipynb
-    │   │   ├── two_layer_xor.pt                 # Saved checkpoint from nb04
+    │   │   ├── week02_master_capstone.ipynb     # Main Week 2 submission notebook
+    │   │   ├── 01_numpy_manual.ipynb            # Supporting progression notebook
+    │   │   ├── 02_pytorch_no_autograd.ipynb     # Supporting progression notebook
+    │   │   ├── 03_pytorch_autograd.ipynb        # Supporting progression notebook
+    │   │   ├── 04_pytorch_nn_module.ipynb       # Supporting progression notebook
+    │   │   ├── week02_best_two_layer_xor.pt      # Best validation checkpoint from master notebook
     │   │   └── README_week02_capstone.md
     │   ├── week03_transformers                   # Tiny Transformer capstone
     │   │   ├── mini_gpt_diagnostics.ipynb

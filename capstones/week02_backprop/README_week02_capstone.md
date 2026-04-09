@@ -20,14 +20,39 @@ The goal is to implement a tiny <strong>1-hidden-layer MLP</strong>, step-by-ste
 </tr>
 </table>
 
+## Primary submission notebook
 
-All notebooks use:
+The main Week 2 submission artifact is [week02_master_capstone.ipynb](week02_master_capstone.ipynb).
 
-- Deterministic seeds  
-- Same XOR-style synthetic data-generating process  
-- Same MLP architecture  
+<a target="_blank" href="https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/>
+</a>
 
-Forward pass:
+This notebook consolidates the verified Week 2 evidence into one compact submission:
+
+- finite-difference gradient sanity check
+- NumPy vs Torch forward parity on the tested sample
+- manual vs autograd gradient agreement
+- best validation loss tracking
+- best validation accuracy tracking
+- checkpoint save/load smoke test
+
+
+## Evidence summary
+
+In the verified master notebook:
+
+- Finite-difference gradient check: max abs diff `9.79e-12`
+- NumPy vs Torch forward parity: abs diff `1.09e-10`
+- Manual vs autograd gradient agreement: max abs diff `0.00e+00`
+- Best validation loss: `0.072691`
+- Best validation accuracy: `0.9300`
+- Checkpoint smoke test: the best checkpoint reloaded and reproduced the saved validation metrics
+
+
+## Supporting / developmental progression notebooks
+
+The original notebooks remain as the stepwise build-up behind the master submission. They use the same XOR-style synthetic data-generating process, the same `d -> h -> 1` MLP, and the same ReLU hidden-layer equations:
 
 $$
 a_1 = W_1 x + b_1,\qquad
@@ -35,16 +60,15 @@ h_1 = \mathrm{ReLU}(a_1),\qquad
 f = W_2 h_1 + b_2
 $$
 
-Loss (per sample in Notebooks 01–03):
+Loss (per sample in Notebooks 01-03):
 
 $$
 L = \tfrac{1}{2}(f - y)^2
 $$
 
-In Notebook 04, PyTorch’s built-in `MSELoss(reduction="mean")` is used, which
-computes the batch mean of $(f - y)^2$. This introduces a constant rescaling
-(and batch averaging) but does not change the optimization objective’s fixed
-points.
+In Notebook 04, PyTorch's built-in `MSELoss(reduction="mean")` is used, which
+computes the batch mean of $(f - y)^2$. This changes gradient scaling, but not
+the underlying fixed points of the optimization problem.
 
 
 <table>
@@ -131,21 +155,12 @@ points.
 
 ## Summary
 
-This 4-notebook progression builds the full intuition and engineering workflow:
+The four supporting notebooks document the progression that leads to the
+master submission: manual gradients, Torch forward parity, Torch autograd, and
+`nn.Module` training.
 
-1. Manual gradients  
-2. Torch forward  
-3. Torch autograd  
-4. `nn.Module` + training loop  
-
-It prepares the foundation for future Capstones involving:
-
-- Deep networks  
-- Optimizers  
-- Regularization  
-- Vision/sequence models  
-- Reinforcement learning  
-- Agentic training workflows  
+They provide the step-by-step derivations and implementation details, while
+`week02_master_capstone.ipynb` is the compact submission artifact.
 
 ---
 
@@ -161,4 +176,3 @@ scikit-learn   # train_test_split used in Notebook 04
 ```
 
 For the full environment used during development, see the root-level `requirements.txt`.
-
