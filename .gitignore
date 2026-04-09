@@ -110,3 +110,4 @@ resources/*.pdf
 # Claude Code
 # ----------------------------
 CLAUDE.md
+capstones/week02_backprop/week02_best_two_layer_xor.pt
