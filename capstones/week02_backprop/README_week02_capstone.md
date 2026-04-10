@@ -7,8 +7,8 @@
 
 
 <p>
-This folder contains the full Week-02 Capstone completed following the TAE Program structure.<br>
-The goal is to implement a tiny <strong>1-hidden-layer MLP</strong>, step-by-step, moving from fully manual NumPy backprop to PyTorch’s <code>nn.Module</code> API.
+This folder packages the Week 2 backprop submission following the TAE program structure.<br>
+<code>week02_master_capstone.ipynb</code> is the primary submission artifact; the other notebooks are supporting progression notebooks that document the build-up from manual NumPy backprop to the PyTorch <code>nn.Module</code> training pipeline.
 </p>
 
 </td>
@@ -28,14 +28,7 @@ The main Week 2 submission artifact is [week02_master_capstone.ipynb](week02_mas
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/>
 </a>
 
-This notebook consolidates the verified Week 2 evidence into one compact submission:
-
-- finite-difference gradient sanity check
-- NumPy vs Torch forward parity on the tested sample
-- manual vs autograd gradient agreement
-- best validation loss tracking
-- best validation accuracy tracking
-- checkpoint save/load smoke test
+This notebook consolidates the verified Week 2 evidence into one compact submission.
 
 
 ## Evidence summary
@@ -43,11 +36,14 @@ This notebook consolidates the verified Week 2 evidence into one compact submiss
 In the verified master notebook:
 
 - Finite-difference gradient check: max abs diff `9.79e-12`
-- NumPy vs Torch forward parity: abs diff `1.09e-10`
-- Manual vs autograd gradient agreement: max abs diff `0.00e+00`
+- Torch forward parity: abs diff `1.09e-10`
+- Torch manual backward parity vs NumPy: max abs diff `3.66e-08`
+- Fixed-batch manual vs autograd agreement: max abs diff `0.00e+00`
+- `nn.Sequential` parity check: max abs diff `0.00e+00`
 - Best validation loss: `0.072691`
 - Best validation accuracy: `0.9300`
 - Checkpoint smoke test: the best checkpoint reloaded and reproduced the saved validation metrics
+- Diagnostics: 4-panel figure with train/val loss, validation accuracy, mean gradient norm, and mean hidden ReLU activity
 
 
 ## Supporting / developmental progression notebooks
@@ -142,8 +138,8 @@ the underlying fixed points of the optimization problem.
 – Custom <code>TwoLayerXOR</code> with <code>last_h1</code> ReLU activity tracking<br>
 – 80/20 stratified train–validation split (<code>sklearn.model_selection</code>)<br>
 – Separate <code>train_loader</code> / <code>val_loader</code> (<code>BATCH_SIZE=16</code>)<br>
-– SGD training loop (200 epochs) with per-epoch val loss<br>
-– Three-panel diagnostics: train/val loss, gradient norms, ReLU activity fraction<br>
+– SGD training loop (200 epochs) with held-out validation tracking<br>
+– Validation diagnostics and checkpoint round-trip<br>
 – <code>nn.Sequential</code> weight-parity check (diff &lt; 1e-5)<br>
 – Checkpoint save/load round-trip (<code>two_layer_xor.pt</code>, verified &lt; 1e-6)
 
@@ -160,7 +156,7 @@ master submission: manual gradients, Torch forward parity, Torch autograd, and
 `nn.Module` training.
 
 They provide the step-by-step derivations and implementation details, while
-`week02_master_capstone.ipynb` is the compact submission artifact.
+`week02_master_capstone.ipynb` is the compact primary submission artifact.
 
 ---
 
