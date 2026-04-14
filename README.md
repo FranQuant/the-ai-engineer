@@ -26,23 +26,22 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
 
 ---
 
-## Program Progression
+## Week 4 MCP Workflow
 
 ```mermaid
-flowchart LR
-    W1["Week 1<br/>Gradient descent & SGD"] --> W2["Week 2<br/>Manual backprop -> PyTorch"]
-    W2 --> W3["Week 3<br/>Tiny decoder-only transformer"]
-    W3 --> W4["Week 4<br/>Agentic Incident Command"]
-
-    subgraph MCP["Week 4 primary graded workflow"]
-        O["Observe<br/>read MCP resources"] --> P["Plan<br/>adaptive local planner"]
-        P --> A["Act<br/>call MCP tools over JSON-RPC"]
-        A --> L["Learn<br/>write plan + memory delta"]
-        L --> T["Telemetry / replay / audit"]
-    end
-
-    W4 --> O
+flowchart TD
+    A["Observe<br/>read MCP resources"] --> B["Plan<br/>adaptive local planner"]
+    B --> C["Act<br/>call MCP tools over JSON-RPC"]
+    C --> D["Learn<br/>write plan + memory delta"]
+    D --> E["Telemetry<br/>replay and audit trail"]
 ```
+
+Weeks 1–3 build the foundations for Week 4:
+
+* Week 1: optimization and gradient-based learning
+* Week 2: backpropagation and PyTorch training loops
+* Week 3: attention, transformers, and tiny LLM building blocks
+* Week 4: MCP-based agentic orchestration with telemetry, replay, and memory
 
 ---
 
@@ -59,7 +58,7 @@ flowchart LR
 
 ## Repository Structure
 
-Selected files and entry points:
+Reviewer-facing entrypoints:
 
 ```text
 the_ai_engineer_capstones/
@@ -70,47 +69,29 @@ the_ai_engineer_capstones/
 │   ├── remote_opal_loop.png
 │   ├── tae_logo.png
 │   └── telemetry_jsonl_confirmation.png
-├── artifacts/
-│   └── telemetry.jsonl
 └── capstones/
     ├── week01_gd_optimization/
     │   ├── gd_capstone.ipynb
     │   └── README_week01_capstone.md
     ├── week02_backprop/
     │   ├── week02_master_capstone.ipynb
-    │   ├── 01_numpy_manual.ipynb
-    │   ├── 02_pytorch_no_autograd.ipynb
-    │   ├── 03_pytorch_autograd.ipynb
-    │   ├── 04_pytorch_nn_module.ipynb
-    │   ├── week02_best_two_layer_xor.pt
     │   └── README_week02_capstone.md
     ├── week03_transformers/
     │   ├── mini_gpt_diagnostics.ipynb
-    │   ├── mini_gpt.pt
-    │   ├── mini_transformer.py
-    │   ├── multihead_attention.py
-    │   ├── scaled_dot_product_attention.py
-    │   ├── transformer_block.py
     │   ├── train_mini_gpt.py
-    │   ├── run_record.json
     │   └── README_week03_capstone.md
     └── week04_agentic_incident_command/
         ├── README_week04_capstone.md
         ├── artifacts/
         │   └── telemetry.jsonl
         └── 02_incident_command_agent/
-            ├── cli.py
             ├── config.py
             ├── demo_remote.py
-            ├── incident_agent.py
-            ├── incident_memory.py
-            ├── incident_planner.py
-            ├── incident_schemas.py
-            ├── mcp_client.py
-            ├── mcp_server.py
             ├── remote_agent.py
+            ├── mcp_server.py
+            ├── mcp_client.py
+            ├── cli.py
             ├── replay.py
-            ├── telemetry.py
             └── test_tools.py
 ```
 
