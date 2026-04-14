@@ -4,8 +4,10 @@
 
 <h1>The AI Engineer — Capstone Projects</h1>
 
-This repository contains all capstone projects for <i>The AI Engineer</i> program (Nov 2025 Cohort).  
-Each week builds a complete, self-contained project with a clean software-engineering structure, reproducibility, diagnostics, and proper documentation.
+This repository consolidates four weekly capstones from <i>The AI Engineer</i> program.
+
+Weeks 1–3 are notebook-centered ML/DL deliverables.  
+Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path</b> is the remote MCP server/client workflow, with a local deterministic mirror retained as supporting evidence for replay, debugging, and reviewer validation.
 
 </td>
 
@@ -17,113 +19,161 @@ Each week builds a complete, self-contained project with a clean software-engine
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-yellow?logo=python&logoColor=white">
-  <img src="https://img.shields.io/badge/Colab-Friendly-blue?logo=googlecolab&logoColor=white">
+  <img src="https://img.shields.io/badge/Weeks_1--3-Colab_Ready-blue?logo=googlecolab&logoColor=white">
+  <img src="https://img.shields.io/badge/Week_4-Local_MCP_Workflow-purple">
   <img src="https://img.shields.io/badge/License-Educational%20Use-green">
 </p>
 
 ---
 
+## Program Progression
+
+```mermaid
+flowchart LR
+    W1["Week 1<br/>Gradient descent & SGD"] --> W2["Week 2<br/>Manual backprop -> PyTorch"]
+    W2 --> W3["Week 3<br/>Tiny decoder-only transformer"]
+    W3 --> W4["Week 4<br/>Agentic Incident Command"]
+
+    subgraph MCP["Week 4 primary graded workflow"]
+        O["Observe<br/>read MCP resources"] --> P["Plan<br/>adaptive local planner"]
+        P --> A["Act<br/>call MCP tools over JSON-RPC"]
+        A --> L["Learn<br/>write plan + memory delta"]
+        L --> T["Telemetry / replay / audit"]
+    end
+
+    W4 --> O
+```
+
+---
+
 ## Weekly Capstones Overview
 
-| Week | Capstone | Summary | Colab Link |
-|------|----------|---------|------------|
-| **1** | **Gradient Descent Optimization** | Implement GD & SGD from scratch, analyze convergence, step-size sensitivity, and basin-dependent dynamics. | [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb) |
-| **2** | **Backpropagation** | Execution-verified master submission notebook for manual backprop, Torch parity, autograd, and nn.Module validation training. | [Master Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb) • supporting: [01](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/01_numpy_manual.ipynb) • [02](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/02_pytorch_no_autograd.ipynb) • [03](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/03_pytorch_autograd.ipynb) • [04](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/04_pytorch_nn_module.ipynb) |
-| **3** | **Tiny Transformer** | Build tokenizer, SDPA, MHA, pre-LN transformer block, decoder-only model, training loop, sampling, and a full diagnostics suite. | [Diagnostics Notebook](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/mini_gpt_diagnostics.ipynb) |
-| **4** | **Agent Demo** | Minimal LLM-powered agent with clean abstractions, tracing, telemetry, and a deterministic OPAL loop implementation. | Local only — [README](capstones/week04_agentic_incident_command/README_week04_capstone.md) |
+| Week  | Capstone                          | Primary artifact                                                                                                                                                                                                                                                                                                                                                                                                              | Access / delivery mode                                                                                                                                                                              |
+| ----- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | **Gradient Descent Optimization** | [`gd_capstone.ipynb`](capstones/week01_gd_optimization/gd_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                                     | Colab-ready notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)                   |
+| **2** | **Backpropagation**               | [`week02_master_capstone.ipynb`](capstones/week02_backprop/week02_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                      | Colab-ready master notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb)        |
+| **3** | **Tiny Transformer**              | [`mini_gpt_diagnostics.ipynb`](capstones/week03_transformers/mini_gpt_diagnostics.ipynb)                                                                                                                                                                                                                                                                                                                                      | Colab-ready diagnostics notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/mini_gpt_diagnostics.ipynb) |
+| **4** | **Agentic Incident Command**      | [`README_week04_capstone.md`](capstones/week04_agentic_incident_command/README_week04_capstone.md) · [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Local MCP workflow. The remote MCP path is the primary graded artifact; the local deterministic runner is supporting evidence.                                                                      |
 
 ---
 
 ## Repository Structure
 
-```text
-the_ai_engineer
-    ├── artifacts
-    │   └── telemetry.jsonl                      # Accumulated OPAL telemetry (all Week 4 runs)
-    ├── assets
-    │   ├── mcp_server_startup.png
-    │   ├── remote_opal_loop.png
-    │   ├── tae_logo.png
-    │   └── telemetry_jsonl_confirmation.png
-    ├── capstones
-    │   ├── week01_gd_optimization                # Gradient Descent capstone
-    │   │   ├── gd_capstone.ipynb
-    │   │   └── README_week01_capstone.md
-    │   ├── week02_backprop                       # Backpropagation capstone
-    │   │   ├── week02_master_capstone.ipynb     # Main Week 2 submission notebook
-    │   │   ├── 01_numpy_manual.ipynb            # Supporting progression notebook
-    │   │   ├── 02_pytorch_no_autograd.ipynb     # Supporting progression notebook
-    │   │   ├── 03_pytorch_autograd.ipynb        # Supporting progression notebook
-    │   │   ├── 04_pytorch_nn_module.ipynb       # Supporting progression notebook
-    │   │   ├── week02_best_two_layer_xor.pt      # Best validation checkpoint from master notebook
-    │   │   └── README_week02_capstone.md
-    │   ├── week03_transformers                   # Tiny Transformer capstone
-    │   │   ├── mini_gpt_diagnostics.ipynb
-    │   │   ├── mini_gpt.pt                      # Saved model checkpoint
-    │   │   ├── mini_transformer.py
-    │   │   ├── multihead_attention.py
-    │   │   ├── README_week03_capstone.md
-    │   │   ├── run_record.json                  # Auto-generated training run record
-    │   │   ├── scaled_dot_product_attention.py
-    │   │   ├── train_mini_gpt.py
-    │   │   └── transformer_block.py
-    │   └── week04_agentic_incident_command       # MCP/Agent demo + OPAL loop
-    │       ├── 01_tool_harness
-    │       ├── 02_incident_command_agent
-    │       │   ├── cli.py
-    │       │   ├── demo_remote.py
-    │       │   ├── incident_agent.py
-    │       │   ├── incident_memory.py
-    │       │   ├── incident_planner.py          # Adaptive FSM planner
-    │       │   ├── incident_schemas.py
-    │       │   ├── mcp_client.py
-    │       │   ├── mcp_server.py                # 8 tools incl. append_memory_delta
-    │       │   ├── replay.py
-    │       │   ├── telemetry.py
-    │       │   └── test_tools.py                # pytest suite for tool handlers
-    │       ├── artifacts
-    │       │   └── telemetry.jsonl
-    │       └── README_week04_capstone.md
-    ├── README.md
-    └── requirements.txt
+Selected files and entry points:
 
+```text
+the_ai_engineer_capstones/
+├── README.md
+├── requirements.txt
+├── assets/
+│   ├── mcp_server_startup.png
+│   ├── remote_opal_loop.png
+│   ├── tae_logo.png
+│   └── telemetry_jsonl_confirmation.png
+├── artifacts/
+│   └── telemetry.jsonl
+└── capstones/
+    ├── week01_gd_optimization/
+    │   ├── gd_capstone.ipynb
+    │   └── README_week01_capstone.md
+    ├── week02_backprop/
+    │   ├── week02_master_capstone.ipynb
+    │   ├── 01_numpy_manual.ipynb
+    │   ├── 02_pytorch_no_autograd.ipynb
+    │   ├── 03_pytorch_autograd.ipynb
+    │   ├── 04_pytorch_nn_module.ipynb
+    │   ├── week02_best_two_layer_xor.pt
+    │   └── README_week02_capstone.md
+    ├── week03_transformers/
+    │   ├── mini_gpt_diagnostics.ipynb
+    │   ├── mini_gpt.pt
+    │   ├── mini_transformer.py
+    │   ├── multihead_attention.py
+    │   ├── scaled_dot_product_attention.py
+    │   ├── transformer_block.py
+    │   ├── train_mini_gpt.py
+    │   ├── run_record.json
+    │   └── README_week03_capstone.md
+    └── week04_agentic_incident_command/
+        ├── README_week04_capstone.md
+        ├── artifacts/
+        │   └── telemetry.jsonl
+        └── 02_incident_command_agent/
+            ├── cli.py
+            ├── config.py
+            ├── demo_remote.py
+            ├── incident_agent.py
+            ├── incident_memory.py
+            ├── incident_planner.py
+            ├── incident_schemas.py
+            ├── mcp_client.py
+            ├── mcp_server.py
+            ├── remote_agent.py
+            ├── replay.py
+            ├── telemetry.py
+            └── test_tools.py
 ```
+
+---
+
+## Week 4 Verification Entry Points
+
+From the repository root:
+
+```bash
+# Terminal A: start the MCP server
+python capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py
+
+# Terminal B: run the primary graded remote MCP path
+python capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py
+
+# Replay a telemetry trace
+python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
+
+# Supporting deterministic local run
+python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py
+```
+
+For Week 4 details, telemetry, guardrails, and architecture notes, see the dedicated Week 4 README:
+[`capstones/week04_agentic_incident_command/README_week04_capstone.md`](capstones/week04_agentic_incident_command/README_week04_capstone.md)
+
 ---
 
 ## Environment & Reproducibility
 
-This project uses a lightweight **pip + venv** setup for consistency and reproducibility.  
-All notebooks and scripts have been tested on **Python 3.11**.
-
-### Setup
+This repository uses a lightweight **pip + venv** workflow and targets **Python 3.11**.
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+Notes:
+
+* Weeks 1–3 can be reviewed directly in GitHub and opened in Colab from the links above.
+* Week 4 is designed for a local Python environment because it depends on a live MCP server/client interaction and replayable telemetry artifacts.
+
 ---
 
-### License (Educational Use)
+## License (Educational Use)
 
-All content in this repository is provided **for educational and illustrative purposes only**.  
+All content in this repository is provided **for educational and illustrative purposes only**.
 No guarantees are made regarding correctness, performance, reliability, or suitability for any production environment.
 
 ---
 
-### Agentic Systems Notice
+## Agentic Systems Notice
 
-Agentic systems — especially those capable of taking actions, orchestrating tools, or modifying state — can introduce **significant safety risks**.
+Agentic systems — especially those capable of taking actions, orchestrating tools, or modifying state — can introduce significant safety risks.
 
-Before using any such system outside a controlled environment, always:
+Before using any such system outside a controlled environment:
 
-- Validate all outputs manually  
-- Run code inside a sandboxed environment  
-- Apply strict guardrails and permissions  
-- Never connect an agent to real infrastructure without full safety checks  
+* validate outputs manually
+* run code inside a sandboxed environment
+* apply strict guardrails and permissions
+* do not connect an agent to real infrastructure without explicit safety checks
 
 Use responsibly.
 
 © 2025 Francisco Salazar
-
----
