@@ -11,6 +11,13 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
+from config import (
+    DEFAULT_BUDGET_DOLLARS,
+    DEFAULT_BUDGET_MS,
+    DEFAULT_BUDGET_TOKENS,
+    DEFAULT_MAX_RETRIES,
+    DEFAULT_MAX_STEPS,
+)
 from incident_memory import IncidentMemoryStore
 from incident_planner import IncidentPlanner
 from telemetry import Budget, RunContext, TelemetryEvent, TelemetryLogger
@@ -29,10 +36,14 @@ class IncidentAgent:
         self.planner = planner
         self.telemetry = telemetry
         self.config = config or {}
-        self.budget = Budget(tokens=2000, ms=150, dollars=0.0)
-        self.max_steps = 5
-        self.max_latency_ms = 150
-        self.max_retries = 2
+        self.budget = Budget(
+            tokens=DEFAULT_BUDGET_TOKENS,
+            ms=DEFAULT_BUDGET_MS,
+            dollars=DEFAULT_BUDGET_DOLLARS,
+        )
+        self.max_steps = DEFAULT_MAX_STEPS
+        self.max_latency_ms = DEFAULT_BUDGET_MS
+        self.max_retries = DEFAULT_MAX_RETRIES
         self.LOCAL_TOOLS = {
             "retrieve_runbook": self._local_retrieve_runbook,
             "run_diagnostic": self._local_run_diagnostic,

@@ -7,6 +7,13 @@ from __future__ import annotations
 import time
 from typing import Any, Dict, List, Optional
 
+from config import (
+    DEFAULT_BUDGET_DOLLARS,
+    DEFAULT_BUDGET_MS,
+    DEFAULT_BUDGET_TOKENS,
+    DEFAULT_MAX_RETRIES,
+    DEFAULT_MAX_STEPS,
+)
 from telemetry import Budget, RunContext, TelemetryEvent, TelemetryLogger
 
 
@@ -15,10 +22,14 @@ class RemoteIncidentAgent:
         self.client = mcp_client
         self.planner = planner
         self.telemetry = telemetry
-        self.budget = Budget(tokens=2000, ms=150, dollars=0.0)
-        self.max_steps = 5
-        self.max_latency_ms = 150
-        self.max_retries = 2
+        self.budget = Budget(
+            tokens=DEFAULT_BUDGET_TOKENS,
+            ms=DEFAULT_BUDGET_MS,
+            dollars=DEFAULT_BUDGET_DOLLARS,
+        )
+        self.max_steps = DEFAULT_MAX_STEPS
+        self.max_latency_ms = DEFAULT_BUDGET_MS
+        self.max_retries = DEFAULT_MAX_RETRIES
 
     # ------------------------------------------------------------------
     # OPAL: Observe
@@ -30,7 +41,7 @@ class RemoteIncidentAgent:
                 correlation_id=ctx.correlation_id,
                 loop_id=ctx.loop_id,
                 phase="observe_start",
-                method="initialize",
+                method="mcp_observe_batch",
                 status="ok",
                 latency_ms=0,
                 budget=self.budget,
@@ -38,22 +49,32 @@ class RemoteIncidentAgent:
             )
         )
 
-        result = await self.client.initialize()
+        capabilities = await self.client.initialize()
+        alerts_latest = await self.client.get_resource("memory://alerts/latest")
+        runbooks_index = await self.client.get_resource("memory://runbooks/index")
+        deltas_recent = await self.client.get_resource("memory://deltas/recent")
+
+        observations = {
+            "capabilities": capabilities,
+            "alerts_latest": alerts_latest,
+            "runbooks_index": runbooks_index,
+            "deltas_recent": deltas_recent,
+        }
 
         self.telemetry.log(
             TelemetryEvent(
                 correlation_id=ctx.correlation_id,
                 loop_id=ctx.loop_id,
                 phase="observe_end",
-                method="initialize",
+                method="mcp_observe_batch",
                 status="ok",
                 latency_ms=0,
                 budget=self.budget,
-                payload={"capabilities": result},
+                payload=observations,
             )
         )
 
-        return result
+        return observations
 
     # ------------------------------------------------------------------
     # OPAL: Plan
@@ -240,7 +261,7 @@ class RemoteIncidentAgent:
         plan: Optional[List[Dict[str, Any]]] = None,
         action_result: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
-        """Fetch recent deltas and plan from server memory, then write this loop's outcome."""
+        """Fetch recent deltas, persist the current plan, then write this loop's outcome."""
         self.telemetry.log(
             TelemetryEvent(
                 correlation_id=ctx.correlation_id,
@@ -255,6 +276,9 @@ class RemoteIncidentAgent:
         )
 
         deltas = await self.client.get_resource("memory://deltas/recent")
+
+        plan_to_persist = list(plan or [])
+        await self.client.call_tool("write_plan", {"plan": plan_to_persist})
         current_plan = await self.client.get_resource("memory://plans/current")
 
         # Write the outcome of this loop back to memory
@@ -270,7 +294,12 @@ class RemoteIncidentAgent:
         except Exception:
             pass  # non-fatal: telemetry continues even if write fails
 
-        learn_result = {"deltas": deltas, "plan": current_plan, "delta_written": delta}
+        learn_result = {
+            "deltas": deltas,
+            "plan": current_plan,
+            "delta_written": delta,
+            "plan_written": plan_to_persist,
+        }
 
         self.telemetry.log(
             TelemetryEvent(

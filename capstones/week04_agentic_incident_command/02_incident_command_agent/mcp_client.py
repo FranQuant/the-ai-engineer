@@ -13,6 +13,16 @@ from typing import Any, Dict, Optional
 
 import websockets
 
+from config import (
+    DEFAULT_BUDGET_DOLLARS,
+    DEFAULT_BUDGET_MS,
+    DEFAULT_BUDGET_TOKENS,
+    MCP_CLIENT_NAME,
+    MCP_CLIENT_VERSION,
+    MCP_PROTOCOL_VERSION,
+    MCP_SERVER_URI,
+    MCP_SUBPROTOCOL,
+)
 from telemetry import Budget, RunContext, TelemetryEvent, TelemetryLogger
 
 
@@ -53,7 +63,7 @@ def _unwrap_mcp_result(result: Dict[str, Any]) -> Any:
 class MCPClient:
     def __init__(
         self,
-        uri: str = "ws://127.0.0.1:8765/mcp",
+        uri: str = MCP_SERVER_URI,
         telemetry: Optional[TelemetryLogger] = None,
         budget: Optional[Budget] = None,
     ) -> None:
@@ -61,7 +71,11 @@ class MCPClient:
         self._ws: Optional[websockets.WebSocketClientProtocol] = None
         self._next_id = 1
         self.telemetry = telemetry
-        self.budget = budget or Budget(tokens=2000, ms=150, dollars=0.0)
+        self.budget = budget or Budget(
+            tokens=DEFAULT_BUDGET_TOKENS,
+            ms=DEFAULT_BUDGET_MS,
+            dollars=DEFAULT_BUDGET_DOLLARS,
+        )
         self.ctx: Optional[RunContext] = None
 
         # Fix 5C
@@ -74,7 +88,7 @@ class MCPClient:
 
     async def connect(self) -> None:
         """Open WebSocket connection using MCP subprotocol."""
-        self._ws = await websockets.connect(self.uri, subprotocols=["mcp"])
+        self._ws = await websockets.connect(self.uri, subprotocols=[MCP_SUBPROTOCOL])
         self._next_id = 1
 
     async def close(self) -> None:
@@ -152,8 +166,8 @@ class MCPClient:
 
     async def initialize(self) -> Any:
         params = {
-            "protocolVersion": "2024-11-05",
-            "clientInfo": {"name": "week04-agentic-incident-client", "version": "1.0.0"},
+            "protocolVersion": MCP_PROTOCOL_VERSION,
+            "clientInfo": {"name": MCP_CLIENT_NAME, "version": MCP_CLIENT_VERSION},
         }
 
         result = await self.rpc("initialize", params)

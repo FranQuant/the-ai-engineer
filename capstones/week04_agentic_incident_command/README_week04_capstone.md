@@ -2,16 +2,20 @@
 <tr>
 <td style="vertical-align: top;">
 
-<h1>Week 04 Capstone — Agentic Incident Command</h1>
+<h1>Week 04 Capstone - Agentic Incident Command</h1>
 
 <p>
-Incident Command Agent using the PAL loop (Observe → Plan → Act → Learn) across:
+Primary submission artifact: the remote MCP server/client path. The local deterministic agent is supporting evidence for debugging, replay, and reviewer validation.
+</p>
 
-- **Local deterministic agent** — pure in‑process tools, deterministic outputs.
-- **Remote MCP agent** — uses JSON‑RPC over WebSockets to communicate with the MCP server.
-- **Shared telemetry system** — every OPAL phase logs structured JSONL to `artifacts/`.
+<ul>
+<li>Remote MCP agent - the primary graded path, using JSON-RPC over WebSockets to communicate with the MCP server.</li>
+<li>Local deterministic agent - supporting evidence for debugging, replay, and reviewer validation.</li>
+<li>Shared telemetry system - every OPAL phase logs structured JSONL to the Week 4 <code>artifacts/</code> directory.</li>
+</ul>
 
-All state lives inside <code>memory://resources</code>, making the entire workflow deterministic, replayable, and ideal for debugging or demos.
+<p>
+Determinism comes from fixed fixtures in <code>mcp_server.py</code> and <code>incident_memory.py</code>, typed <code>memory://</code> resources, and replayable telemetry in <code>capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl</code>, not RNG seeds.
 </p>
 
 </td>
@@ -36,7 +40,7 @@ flowchart LR
     L --> T[Telemetry JSONL]
 ```
 
-### B. MCP Client–Server Flow
+### B. MCP Client-Server Flow
 ```mermaid
 sequenceDiagram
     participant Client as mcp_client.py
@@ -69,30 +73,40 @@ flowchart TD
 
 | Module | Purpose | Telemetry |
 |-------|----------|-----------|
-| `incident_agent.py` | Local OPAL executor, deterministic tools, guardrails | Full OPAL phases |
-| `remote_agent.py` | Same OPAL loop with MCP for Act/Learn | OPAL + rpc_send/recv |
-| `mcp_server.py` | WebSocket JSON-RPC server exposing tools/resources | Request/response logs |
-| `mcp_client.py` | Telemetry-enabled RPC client | rpc_send + rpc_recv |
-| `incident_planner.py` | Fixed 5‑step OPAL plan | plan_start/end |
-| `incident_memory.py` | Backing store for all memory:// URIs | learn_start/end |
+| `config.py` | Shared MCP URI, telemetry sink, budget, and guardrail defaults | Used by server/client/agents |
+| `remote_agent.py` | Primary MCP OPAL loop: observes MCP resources, acts via RPC, learns back to memory | OPAL + rpc_send/recv |
+| `incident_agent.py` | Supporting in-process deterministic mirror | Full OPAL phases |
+| `mcp_server.py` | WebSocket JSON-RPC server exposing tools/resources and fixtures | Request/response logs |
+| `mcp_client.py` | Telemetry-enabled RPC client using the shared MCP URI | rpc_send + rpc_recv |
+| `incident_planner.py` | Observation-driven planner that selects a 2- or 3-step OPAL sequence | plan_start/end |
+| `incident_memory.py` | Backing store for all memory:// URIs and seed fixtures | learn_start/end |
 | `incident_schemas.py` | Schemas for tools/resources | Used by server |
 | `telemetry.py` | Event model & JSONL logger | All phases |
 | `replay.py` | Replay OPAL trace from telemetry | Reads JSONL |
-| `cli.py` | Local runner + replay mode | Mirrors telemetry |
-| `demo_remote.py` | Remote MCP agent runner | Shared sink |
+| `cli.py` | Local deterministic runner + replay mode | Mirrors telemetry |
+| `demo_remote.py` | Remote MCP agent runner for the graded path | Shared sink |
 
 ---
 
 ## 3. Key Features
 
-### Deterministic Planning
-The planner always returns the same ordered 5-step OPAL plan:
+### Primary Graded Path
+The remote MCP flow is the submission artifact:
 
-1. `retrieve_runbook`
-2. `run_diagnostic`
-3. `create_incident`
-4. `add_evidence`
-5. `summarize_incident`
+- `mcp_server.py` exposes tools and resources over WebSockets.
+- `mcp_client.py` connects to `ws://127.0.0.1:8765/mcp` through the shared config surface in `config.py`.
+- `remote_agent.py` observes MCP resources, plans locally, acts through RPC, and writes Learn-phase deltas back to memory.
+
+The local `incident_agent.py` path mirrors the same OPAL loop in-process and is best treated as deterministic evidence and a debugging aid.
+
+### Adaptive Planning
+`incident_planner.py` is observation-driven. It does not return a fixed 5-step plan.
+
+- CPU, memory, spike, high -> `retrieve_runbook` -> `run_diagnostic` -> `summarize_incident`
+- deploy, crash, pod, fail -> `retrieve_runbook` -> `summarize_incident`
+- otherwise -> fallback to the CPU/memory path
+
+The planner also derives step arguments from `alerts_latest`, so the payloads stay inspectable in telemetry.
 
 ### Deterministic Tools
 Local and remote tools return predictable synthetic envelopes with:
@@ -110,63 +124,63 @@ Each OPAL phase emits:
 - `learn_start/end`
 - `rpc_send/recv` (remote only)
 
-Saved to:
+Telemetry is written to `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` through the shared `TELEMETRY_SINK` in `config.py`.
 
-```
-artifacts/telemetry.jsonl
-```
+Replay is available via:
 
-Replay available via:
-
-```
-python cli.py --replay artifacts/telemetry.jsonl
-```
-
-#### Telemetry Artifact Location & Correlation
-
-Telemetry is intentionally written to a **shared repository-level `artifacts/` directory**, rather than a per-run or per-capstone subfolder.
-
-This design supports:
-- Multiple agents (local and remote) writing to the same sink
-- Deterministic replay across executions
-- Cross-capstone inspection when running several demos in sequence
-
-Individual runs are disambiguated using:
-- `correlation_id` — unique per execution
-- `loop_id` — identifies OPAL loops within a run
-
-When reviewing telemetry, filter events by `correlation_id` to isolate a single execution trace.
-
----
-
-## 4. Usage
-
-### A. Local Deterministic OPAL Run
 ```bash
-python 02_incident_command_agent/cli.py
+python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
 ```
 
-### B. Remote MCP Run
+`correlation_id` isolates one execution trace, while `loop_id` identifies the OPAL loop within that trace.
+
+## 4. Submission Readiness / Auditability
+
+The deliverable is grader-friendly because the trace is explicit and replayable:
+
+- Replayability: `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` contains the full event stream, including `phase`, `method`, `status`, `latency_ms`, `budget`, and `payload` for each step.
+- Guarded transitions: Observe -> Plan -> Act -> Learn is recorded with explicit `*_start` and `*_end` events, and `plan_guardrail` / `act_guardrail` events mark truncation or stop conditions.
+- Review surfaces: reviewers can inspect budgets, tool request and response payloads, the selected plan, executed step results, and memory surfaces such as `memory://alerts/latest`, `memory://runbooks/index`, `memory://plans/current`, `memory://deltas/recent`, `memory://incidents/{id}`, and `memory://evidence/{id}`.
+- Remote Learn now persists `memory://plans/current` before `learn_end`, so the same run's trace shows the plan write in-band.
+- Single-run isolation: filter by `correlation_id` to isolate one execution trace without mixing in other runs.
+- Deterministic evidence: the evidence set comes from fixtures, memory resources, and telemetry logs, not RNG seeds.
+
+## 5. Verification
+
+From the repo root:
+
+### Server Startup
 Terminal A:
 ```bash
-python 02_incident_command_agent/mcp_server.py
+python capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py
 ```
 
+### Remote MCP Run
 Terminal B:
 ```bash
-python 02_incident_command_agent/demo_remote.py
+python capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py
 ```
 
-### C. Telemetry Replay
+### Replay
 ```bash
-python 02_incident_command_agent/cli.py --replay artifacts/telemetry.jsonl
+python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
+```
+
+### Handler Tests
+```bash
+pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_tools.py
+```
+
+### Supporting Deterministic Run
+```bash
+python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py
 ```
 
 ---
 
-## 5. Guardrails
+## 6. Guardrails
 
-- `Budget(tokens=2000, ms=150, dollars=0.0)`
+- `Budget(tokens=2000, ms=150, dollars=0.0)` is centralized in `config.py`
 - `max_steps = 5`
 - `max_retries = 2`
 - Cumulative latency tracked per OPAL loop
@@ -174,31 +188,29 @@ python 02_incident_command_agent/cli.py --replay artifacts/telemetry.jsonl
 
 ---
 
----
+## 7. Known Limitations
 
-## 6. Known Limitations
-
-- **`SERVER_BUDGET` is a module-level singleton** — it is decremented with every
+- **`SERVER_BUDGET` is a module-level singleton** - it is decremented with every
   `callTool` invocation (`SERVER_BUDGET.tokens -= 10`). Restart the MCP server
   between test runs or across demo sessions to reset the budget counter to its
   initial value; otherwise consecutive runs will exhaust the budget and may trigger
   guardrail errors mid-loop.
 
-- **`telemetry.jsonl` grows unboundedly** — every run appends to
-  `artifacts/telemetry.jsonl` with no rotation or size cap. Truncate or archive
+- **`telemetry.jsonl` grows unboundedly** - every run appends to
+  `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` with no rotation or size cap. Truncate or archive
   the file manually if it becomes large:
   ```bash
   # Truncate (keep file, clear contents)
-  > artifacts/telemetry.jsonl
+  > capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
   # Or archive and start fresh
-  mv artifacts/telemetry.jsonl artifacts/telemetry_$(date +%Y%m%d).jsonl
+  mv capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl capstones/week04_agentic_incident_command/artifacts/telemetry_$(date +%Y%m%d).jsonl
   ```
 
-- **Planner is deterministic but observation-driven** — the FSM selects a
+- **Planner is observation-driven but not learned across loops** - the FSM selects a
   tool path based on keywords in the observation (CPU/memory vs deploy/crash),
   but it does not learn across loops. Each OPAL loop replans from scratch.
 
-- **`RemoteIncidentAgent.learn()` writes a delta per loop** — the
+- **`RemoteIncidentAgent.learn()` writes a delta per loop** - the
   `append_memory_delta` tool call in the remote Learn phase persists loop
   outcomes back to the server. If the server is unreachable, the write is
   silently skipped (non-fatal).

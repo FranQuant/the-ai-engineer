@@ -7,12 +7,24 @@ from __future__ import annotations
 import asyncio
 import json
 import time
-from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 import websockets
 
 from incident_memory import IncidentMemoryStore
+from config import (
+    DEFAULT_BUDGET_DOLLARS,
+    DEFAULT_BUDGET_MS,
+    DEFAULT_BUDGET_TOKENS,
+    MCP_PROTOCOL_VERSION,
+    MCP_SERVER_HOST,
+    MCP_SERVER_NAME,
+    MCP_SERVER_PORT,
+    MCP_SERVER_URI,
+    MCP_SERVER_VERSION,
+    MCP_SUBPROTOCOL,
+    TELEMETRY_SINK,
+)
 from incident_schemas import get_tool_schemas, resource_descriptions, tool_descriptions
 from telemetry import (
     Budget,
@@ -20,7 +32,7 @@ from telemetry import (
     TelemetryEvent,
     TelemetryLogger,
     new_correlation_id,
-    timed,               
+    timed,
 )
 
 # ---------------------------------------------------------------------------
@@ -200,7 +212,11 @@ TOOL_DISPATCH = {
 }
 
 
-SERVER_BUDGET = Budget(tokens=2000, ms=150, dollars=0.0)
+SERVER_BUDGET = Budget(
+    tokens=DEFAULT_BUDGET_TOKENS,
+    ms=DEFAULT_BUDGET_MS,
+    dollars=DEFAULT_BUDGET_DOLLARS,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -210,10 +226,10 @@ SERVER_BUDGET = Budget(tokens=2000, ms=150, dollars=0.0)
 def capabilities_payload(memory: IncidentMemoryStore):
     del memory
     return {
-        "protocolVersion": "2024-11-05",
+        "protocolVersion": MCP_PROTOCOL_VERSION,
         "serverInfo": {
-            "name": "week04-agentic-incident-command",
-            "version": "1.0.0",
+            "name": MCP_SERVER_NAME,
+            "version": MCP_SERVER_VERSION,
         },
         "capabilities": {"sampling": {"available": False}},
         "tools": tool_descriptions(),
@@ -412,13 +428,18 @@ async def main():
         }
     )
 
-    logger = TelemetryLogger(Path("artifacts/telemetry.jsonl"))
+    logger = TelemetryLogger(TELEMETRY_SINK)
 
     async def handler(ws):
         await handle_session(ws, logger, memory)
 
-    server = await websockets.serve(handler, "127.0.0.1", 8765, subprotocols=["mcp"])
-    print("MCP server listening on ws://127.0.0.1:8765/mcp")
+    server = await websockets.serve(
+        handler,
+        MCP_SERVER_HOST,
+        MCP_SERVER_PORT,
+        subprotocols=[MCP_SUBPROTOCOL],
+    )
+    print(f"MCP server listening on {MCP_SERVER_URI}")
     await server.wait_closed()
 
 

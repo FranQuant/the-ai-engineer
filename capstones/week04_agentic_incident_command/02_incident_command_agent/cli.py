@@ -9,6 +9,7 @@ import asyncio
 from pathlib import Path
 from typing import Optional
 
+from config import TELEMETRY_SINK
 from incident_agent import IncidentAgent
 from incident_memory import IncidentMemoryStore
 from incident_planner import IncidentPlanner
@@ -19,7 +20,7 @@ from telemetry import RunContext, TelemetryLogger, new_correlation_id
 async def run_agent() -> None:
     memory = IncidentMemoryStore()
     planner = IncidentPlanner(config={})
-    telemetry = TelemetryLogger(Path("artifacts/telemetry.jsonl"))
+    telemetry = TelemetryLogger(TELEMETRY_SINK)
     agent = IncidentAgent(memory, planner, telemetry)
 
     ctx = RunContext(correlation_id=new_correlation_id(), loop_id="loop-1")

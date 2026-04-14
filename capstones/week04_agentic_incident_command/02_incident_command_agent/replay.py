@@ -2,7 +2,7 @@
 Telemetry replay runner for the Incident Command Agent.
 
 Usage:
-    python replay.py artifacts/telemetry.jsonl
+    python replay.py <path-to-telemetry-jsonl>
 """
 
 from __future__ import annotations
