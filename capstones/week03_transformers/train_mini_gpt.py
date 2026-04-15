@@ -205,6 +205,7 @@ run_record = {
     "d_model":          64,
     "num_heads":        4,
     "num_layers":       4,
+    "d_ff":             256,
     "block_size":       block_size,
     "batch_size":       32,
     "learning_rate":    3e-4,

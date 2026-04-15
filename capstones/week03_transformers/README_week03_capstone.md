@@ -73,3 +73,10 @@ week03_transformers/
 - The notebook uses the same tiny corpus as `train_mini_gpt.py`.
 - The notebook is self-contained and does not depend on hidden local state.
 - If you want to regenerate the checkpoint outside the notebook, `train_mini_gpt.py` mirrors the same core architecture and artifact names.
+
+## Checkpoint Commit Note
+
+`mini_gpt.pt` is tracked in Git via `git add -f` despite the `*.pt` pattern in
+`.gitignore`. This is intentional: the checkpoint is the graded training artifact
+for Week 03 and must be present in the repo for reviewers to load and inspect the
+model without re-running training. All other `.pt` files remain untracked.
