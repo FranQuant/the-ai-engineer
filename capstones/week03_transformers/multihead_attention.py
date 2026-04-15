@@ -112,6 +112,9 @@ class MultiHeadAttention(nn.Module):
             # Apply mask: masked positions get -inf
             scores = scores.masked_fill(~keep, float('-inf'))
 
+        # Note: if an entire row is masked (all -inf), the max-subtraction
+        # produces nan. This cannot occur with a valid causal mask but would
+        # surface with a zero-row custom mask. Add a nan-guard if needed.
         # ---- Softmax ----
         scores = scores - scores.max(dim=-1, keepdim=True).values  # stability
         attn = torch.softmax(scores, dim=-1)                        # [B,H,T,T]

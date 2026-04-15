@@ -14,27 +14,49 @@ handout's optimizer is desired, replace AdamW with Adam.
 """
 
 from __future__ import annotations
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import numpy as np
+import json
+import math as _math
 import random
+import time
+from pathlib import Path
+
+import numpy as np
+import torch
+import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 
 from mini_transformer import MiniTransformerLM  # uses sinusoidal PE + default causal mask
 
 # -------------------------------------------------------------------------
-# 0. Reproducibility
+# 0. Configuration
 # -------------------------------------------------------------------------
-torch.manual_seed(0)
-random.seed(0)
-np.random.seed(0)
+CONFIG = {
+    "seed":         0,
+    "block_size":   4,
+    "batch_size":   32,
+    "d_model":      64,
+    "num_heads":    4,
+    "d_ff":         256,
+    "num_layers":   4,
+    "lr":           3e-4,
+    "max_iters":    1000,
+    "log_every":    100,
+    "sample_tokens": 80,
+    "warmup_steps": 100,
+}
+
+# -------------------------------------------------------------------------
+# 1. Reproducibility
+# -------------------------------------------------------------------------
+torch.manual_seed(CONFIG["seed"])
+random.seed(CONFIG["seed"])
+np.random.seed(CONFIG["seed"])
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Training on device: {device}")
 
 # -------------------------------------------------------------------------
-# 1. Tiny dataset (character-level)
+# 2. Tiny dataset (character-level)
 # -------------------------------------------------------------------------
 tiny_text = """
 hello tiny transformer
@@ -57,64 +79,62 @@ def decode(tokens: list[int]) -> str:
 data = torch.tensor(encode(tiny_text), dtype=torch.long)
 
 # -------------------------------------------------------------------------
-# 2. Train/val split
+# 3. Train/val split
 # -------------------------------------------------------------------------
 n = int(0.9 * len(data))
 train_data = data[:n]
 val_data = data[n:]
 
 # -------------------------------------------------------------------------
-# 3. Dataset / Dataloader
+# 4. Dataset / Dataloader
 # -------------------------------------------------------------------------
 # For this tiny toy corpus, we keep the context window very small.
 # With ~50 characters total and a 90/10 train/val split, a block_size of 4
 # ensures both train and val datasets have positive length.
-block_size = 4
-
 class CharDataset(Dataset):
     """Simple character-level LM dataset."""
     def __init__(self, split: torch.Tensor):
         self.data = split
 
     def __len__(self):
-        return len(self.data) - block_size
+        return len(self.data) - CONFIG["block_size"]
 
     def __getitem__(self, idx):
-        x = self.data[idx : idx + block_size]         # input
-        y = self.data[idx + 1 : idx + block_size + 1] # next-token targets
+        x = self.data[idx : idx + CONFIG["block_size"]]             # input
+        y = self.data[idx + 1 : idx + CONFIG["block_size"] + 1]     # next-token targets
         return x, y
 
-train_loader = DataLoader(CharDataset(train_data), batch_size=32, shuffle=True)
-val_loader   = DataLoader(CharDataset(val_data),   batch_size=32, shuffle=False)
+train_loader = DataLoader(CharDataset(train_data), batch_size=CONFIG["batch_size"], shuffle=True)
+val_loader   = DataLoader(CharDataset(val_data),   batch_size=CONFIG["batch_size"], shuffle=False)
 
 # -------------------------------------------------------------------------
-# 4. Model instantiation
+# 5. Model instantiation
 # -------------------------------------------------------------------------
 model = MiniTransformerLM(
     vocab_size=vocab_size,
-    max_seq_len=block_size,
-    d_model=64,
-    num_heads=4,
-    d_ff=256,
-    num_layers=4,
+    max_seq_len=CONFIG["block_size"],
+    d_model=CONFIG["d_model"],
+    num_heads=CONFIG["num_heads"],
+    d_ff=CONFIG["d_ff"],
+    num_layers=CONFIG["num_layers"],
     dropout=0.0,              # Week-03 spec: dropout hooks present but off by default
 ).to(device)
 
 # -------------------------------------------------------------------------
-# 5. Optimizer (AdamW — acceptable deviation from handout's Adam)
+# 6. Optimizer (AdamW — acceptable deviation from handout's Adam)
 # -------------------------------------------------------------------------
-optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+optimizer = torch.optim.AdamW(model.parameters(), lr=CONFIG["lr"])
 
 # -------------------------------------------------------------------------
-# 6. Optional learning-rate scheduler (warmup + cosine decay)
+# 7. Learning-rate scheduler (warmup + cosine decay)
 # -------------------------------------------------------------------------
-def get_lr(step: int, warmup_steps: int = 100) -> float:
-    if step < warmup_steps:
-        return (step + 1) / warmup_steps * 3e-4
-    return 3e-4 * 0.5 * (1 + torch.cos(torch.tensor(step / 50000.0 * 3.14159))).item()
+def get_lr(step: int) -> float:
+    if step < CONFIG["warmup_steps"]:
+        return (step + 1) / CONFIG["warmup_steps"] * CONFIG["lr"]
+    return CONFIG["lr"] * 0.5 * (1 + _math.cos(step / 50000.0 * _math.pi))
 
 # -------------------------------------------------------------------------
-# 7. Loss estimation helper
+# 8. Loss estimation helper
 # -------------------------------------------------------------------------
 @torch.no_grad()
 def estimate_loss():
@@ -139,17 +159,14 @@ def estimate_loss():
     return out
 
 # -------------------------------------------------------------------------
-# 8. Training loop
+# 9. Training loop
 # -------------------------------------------------------------------------
-max_iters = 1000
-print_every = 100
-
 print("Starting training...\n")
 
 # Persistent iterator so we actually walk the whole DataLoader over time
 train_iter = iter(train_loader)
 
-for step in range(max_iters):
+for step in range(CONFIG["max_iters"]):
     # dynamic LR schedule
     lr = get_lr(step)
     for pg in optimizer.param_groups:
@@ -175,7 +192,7 @@ for step in range(max_iters):
     optimizer.step()
 
     # periodic evaluation
-    if step % print_every == 0:
+    if step % CONFIG["log_every"] == 0:
         losses = estimate_loss()
         print(
             f"step {step:4d} | train loss {losses['train']:.4f} | "
@@ -183,33 +200,29 @@ for step in range(max_iters):
         )
 
 # -------------------------------------------------------------------------
-# 9. Save checkpoint
+# 10. Save checkpoint
 # -------------------------------------------------------------------------
 torch.save(model.state_dict(), "mini_gpt.pt")
 print("\nModel checkpoint saved → mini_gpt.pt\n")
 
 # -------------------------------------------------------------------------
-# 9b. Run record
+# 11. Run record
 # -------------------------------------------------------------------------
-import json
-import time
-from pathlib import Path
-
 final_losses = estimate_loss()
 train_loss = final_losses["train"]
 val_loss   = final_losses["val"]
 
 run_record = {
     "timestamp":        time.strftime("%Y-%m-%dT%H:%M:%S"),
-    "seed":             0,
-    "d_model":          64,
-    "num_heads":        4,
-    "num_layers":       4,
-    "d_ff":             256,
-    "block_size":       block_size,
-    "batch_size":       32,
-    "learning_rate":    3e-4,
-    "steps":            max_iters,
+    "seed":             CONFIG["seed"],
+    "d_model":          CONFIG["d_model"],
+    "num_heads":        CONFIG["num_heads"],
+    "num_layers":       CONFIG["num_layers"],
+    "d_ff":             CONFIG["d_ff"],
+    "block_size":       CONFIG["block_size"],
+    "batch_size":       CONFIG["batch_size"],
+    "learning_rate":    CONFIG["lr"],
+    "steps":            CONFIG["max_iters"],
     "final_train_loss": round(float(train_loss), 4),
     "final_val_loss":   round(float(val_loss), 4),
     "checkpoint":       "mini_gpt.pt",
@@ -219,7 +232,7 @@ record_path.write_text(json.dumps(run_record, indent=2))
 print(f"Run record saved to {record_path}")
 
 # -------------------------------------------------------------------------
-# 10. Sampling helper (GPT-style generation)
+# 12. Sampling helper (GPT-style generation)
 # -------------------------------------------------------------------------
 @torch.no_grad()
 def generate(model, start_tokens, max_new_tokens=100, temperature=1.0, top_k=None):
@@ -229,7 +242,7 @@ def generate(model, start_tokens, max_new_tokens=100, temperature=1.0, top_k=Non
 
     for _ in range(max_new_tokens):
         # crop to the last block_size tokens
-        idx_cond = context[:, -block_size:]
+        idx_cond = context[:, -CONFIG["block_size"]:]
 
         # model enforces causal mask internally
         logits = model(idx_cond)
@@ -247,10 +260,10 @@ def generate(model, start_tokens, max_new_tokens=100, temperature=1.0, top_k=Non
     return context.squeeze().tolist()
 
 # -------------------------------------------------------------------------
-# 11. Generate sample text
+# 13. Generate sample text
 # -------------------------------------------------------------------------
 start = encode("h")
-sample = generate(model, start, max_new_tokens=200, temperature=1.0, top_k=5)
+sample = generate(model, start, max_new_tokens=CONFIG["sample_tokens"], temperature=1.0, top_k=5)
 
 print("=== Sample Model Output ===\n")
 print(decode(sample))
