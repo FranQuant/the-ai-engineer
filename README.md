@@ -31,19 +31,19 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
 ```mermaid
 graph TD
     %% Week 1
-    W1["Week 1: Optimization Foundations<br>(Python, NumPy, Linear Algebra)"] --> C1("Capstone 1: Gradient Descent Notebook")
+    W1["Week 1:<br/>Optimization Foundations<br/>(Python, NumPy,<br/>Linear Algebra)"] --> C1("Capstone 1:<br/>Gradient Descent<br/>Notebook")
     C1 --> W2
 
     %% Week 2
-    W2["Week 2: Deep Learning & PyTorch<br>(Tensors, Autograd, nn.Module)"] --> C2("Capstone 2: Manual Backprop vs Autograd Parity")
+    W2["Week 2:<br/>Deep Learning & PyTorch<br/>(Tensors, Autograd,<br/>nn.Module)"] --> C2("Capstone 2:<br/>Manual Backprop vs<br/>Autograd Parity")
     C2 --> W3
 
     %% Week 3
-    W3["Week 3: LLMs & Attention<br>(Self-Attention, Decoder Blocks)"] --> C3("Capstone 3: Tiny Transformer LM from Scratch")
+    W3["Week 3:<br/>LLMs & Attention<br/>(Self-Attention,<br/>Decoder Blocks)"] --> C3("Capstone 3:<br/>Tiny Transformer LM<br/>from Scratch")
     C3 --> W4
 
     %% Week 4
-    W4["Week 4: AI Agents & Orchestration<br>(Observe-Plan-Act-Learn Loop)"] --> C4("Capstone 4: Incident Command Agent (MCP)")
+    W4["Week 4:<br/>AI Agents & Orchestration<br/>(Observe-Plan-Act-Learn<br/>Loop)"] --> C4("Capstone 4:<br/>Incident Command<br/>Agent (MCP)")
     
     style C1 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
     style C2 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
