@@ -44,10 +44,7 @@ the_ai_engineer_capstones/
 ├── README.md
 ├── requirements.txt
 ├── assets/
-│   ├── mcp_server_startup.png
-│   ├── remote_opal_loop.png
-│   ├── tae_logo.png
-│   └── telemetry_jsonl_confirmation.png
+│   └── tae_logo.png
 └── capstones/
     ├── week01_gd_optimization/
     │   ├── gd_capstone.ipynb

@@ -214,16 +214,3 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
   `append_memory_delta` tool call in the remote Learn phase persists loop
   outcomes back to the server. If the server is unreachable, the write is
   silently skipped (non-fatal).
-
----
-
-#### A. MCP Server Startup
-<img src="../../assets/mcp_server_startup.png" width="700">
-
-#### B. Remote OPAL Loop Execution
-<img src="../../assets/remote_opal_loop.png" width="700">
-
-#### C. Telemetry JSONL Confirmation
-<img src="../../assets/telemetry_jsonl_confirmation.png" width="700">
-
----
