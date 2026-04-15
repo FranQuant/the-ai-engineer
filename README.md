@@ -2,9 +2,7 @@
 <tr>
 <td style="vertical-align: top;">
 
-<h1>The AI Engineer — Capstone Projects</h1>
-
-This repository consolidates four weekly capstones from <i>The AI Engineer</i> program.
+<h1>The AI Engineer</h1>
 
 Weeks 1–3 are notebook-centered ML/DL deliverables.  
 Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path</b> is the remote MCP server/client workflow, with a local deterministic mirror retained as supporting evidence for replay, debugging, and reviewer validation.
@@ -23,40 +21,6 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
   <img src="https://img.shields.io/badge/Week_4-Remote_MCP_Workflow-purple">
   <img src="https://img.shields.io/badge/License-Educational%20Use-green">
 </p>
-
----
-
-## Week 4 MCP Workflow
-
-```mermaid
-graph TD
-    %% Week 1
-    W1["Week 1:<br/>Optimization Foundations<br/>(Python, NumPy,<br/>Linear Algebra)"] --> C1("Capstone 1:<br/>Gradient Descent<br/>Notebook")
-    C1 --> W2
-
-    %% Week 2
-    W2["Week 2:<br/>Deep Learning & PyTorch<br/>(Tensors, Autograd,<br/>nn.Module)"] --> C2("Capstone 2:<br/>Manual Backprop vs<br/>Autograd Parity")
-    C2 --> W3
-
-    %% Week 3
-    W3["Week 3:<br/>LLMs & Attention<br/>(Self-Attention,<br/>Decoder Blocks)"] --> C3("Capstone 3:<br/>Tiny Transformer LM<br/>from Scratch")
-    C3 --> W4
-
-    %% Week 4
-    W4["Week 4:<br/>AI Agents & Orchestration<br/>(Observe-Plan-Act-Learn<br/>Loop)"] --> C4("Capstone 4:<br/>Incident Command<br/>Agent (MCP)")
-    
-    style C1 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
-    style C2 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
-    style C3 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
-    style C4 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
-```
-
-Weeks 1–3 build the foundations for Week 4:
-
-* Week 1: optimization and gradient-based learning
-* Week 2: backpropagation and PyTorch training loops
-* Week 3: attention, transformers, and tiny LLM building blocks
-* Week 4: MCP-based agentic orchestration with telemetry, replay, and memory
 
 ---
 
