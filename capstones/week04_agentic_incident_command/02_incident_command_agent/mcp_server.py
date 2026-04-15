@@ -212,13 +212,6 @@ TOOL_DISPATCH = {
 }
 
 
-SERVER_BUDGET = Budget(
-    tokens=DEFAULT_BUDGET_TOKENS,
-    ms=DEFAULT_BUDGET_MS,
-    dollars=DEFAULT_BUDGET_DOLLARS,
-)
-
-
 # ---------------------------------------------------------------------------
 # Resource helpers
 # ---------------------------------------------------------------------------
@@ -291,6 +284,11 @@ def _validation_error_response(req_id, details):
 
 
 async def handle_session(ws, logger, memory):
+    session_budget = Budget(
+        tokens=DEFAULT_BUDGET_TOKENS,
+        ms=DEFAULT_BUDGET_MS,
+        dollars=DEFAULT_BUDGET_DOLLARS,
+    )
     ctx = RunContext(correlation_id=new_correlation_id(), loop_id="loop-1")
     tool_schemas = get_tool_schemas()
 
@@ -375,8 +373,7 @@ async def handle_session(ws, logger, memory):
 
                 latency_ms, result = timed(call_tool, memory, name, arguments)
 
-                SERVER_BUDGET.tokens -= 10
-                SERVER_BUDGET.ms -= latency_ms
+                session_budget.consume(tokens_used=10, latency_ms=latency_ms)
 
                 response = {"jsonrpc": "2.0", "id": req_id, "result": result}
 
@@ -406,7 +403,7 @@ async def handle_session(ws, logger, memory):
                 method=method,
                 status=status,
                 latency_ms=full_latency_ms,
-                budget=SERVER_BUDGET,
+                budget=session_budget,
                 payload={"request": request, "response": response},
             )
         )

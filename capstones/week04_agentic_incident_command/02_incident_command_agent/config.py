@@ -7,6 +7,7 @@ entrypoints all read the same defaults without introducing extra layers.
 
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -28,3 +29,13 @@ DEFAULT_BUDGET_MS = 150
 DEFAULT_BUDGET_DOLLARS = 0.0
 DEFAULT_MAX_STEPS = 5
 DEFAULT_MAX_RETRIES = 2
+
+
+def fresh_telemetry_sink() -> Path:
+    """Return TELEMETRY_SINK after archiving any existing file with a datestamp."""
+    if TELEMETRY_SINK.exists():
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        TELEMETRY_SINK.rename(
+            TELEMETRY_SINK.with_name(f"telemetry_{stamp}.jsonl")
+        )
+    return TELEMETRY_SINK

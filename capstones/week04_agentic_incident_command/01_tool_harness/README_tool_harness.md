@@ -18,6 +18,13 @@ building the full Incident Command Agent in 02_incident_command_agent/.
 </tr>
 </table>
 
+## Budget Note
+
+The warm-up harness uses a relaxed `40 000 ms` ceiling because it is a
+non-production trace demonstration. The capstone agent in
+`02_incident_command_agent/` uses `150 ms` per the coaching guide's latency
+discipline requirement. The mismatch is intentional and documented here so it
+is not mistaken for a bug.
 
 ## Components
 - **mcp_tool_harness_server.py** — exposes 3 tools and 3 memory:// resources  

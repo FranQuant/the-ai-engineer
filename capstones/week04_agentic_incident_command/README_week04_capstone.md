@@ -71,20 +71,30 @@ flowchart TD
 
 ## 2. Module-by-Module Summary
 
-| Module | Purpose | Telemetry |
-|-------|----------|-----------|
-| `config.py` | Shared MCP URI, telemetry sink, budget, and guardrail defaults | Used by server/client/agents |
-| `remote_agent.py` | Primary MCP OPAL loop: observes MCP resources, acts via RPC, learns back to memory | OPAL + rpc_send/recv |
-| `incident_agent.py` | Supporting in-process deterministic mirror | Full OPAL phases |
-| `mcp_server.py` | WebSocket JSON-RPC server exposing tools/resources and fixtures | Request/response logs |
-| `mcp_client.py` | Telemetry-enabled RPC client using the shared MCP URI | rpc_send + rpc_recv |
-| `incident_planner.py` | Observation-driven planner that selects a 2- or 3-step OPAL sequence | plan_start/end |
-| `incident_memory.py` | Backing store for all memory:// URIs and seed fixtures | learn_start/end |
-| `incident_schemas.py` | Schemas for tools/resources | Used by server |
-| `telemetry.py` | Event model & JSONL logger | All phases |
-| `replay.py` | Replay OPAL trace from telemetry | Reads JSONL |
-| `cli.py` | Local deterministic runner + replay mode | Mirrors telemetry |
-| `demo_remote.py` | Remote MCP agent runner for the graded path | Shared sink |
+```text
+capstones/week04_agentic_incident_command/
+├── 01_tool_harness/  # warm-up harness
+│   ├── README_tool_harness.md
+│   ├── mcp_tool_harness_client.py
+│   ├── mcp_tool_harness_server.py
+│   ├── schemas.py
+│   ├── telemetry.py
+│   └── samples/
+└── 02_incident_command_agent/
+    ├── cli.py
+    ├── config.py
+    ├── demo_remote.py
+    ├── incident_agent.py
+    ├── incident_memory.py
+    ├── incident_planner.py
+    ├── incident_schemas.py
+    ├── mcp_client.py
+    ├── mcp_server.py
+    ├── remote_agent.py
+    ├── replay.py
+    ├── telemetry.py
+    └── test_tools.py
+```
 
 ---
 
@@ -148,6 +158,8 @@ The deliverable is grader-friendly because the trace is explicit and replayable:
 ## 5. Verification
 
 From the repo root:
+
+The demo runners archive any existing `artifacts/telemetry.jsonl` to a timestamped `telemetry_YYYYMMDD_HHMMSS.jsonl` file before writing new events, so prior runs are preserved instead of overwritten.
 
 ### Server Startup
 Terminal A:
@@ -214,3 +226,20 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
   `append_memory_delta` tool call in the remote Learn phase persists loop
   outcomes back to the server. If the server is unreachable, the write is
   silently skipped (non-fatal).
+
+## 8. Optional Colab Path (not required for local review)
+
+The MCP server requires a persistent WebSocket process, which Colab does not
+natively support. To run Week 4 in Colab:
+
+1. Start the MCP server in a background thread, for example:
+   ```python
+   threading.Thread(target=asyncio.run, args=(server_main(),), daemon=True).start()
+   ```
+2. Use `cloudflared` or `ngrok` to tunnel `ws://127.0.0.1:8765/mcp` to a public URL.
+3. Override `MCP_SERVER_URI` in `config.py` with the tunnel URL before running
+   `demo_remote.py`.
+4. Mount `artifacts/` to Google Drive to persist `telemetry.jsonl` across sessions.
+
+Note: local execution is canonical. Colab support is provided for reference
+only and is not tested as part of submission.

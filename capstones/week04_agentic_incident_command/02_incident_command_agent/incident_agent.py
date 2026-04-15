@@ -207,6 +207,19 @@ class IncidentAgent:
                 latency_ms = int(metrics.get("latency_ms", 0) or 0)
                 cumulative_latency += latency_ms
 
+                self.telemetry.log(
+                    TelemetryEvent(
+                        correlation_id=ctx.correlation_id,
+                        loop_id=ctx.loop_id,
+                        phase="act_step",
+                        method=name,
+                        status=result.get("status", "ok") if isinstance(result, dict) else "ok",
+                        latency_ms=latency_ms,
+                        budget=self.budget,
+                        payload={"step": step, "result": result},
+                    )
+                )
+
                 if result.get("status") != "ok":
                     failure_count += 1
 
@@ -374,10 +387,28 @@ class IncidentAgent:
         }
 
     def _local_summarize_incident(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        summary = "Summary generated from memory."
+        alert_id = str(args.get("alert_id", "ALRT-0001"))
+        citations = list(args.get("evidence", [])) or [
+            "memory://alerts/latest",
+            "memory://runbooks/index",
+        ]
+        recommended_actions = [
+            "Review the runbook guidance for the affected service.",
+            "Keep monitoring CPU and restart only if the spike persists.",
+        ]
+        summary = (
+            f"Incident {alert_id}: CPU spike on staging-api was triaged using "
+            f"retrieval and diagnostics. Citations: {', '.join(citations)}. "
+            f"Recommended actions: {', '.join(recommended_actions)}."
+        )
         return {
             "status": "ok",
-            "data": {"summary": summary, "args": args},
+            "data": {
+                "summary": summary,
+                "citations": citations,
+                "recommended_actions": recommended_actions,
+                "args": args,
+            },
             "metrics": {"latency_ms": 1},
         }
 
