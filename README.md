@@ -20,7 +20,7 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-yellow?logo=python&logoColor=white">
   <img src="https://img.shields.io/badge/Weeks_1--3-Colab_Ready-blue?logo=googlecolab&logoColor=white">
-  <img src="https://img.shields.io/badge/Week_4-Local_MCP_Workflow-purple">
+  <img src="https://img.shields.io/badge/Week_4-Remote_MCP_Workflow-purple">
   <img src="https://img.shields.io/badge/License-Educational%20Use-green">
 </p>
 
@@ -29,11 +29,26 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
 ## Week 4 MCP Workflow
 
 ```mermaid
-flowchart TD
-    A["Observe<br/>read MCP resources"] --> B["Plan<br/>adaptive local planner"]
-    B --> C["Act<br/>call MCP tools over JSON-RPC"]
-    C --> D["Learn<br/>write plan + memory delta"]
-    D --> E["Telemetry<br/>replay and audit trail"]
+graph TD
+    %% Week 1
+    W1["Week 1: Optimization Foundations<br>(Python, NumPy, Linear Algebra)"] --> C1("Capstone 1: Gradient Descent Notebook")
+    C1 --> W2
+
+    %% Week 2
+    W2["Week 2: Deep Learning & PyTorch<br>(Tensors, Autograd, nn.Module)"] --> C2("Capstone 2: Manual Backprop vs Autograd Parity")
+    C2 --> W3
+
+    %% Week 3
+    W3["Week 3: LLMs & Attention<br>(Self-Attention, Decoder Blocks)"] --> C3("Capstone 3: Tiny Transformer LM from Scratch")
+    C3 --> W4
+
+    %% Week 4
+    W4["Week 4: AI Agents & Orchestration<br>(Observe-Plan-Act-Learn Loop)"] --> C4("Capstone 4: Incident Command Agent (MCP)")
+    
+    style C1 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
+    style C2 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
+    style C3 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
+    style C4 fill:#eef4ff,stroke:#1f77b4,stroke-width:2px
 ```
 
 Weeks 1–3 build the foundations for Week 4:
@@ -51,8 +66,8 @@ Weeks 1–3 build the foundations for Week 4:
 | ----- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1** | **Gradient Descent Optimization** | [`gd_capstone.ipynb`](capstones/week01_gd_optimization/gd_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                                     | Colab-ready notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)                   |
 | **2** | **Backpropagation**               | [`week02_master_capstone.ipynb`](capstones/week02_backprop/week02_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                      | Colab-ready master notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb)        |
-| **3** | **Tiny Transformer**              | [`mini_gpt_diagnostics.ipynb`](capstones/week03_transformers/mini_gpt_diagnostics.ipynb)                                                                                                                                                                                                                                                                                                                                      | Colab-ready diagnostics notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/mini_gpt_diagnostics.ipynb) |
-| **4** | **Agentic Incident Command**      | [`README_week04_capstone.md`](capstones/week04_agentic_incident_command/README_week04_capstone.md) · [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Local MCP workflow. The remote MCP path is the primary graded artifact; the local deterministic runner is supporting evidence.                                                                      |
+| **3** | **Tiny Transformer**              | [`week03_master_capstone.ipynb`](capstones/week03_transformers/week03_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                | Colab-ready master notebook — [`mini_gpt_diagnostics.ipynb`](capstones/week03_transformers/mini_gpt_diagnostics.ipynb) is supporting only.                                                         |
+| **4** | **Agentic Incident Command**      | [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`mcp_client.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_client.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Remote MCP server/client workflow. The local deterministic runner is supporting evidence.                                                                      |
 
 ---
 
@@ -77,7 +92,10 @@ the_ai_engineer_capstones/
     │   ├── week02_master_capstone.ipynb
     │   └── README_week02_capstone.md
     ├── week03_transformers/
+    │   ├── week03_master_capstone.ipynb
     │   ├── mini_gpt_diagnostics.ipynb
+    │   ├── mini_gpt.pt
+    │   ├── run_record.json
     │   ├── train_mini_gpt.py
     │   └── README_week03_capstone.md
     └── week04_agentic_incident_command/
