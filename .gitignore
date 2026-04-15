@@ -63,6 +63,9 @@ Thumbs.db
 # ----------------------------
 # Checkpoints, weights, runs, and outputs
 *.pt
+# Week 2 — checkpoint (may land at repo root if run from root)
+week02_best_two_layer_xor.pt
+two_layer_xor.pt
 *.pth
 *.ckpt
 *.ckpt.*
