@@ -8,7 +8,7 @@
 
 <p>
 This folder packages the Week 2 backprop submission following the TAE program structure.<br>
-<code>week02_master_capstone.ipynb</code> is the primary submission artifact; the README keeps the development path compact and reviewer-facing.
+
 </p>
 
 </td>
