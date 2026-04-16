@@ -23,8 +23,6 @@ Primary submission artifact:
 </tr>
 </table>
 
----
-
 ## 1. Architecture 
 
 ### A. OPAL Loop
