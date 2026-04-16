@@ -50,3 +50,9 @@ https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blo
 )
 
 Dependencies: **NumPy** and **Matplotlib** only
+
+---
+
+## Verification
+
+- Finite-difference gradient check (both smooth branches, max error < 1e-6, asserted at runtime)
