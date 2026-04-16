@@ -9,7 +9,6 @@ from incident_planner import IncidentPlanner
 from telemetry import RunContext, TelemetryLogger
 
 
-@pytest.mark.asyncio
 def test_full_incident_loop_emits_tool_calls_and_learn(tmp_path):
     telemetry_path = tmp_path / "telemetry.jsonl"
 

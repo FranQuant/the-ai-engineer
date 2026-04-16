@@ -144,7 +144,7 @@ Replay is available via:
 python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
 ```
 
-`correlation_id` isolates one execution trace, while `loop_id` identifies the OPAL loop within that trace.
+`correlation_id` on the client side spans all rpc_send/recv and OPAL phase events for one run; `loop_id` identifies the OPAL loop within that trace.
 
 ## 4. Submission Readiness / Auditability
 
@@ -154,7 +154,7 @@ The deliverable is grader-friendly because the trace is explicit and replayable:
 - Guarded transitions: Observe -> Plan -> Act -> Learn is recorded with explicit `*_start` and `*_end` events, and `plan_guardrail` / `act_guardrail` events mark truncation or stop conditions.
 - Review surfaces: reviewers can inspect budgets, tool request and response payloads, the selected plan, executed step results, and memory surfaces such as `memory://alerts/latest`, `memory://runbooks/index`, `memory://plans/current`, `memory://deltas/recent`, `memory://incidents/{id}`, and `memory://evidence/{id}`.
 - Remote Learn now persists `memory://plans/current` before `learn_end`, so the same run's trace shows the plan write in-band.
-- Single-run isolation: filter by `correlation_id` to isolate one execution trace without mixing in other runs.
+- Single-run isolation: the client and server each generate their own `correlation_id` per session. To isolate one execution, filter by `loop_id: "loop-1"` or by the client-side `correlation_id` (all `rpc_send`/`rpc_recv`/`observe_*`/`plan_*`/`act_*`/`learn_*` events carry it). Server-side `observe`/`act` events carry the server's own session ID; they can be joined to the client trace via the `id` field in the request payload.
 - Deterministic evidence: the evidence set comes from fixtures, memory resources, and telemetry logs, not RNG seeds.
 
 ## 5. Verification
@@ -200,9 +200,22 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 - Cumulative latency tracked per OPAL loop
 - Guardrail events: `plan_guardrail`, `act_guardrail`
 
+### Integration Test
+```bash
+pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_integration.py
+```
+
 ---
 
-## 7. Known Limitations
+## 7. Human Handoff Output
+
+After each remote OPAL loop, `demo_remote.py` writes `artifacts/sample_summary.md` — a markdown document containing the correlation ID, alert ID, the executed plan steps with arguments, the triage summary text, and the recommended runbook actions.
+
+This file is the escalation artifact an on-call engineer receives. If the agent cannot resolve the incident (e.g. an `act_guardrail` fires on latency or retries), the last written `sample_summary.md` plus `memory://deltas/recent` provide full context for human takeover. The summary is structured so it can be pasted directly into an incident ticket.
+
+---
+
+## 8. Known Limitations
 
 - **`telemetry.jsonl` grows unboundedly** - every run appends to
   `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` with no rotation or size cap. Truncate or archive

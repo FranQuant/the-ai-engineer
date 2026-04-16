@@ -67,9 +67,10 @@ class IncidentPlanner:
         alert_id = alert.get("id", "ALRT-0001") if isinstance(alert, dict) else "ALRT-0001"
         service = alert.get("service", "staging-api") if isinstance(alert, dict) else "staging-api"
         symptom = alert.get("symptom", "incident") if isinstance(alert, dict) else "incident"
+        _keyword = symptom.split()[0].lower() if symptom else "incident"
 
         _step_args: Dict[str, Dict[str, Any]] = {
-            "retrieve_runbook": {"query": symptom, "top_k": 2},
+            "retrieve_runbook": {"query": _keyword, "top_k": 2},
             "run_diagnostic": {"command": "kubectl top pod", "host": service},
             "create_incident": {
                 "id": "INC-001",

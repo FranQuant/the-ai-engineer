@@ -7,10 +7,11 @@ Responsibilities:
 - Support append/update operations for deltas, evidence, incidents, and plans.
 - Surface resource registry for MCP server initialization.
 
-TODO:
-- Implement persistence/backing store strategy.
-- Enforce versioning and conflict detection on writes.
-- Add cursor handling for incremental resource reads.
+Scope note: this implementation is intentionally in-memory and single-process,
+which is sufficient for the deterministic capstone fixtures. A production
+deployment would replace the dict-based store with a persistent backend,
+add cursor-based pagination to get_resource, and enforce optimistic-concurrency
+versioning on writes.
 """
 
 from __future__ import annotations
