@@ -14,10 +14,6 @@ Primary submission artifact:
 <li>Shared telemetry system - every OPAL phase logs structured JSONL to the Week 4 <code>artifacts/</code> directory.</li>
 </ul>
 
-<p>
-Determinism comes from fixed fixtures in <code>mcp_server.py</code> and <code>incident_memory.py</code>, typed <code>memory://</code> resources, and replayable telemetry in <code>capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl</code>, not RNG seeds.
-</p>
-
 </td>
 
 <td align="right" width="200">
