@@ -1,0 +1,155 @@
+# config.yaml — Documentation mirror of config.py + incident_schemas.py
+#
+# THIS FILE IS READ-ONLY DOCUMENTATION.
+# The authoritative source of truth is config.py (and incident_schemas.py for
+# tool registry metadata). Do not load this file at runtime; edit config.py instead.
+#
+# Purpose: human-readable reference for operators, CI pipelines, and future ports
+# of this agent to environments that prefer YAML-driven configuration.
+
+# ---------------------------------------------------------------------------
+# Environment toggles
+# ---------------------------------------------------------------------------
+env:
+  colab_tunnel: false          # Set true when running behind an ngrok/Colab tunnel
+
+# ---------------------------------------------------------------------------
+# MCP server connection
+# ---------------------------------------------------------------------------
+mcp:
+  protocol_version: "2024-11-05"
+  subprotocol: mcp
+  server:
+    host: "127.0.0.1"
+    port: 8765
+    uri: "ws://127.0.0.1:8765/mcp"
+    name: week04-agentic-incident-command
+    version: "1.0.0"
+  client:
+    name: week04-agentic-incident-client
+    version: "1.0.0"
+
+# ---------------------------------------------------------------------------
+# OPAL loop budget + guardrails
+# ---------------------------------------------------------------------------
+budget:
+  tokens: 2000          # Maximum token budget consumed across one OPAL loop
+  ms: 150               # Maximum cumulative wall-clock latency in milliseconds
+  dollars: 0.0          # Maximum spend (deterministic agent — always 0.0)
+  max_steps: 5          # Hard step-count ceiling per OPAL loop
+  max_retries: 2        # Maximum retries per individual tool call before abort
+
+# ---------------------------------------------------------------------------
+# Artifact paths (relative to 02_incident_command_agent/)
+# ---------------------------------------------------------------------------
+artifacts:
+  telemetry_sink: "../artifacts/telemetry.jsonl"   # JSONL append-only telemetry
+
+# ---------------------------------------------------------------------------
+# Tool registry
+#
+# Each entry mirrors _TOOL_META + get_tool_schemas() in incident_schemas.py.
+# Fields:
+#   description      — human-readable purpose
+#   latency_hint_ms  — expected round-trip latency (stub implementation)
+#   cost_hint_tokens — tokens debited from budget per invocation
+#   required         — required input parameter names (from JSON schema)
+#   optional         — optional input parameter names (from JSON schema)
+# ---------------------------------------------------------------------------
+tools:
+  - name: retrieve_runbook
+    description: >
+      Search runbooks by keyword and return the top-k most relevant snippets.
+      Used during Observe or Act to surface applicable remediation procedures.
+    latency_hint_ms: 5
+    cost_hint_tokens: 10
+    required: [query]
+    optional: [top_k]       # integer 1–5, default 3
+
+  - name: run_diagnostic
+    description: >
+      Execute a sandboxed diagnostic command on the specified host and return
+      stdout/stderr. Supports kubectl, log-fetch, and metric queries.
+    latency_hint_ms: 7
+    cost_hint_tokens: 15
+    required: [command, host]
+    optional: []
+
+  - name: summarize_incident
+    description: >
+      Produce a 3–4 sentence triage summary for the given alert with recommended
+      actions. Incorporates the evidence strings passed in the request.
+    latency_hint_ms: 6
+    cost_hint_tokens: 20
+    required: [alert_id]
+    optional: [evidence]    # array of strings, default []
+
+  - name: create_incident
+    description: >
+      Create or update an incident record in memory://incidents/{id}.
+      Returns the stored incident payload.
+    latency_hint_ms: 4
+    cost_hint_tokens: 5
+    required: [id, title]
+    optional: [severity]    # low | medium | high | critical
+
+  - name: add_evidence
+    description: >
+      Append an evidence item to the memory store for later correlation
+      and summarization.
+    latency_hint_ms: 3
+    cost_hint_tokens: 5
+    required: [content]
+    optional: [id, source]  # source: diagnostic | runbook | manual
+
+  - name: append_delta
+    description: >
+      Append a structured action delta to memory://deltas/recent for
+      OPAL Learn-phase replay.
+    latency_hint_ms: 2
+    cost_hint_tokens: 3
+    required: [action]
+    optional: [details]     # arbitrary key-value object
+
+  - name: write_plan
+    description: >
+      Persist the current OPAL plan to memory://plans/current for
+      inspection and replay.
+    latency_hint_ms: 1
+    cost_hint_tokens: 3
+    required: [plan]        # ordered array of OPAL step descriptors
+    optional: []
+
+  - name: append_memory_delta
+    description: >
+      Append a structured memory delta capturing loop outcome to
+      memory://deltas/recent.
+    latency_hint_ms: 2
+    cost_hint_tokens: 3
+    required: [delta]       # arbitrary object
+    optional: []
+
+# ---------------------------------------------------------------------------
+# Resource registry (memory:// URIs)
+# ---------------------------------------------------------------------------
+resources:
+  - uri: "memory://incidents/{id}"
+    description: Incident record (id, title, severity)
+
+  - uri: "memory://evidence/{id}"
+    description: Evidence item (id, content, source)
+
+  - uri: "memory://deltas/recent"
+    description: Ordered list of OPAL action deltas (items array)
+
+  - uri: "memory://plans/current"
+    description: Current persisted OPAL plan (plan array)
+
+  - uri: "memory://alerts/latest"
+    description: Most recent alert payload (id, service, symptom, severity)
+
+  - uri: "memory://runbooks/index"
+    description: Array of runbook objects available for retrieval
+
+  - uri: "memory://memory/deltas"
+    description: Alias delta store used by server resource fixtures (items array)
