@@ -66,5 +66,4 @@ PyTorch's built-in `MSELoss(reduction="mean")` computes the batch mean of
 $(f - y)^2$. This changes gradient scaling, but not the underlying fixed points
 of the optimization problem.
 
-The progression is fully embedded in the master notebook. This snapshot ships only the
-master notebook; no separate progression notebooks are included.
+
