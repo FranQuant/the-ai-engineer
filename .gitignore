@@ -124,3 +124,7 @@ __pycache__/
 *.pyo
 __pycache__/
 *.pyc
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
