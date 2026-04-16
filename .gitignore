@@ -122,3 +122,5 @@ capstones/week01_gd_optimization/fig_*.png
 __pycache__/
 *.pyc
 *.pyo
+__pycache__/
+*.pyc
