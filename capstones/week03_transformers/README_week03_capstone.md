@@ -6,12 +6,6 @@
 
 <p>
 <strong>Primary submission notebook:</strong> <code>week03_master_capstone.ipynb</code><br>
-<strong>Supporting notebook:</strong> <code>mini_gpt_diagnostics.ipynb</code>
-</p>
-
-<p>
-This folder contains a from-scratch decoder-only Transformer capstone with a clear submission boundary:
-the master notebook is the graded artifact, and the diagnostics notebook is secondary analysis only.
 </p>
 
 </td>
@@ -24,14 +18,10 @@ the master notebook is the graded artifact, and the diagnostics notebook is seco
 [![Open Primary In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
 https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/week03_master_capstone.ipynb
 )
-[![Open Diagnostics In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
-https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/mini_gpt_diagnostics.ipynb
-)
 
 ## Submission Boundary
 
 - `week03_master_capstone.ipynb` is the primary Week 03 submission notebook.
-- `mini_gpt_diagnostics.ipynb` is supporting analysis only.
 - The modular Python files remain part of the implementation and are reused by the notebook.
 - `mini_gpt.pt` and `run_record.json` are the saved training artifacts.
 
@@ -51,7 +41,6 @@ https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blo
 ```text
 week03_transformers/
 ├── week03_master_capstone.ipynb       # Primary submission notebook
-├── mini_gpt_diagnostics.ipynb         # Supporting analysis notebook
 ├── mini_gpt.pt                        # Saved model checkpoint
 ├── mini_transformer.py
 ├── multihead_attention.py
@@ -66,7 +55,6 @@ week03_transformers/
 
 1. Open `week03_master_capstone.ipynb` in Colab or run it locally from the repository checkout.
 2. Execute the notebook top-to-bottom. It will train the model, save `mini_gpt.pt`, and write `run_record.json`.
-3. Use `mini_gpt_diagnostics.ipynb` only for secondary inspection and analysis.
 
 ## Training Results
 Final train loss: 0.2636 | Final val loss: 6.2596

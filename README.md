@@ -54,7 +54,6 @@ the_ai_engineer_capstones/
     │   └── README_week02_capstone.md
     ├── week03_transformers/
     │   ├── week03_master_capstone.ipynb
-    │   ├── mini_gpt_diagnostics.ipynb
     │   ├── mini_gpt.pt
     │   ├── run_record.json
     │   ├── train_mini_gpt.py
