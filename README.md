@@ -39,59 +39,19 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
 
 ```text
 the_ai_engineer_capstones/
-├── .gitignore
-├── README.md
-├── pytest.ini
-├── requirements.txt
 ├── assets/
-│   └── tae_logo.png
-└── capstones/
-    ├── week01_gd_optimization/
-    │   ├── gd_capstone.ipynb
-    │   └── README_week01_capstone.md
-    ├── week02_backprop/
-    │   ├── week02_master_capstone.ipynb
-    │   └── README_week02_capstone.md
-    ├── week03_transformers/
-    │   ├── README_week03_capstone.md
-    │   ├── mini_gpt.pt
-    │   ├── mini_transformer.py
-    │   ├── multihead_attention.py
-    │   ├── run_record.json
-    │   ├── training_curve.png
-    │   ├── scaled_dot_product_attention.py
-    │   ├── train_mini_gpt.py
-    │   ├── transformer_block.py
-    │   └── week03_master_capstone.ipynb
-    └── week04_agentic_incident_command/
-        ├── README_week04_capstone.md
-        ├── artifacts/
-        │   ├── sample_summary.md
-        │   └── telemetry.jsonl
-        ├── 01_tool_harness/
-        │   ├── README_tool_harness.md
-        │   ├── mcp_tool_harness_client.py
-        │   ├── mcp_tool_harness_server.py
-        │   ├── schemas.py
-        │   └── telemetry.py
-        └── 02_incident_command_agent/
-            ├── cli.py
-            ├── config.py
-            ├── conftest.py
-            ├── demo_remote.py
-            ├── incident_agent.py
-            ├── incident_memory.py
-            ├── incident_planner.py
-            ├── incident_schemas.py
-            ├── mcp_client.py
-            ├── mcp_server.py
-            ├── remote_agent.py
-            ├── replay.py
-            ├── telemetry.py
-            ├── test_integration.py
-            ├── test_tools.py
-            ├── config.yaml
-            └── requirements.txt
+├── capstones/
+│   ├── week01_gd_optimization/   # GD optimization notebook + figures
+│   ├── week02_backprop/          # Backprop notebook + saved weights
+│   ├── week03_transformers/      # Tiny transformer training + checkpoint
+│   └── week04_agentic_incident_command/
+│       ├── 01_tool_harness/      # Warm-up: minimal MCP server/client
+│       ├── 02_incident_command_agent/  # Primary capstone (graded)
+│       ├── artifacts/            # Telemetry JSONL + sample summary
+│       └── README_week04_capstone.md
+├── pytest.ini
+├── README.md
+└── requirements.txt
 ```
 
 ---
