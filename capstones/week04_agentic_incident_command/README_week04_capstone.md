@@ -83,6 +83,7 @@ capstones/week04_agentic_incident_command/
 └── 02_incident_command_agent/
     ├── cli.py
     ├── config.py
+    ├── conftest.py
     ├── demo_remote.py
     ├── incident_agent.py
     ├── incident_memory.py
@@ -93,6 +94,7 @@ capstones/week04_agentic_incident_command/
     ├── remote_agent.py
     ├── replay.py
     ├── telemetry.py
+    ├── test_integration.py
     └── test_tools.py
 ```
 
@@ -227,19 +229,3 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
   outcomes back to the server. If the server is unreachable, the write is
   silently skipped (non-fatal).
 
-## 8. Optional Colab Path (not required for local review)
-
-The MCP server requires a persistent WebSocket process, which Colab does not
-natively support. To run Week 4 in Colab:
-
-1. Start the MCP server in a background thread, for example:
-   ```python
-   threading.Thread(target=asyncio.run, args=(server_main(),), daemon=True).start()
-   ```
-2. Use `cloudflared` or `ngrok` to tunnel `ws://127.0.0.1:8765/mcp` to a public URL.
-3. Override `MCP_SERVER_URI` in `config.py` with the tunnel URL before running
-   `demo_remote.py`.
-4. Mount `artifacts/` to Google Drive to persist `telemetry.jsonl` across sessions.
-
-Note: local execution is canonical. Colab support is provided for reference
-only and is not tested as part of submission.

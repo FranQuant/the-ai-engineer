@@ -60,8 +60,7 @@ week03_transformers/
 Final train loss: 0.2636 | Final val loss: 6.2596
 The large train/val gap is expected: the validation split is only 5 tokens on a
 ~50-character corpus. The model memorises the training sequence; the gap is a
-corpus-size artifact, not a model defect. See mini_gpt_diagnostics.ipynb for
-attention map and embedding visualisations.
+corpus-size artifact, not a model defect.
 
 ## Notes
 

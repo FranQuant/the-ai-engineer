@@ -30,7 +30,7 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
 | ----- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1** | **Gradient Descent Optimization** | [`gd_capstone.ipynb`](capstones/week01_gd_optimization/gd_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                                     | Colab-ready notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)                   |
 | **2** | **Backpropagation**               | [`week02_master_capstone.ipynb`](capstones/week02_backprop/week02_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                      | Colab-ready master notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb)        |
-| **3** | **Tiny Transformer**              | [`week03_master_capstone.ipynb`](capstones/week03_transformers/week03_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                | Colab-ready master notebook — [`mini_gpt_diagnostics.ipynb`](capstones/week03_transformers/mini_gpt_diagnostics.ipynb) is supporting only.                                                         |
+| **3** | **Tiny Transformer**              | [`week03_master_capstone.ipynb`](capstones/week03_transformers/week03_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                | Colab-ready master notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/week03_master_capstone.ipynb) |
 | **4** | **Agentic Incident Command**      | [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`mcp_client.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_client.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Remote MCP server/client workflow. The local deterministic runner is supporting evidence.                                                                      |
 
 ---
@@ -119,20 +119,5 @@ Notes:
 
 All content in this repository is provided **for educational and illustrative purposes only**.
 No guarantees are made regarding correctness, performance, reliability, or suitability for any production environment.
-
----
-
-## Agentic Systems Notice
-
-Agentic systems — especially those capable of taking actions, orchestrating tools, or modifying state — can introduce significant safety risks.
-
-Before using any such system outside a controlled environment:
-
-* validate outputs manually
-* run code inside a sandboxed environment
-* apply strict guardrails and permissions
-* do not connect an agent to real infrastructure without explicit safety checks
-
-Use responsibly.
 
 © 2025 Francisco Salazar

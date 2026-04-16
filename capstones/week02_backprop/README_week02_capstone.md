@@ -69,24 +69,3 @@ of the optimization problem.
 The progression is embedded in the master notebook; no separate Week 2
 progression notebooks are shipped in this snapshot.
 
-## Summary
-
-The master notebook captures the progression from manual gradients through
-Torch forward parity, Torch autograd, and `nn.Module` training.
-
-`week02_master_capstone.ipynb` is the compact primary submission artifact.
-
----
-
-## Dependencies (Minimal)
-
-Minimal packages used in Week 02:
-
-```text
-numpy
-matplotlib
-torch
-scikit-learn   # train_test_split used for the validation split
-```
-
-For the full environment used during development, see the root-level `requirements.txt`.
