@@ -204,12 +204,6 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 
 ## 7. Known Limitations
 
-- **`SERVER_BUDGET` is a module-level singleton** - it is decremented with every
-  `callTool` invocation (`SERVER_BUDGET.tokens -= 10`). Restart the MCP server
-  between test runs or across demo sessions to reset the budget counter to its
-  initial value; otherwise consecutive runs will exhaust the budget and may trigger
-  guardrail errors mid-loop.
-
 - **`telemetry.jsonl` grows unboundedly** - every run appends to
   `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` with no rotation or size cap. Truncate or archive
   the file manually if it becomes large:
