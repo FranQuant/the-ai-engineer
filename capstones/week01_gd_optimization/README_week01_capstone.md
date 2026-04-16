@@ -35,7 +35,7 @@ reproducibility in Colab or locally.
 
 ## How to Run
 
-The notebook runs top-to-bottom without external data and uses only NumPy + Matplotlib.
+The notebook runs top-to-bottom without external data and uses only **NumPy** + **Matplotlib**.
 
 It runs on:
 
@@ -48,8 +48,6 @@ It runs on:
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
 https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb
 )
-
-Dependencies: **NumPy** and **Matplotlib** only
 
 ---
 
