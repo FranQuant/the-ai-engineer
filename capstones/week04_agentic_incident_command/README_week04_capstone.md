@@ -143,7 +143,6 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 
 ## 4. Submission Readiness / Auditability
 
-The deliverable is grader-friendly because the trace is explicit and replayable:
 
 - Replayability: `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` contains the full event stream, including `phase`, `method`, `status`, `latency_ms`, `budget`, and `payload` for each step.
 - Guarded transitions: Observe -> Plan -> Act -> Learn is recorded with explicit `*_start` and `*_end` events, and `plan_guardrail` / `act_guardrail` events mark truncation or stop conditions.
