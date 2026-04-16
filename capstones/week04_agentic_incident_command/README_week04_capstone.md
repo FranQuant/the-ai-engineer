@@ -95,7 +95,8 @@ capstones/week04_agentic_incident_command/
     ├── replay.py
     ├── telemetry.py
     ├── test_integration.py
-    └── test_tools.py
+    ├── test_tools.py
+    └── requirements.txt
 ```
 
 ---
@@ -190,6 +191,11 @@ pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_
 python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py
 ```
 
+### Integration Test
+```bash
+pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_integration.py
+```
+
 ---
 
 ## 6. Guardrails
@@ -199,11 +205,6 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 - `max_retries = 2`
 - Cumulative latency tracked per OPAL loop
 - Guardrail events: `plan_guardrail`, `act_guardrail`
-
-### Integration Test
-```bash
-pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_integration.py
-```
 
 ---
 
