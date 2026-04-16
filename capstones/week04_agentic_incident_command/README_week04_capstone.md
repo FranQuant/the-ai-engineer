@@ -5,7 +5,7 @@
 <h1>Week 04 Capstone - Agentic Incident Command</h1>
 
 <p>
-Primary submission artifact: the remote MCP server/client path. The local deterministic agent is supporting evidence for debugging, replay, and reviewer validation.
+Primary submission artifact: 
 </p>
 
 <ul>
