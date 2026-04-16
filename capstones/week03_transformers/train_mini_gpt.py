@@ -129,9 +129,12 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=CONFIG["lr"])
 # 7. Learning-rate scheduler (warmup + cosine decay)
 # -------------------------------------------------------------------------
 def get_lr(step: int) -> float:
-    if step < CONFIG["warmup_steps"]:
-        return (step + 1) / CONFIG["warmup_steps"] * CONFIG["lr"]
-    return CONFIG["lr"] * 0.5 * (1 + _math.cos(step / 50000.0 * _math.pi))
+    warmup = CONFIG["warmup_steps"]
+    max_lr = CONFIG["lr"]
+    if step < warmup:
+        return (step + 1) / warmup * max_lr
+    progress = (step - warmup) / max(1, CONFIG["max_iters"] - warmup)
+    return 0.5 * max_lr * (1.0 + _math.cos(_math.pi * progress))
 
 # -------------------------------------------------------------------------
 # 8. Loss estimation helper
