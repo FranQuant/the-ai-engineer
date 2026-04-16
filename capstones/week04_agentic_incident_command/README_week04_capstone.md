@@ -141,7 +141,7 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 
 `correlation_id` on the client side spans all rpc_send/recv and OPAL phase events for one run; `loop_id` identifies the OPAL loop within that trace.
 
-## 4. Submission Readiness / Auditability
+## 4. Auditability
 
 
 - Replayability: `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` contains the full event stream, including `phase`, `method`, `status`, `latency_ms`, `budget`, and `payload` for each step.
