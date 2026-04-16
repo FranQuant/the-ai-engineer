@@ -37,11 +37,11 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
 
 ## Repository Structure
 
-Reviewer-facing entrypoints:
-
 ```text
 the_ai_engineer_capstones/
+├── .gitignore
 ├── README.md
+├── pytest.ini
 ├── requirements.txt
 ├── assets/
 │   └── tae_logo.png
@@ -53,23 +53,41 @@ the_ai_engineer_capstones/
     │   ├── week02_master_capstone.ipynb
     │   └── README_week02_capstone.md
     ├── week03_transformers/
-    │   ├── week03_master_capstone.ipynb
+    │   ├── README_week03_capstone.md
     │   ├── mini_gpt.pt
+    │   ├── mini_transformer.py
+    │   ├── multihead_attention.py
     │   ├── run_record.json
+    │   ├── scaled_dot_product_attention.py
     │   ├── train_mini_gpt.py
-    │   └── README_week03_capstone.md
+    │   ├── transformer_block.py
+    │   └── week03_master_capstone.ipynb
     └── week04_agentic_incident_command/
         ├── README_week04_capstone.md
         ├── artifacts/
+        │   ├── sample_summary.md
         │   └── telemetry.jsonl
+        ├── 01_tool_harness/
+        │   ├── README_tool_harness.md
+        │   ├── mcp_tool_harness_client.py
+        │   ├── mcp_tool_harness_server.py
+        │   ├── schemas.py
+        │   └── telemetry.py
         └── 02_incident_command_agent/
-            ├── config.py
-            ├── demo_remote.py
-            ├── remote_agent.py
-            ├── mcp_server.py
-            ├── mcp_client.py
             ├── cli.py
+            ├── config.py
+            ├── conftest.py
+            ├── demo_remote.py
+            ├── incident_agent.py
+            ├── incident_memory.py
+            ├── incident_planner.py
+            ├── incident_schemas.py
+            ├── mcp_client.py
+            ├── mcp_server.py
+            ├── remote_agent.py
             ├── replay.py
+            ├── telemetry.py
+            ├── test_integration.py
             └── test_tools.py
 ```
 
