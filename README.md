@@ -58,6 +58,7 @@ the_ai_engineer_capstones/
     │   ├── mini_transformer.py
     │   ├── multihead_attention.py
     │   ├── run_record.json
+    │   ├── training_curve.png
     │   ├── scaled_dot_product_attention.py
     │   ├── train_mini_gpt.py
     │   ├── transformer_block.py
@@ -88,7 +89,9 @@ the_ai_engineer_capstones/
             ├── replay.py
             ├── telemetry.py
             ├── test_integration.py
-            └── test_tools.py
+            ├── test_tools.py
+            ├── config.yaml
+            └── requirements.txt
 ```
 
 ---

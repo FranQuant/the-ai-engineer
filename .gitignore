@@ -12,7 +12,6 @@ __pycache__/
 # pytest & mypy caches
 .pytest_cache/
 .mypy_cache/
-ruff_cache/
 pytest_cache/
 
 # ----------------------------
@@ -119,12 +118,3 @@ capstones/week02_backprop/week02_best_two_layer_xor.pt
 
 # Week 1 — generated figures (notebook output)
 capstones/week01_gd_optimization/fig_*.png
-__pycache__/
-*.pyc
-*.pyo
-__pycache__/
-*.pyc
-__pycache__/
-*.py[cod]
-*.pyo
-.pytest_cache/
