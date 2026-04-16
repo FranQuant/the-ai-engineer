@@ -72,7 +72,4 @@ corpus-size artifact, not a model defect.
 
 ## Checkpoint Commit Note
 
-`mini_gpt.pt` is tracked in Git via `git add -f` despite the `*.pt` pattern in
-`.gitignore`. This is intentional: the checkpoint is the graded training artifact
-for Week 03 and must be present in the repo for reviewers to load and inspect the
-model without re-running training. All other `.pt` files remain untracked.
+`mini_gpt.pt` is intentionally committed via `git add -f` despite the `*.pt` rule in `.gitignore.` It is the graded Week 03 checkpoint artifact and is included so reviewers can load and inspect the trained model without re-running training. Other `.pt` files remain untracked.
