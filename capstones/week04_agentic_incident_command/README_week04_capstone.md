@@ -211,22 +211,16 @@ This file is the escalation artifact an on-call engineer receives. If the agent 
 
 ## 8. Known Limitations
 
-- **`telemetry.jsonl` grows unboundedly** - every run appends to
-  `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` with no rotation or size cap. Truncate or archive
-  the file manually if it becomes large:
-  ```bash
-  # Truncate (keep file, clear contents)
-  > capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
-  # Or archive and start fresh
-  mv capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl capstones/week04_agentic_incident_command/artifacts/telemetry_$(date +%Y%m%d).jsonl
-  ```
+- **Telemetry logging does not rotate internally.**
+  `TelemetryLogger` appends to `artifacts/telemetry.jsonl` with no built-in size cap or rotation.
+  The demo runner mitigates this by archiving any existing file to a timestamped
+  `telemetry_YYYYMMDD_HHMMSS.jsonl` before starting a new run.
 
-- **Planner is observation-driven but not learned across loops** - the FSM selects a
-  tool path based on keywords in the observation (CPU/memory vs deploy/crash),
-  but it does not learn across loops. Each OPAL loop replans from scratch.
+- **Planner is rule-based, not learned across loops**.
+  The planner selects tool paths from observation keywords (e.g., CPU/memory vs deploy/crash).
+  Each OPAL loop replans from scratch; no cross-loop learning or policy update occurs.
 
-- **`RemoteIncidentAgent.learn()` writes a delta per loop** - the
-  `append_memory_delta` tool call in the remote Learn phase persists loop
-  outcomes back to the server. If the server is unreachable, the write is
-  silently skipped (non-fatal).
+- **Remote Learn writes are best-effort.**
+  The remote Learn phase attempts to persist a memory delta via `append_memory_delta`.
+  If the server is unreachable or the write fails, the error is treated as non-fatal and the loop completes without persistence.
 
