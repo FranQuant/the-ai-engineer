@@ -61,12 +61,11 @@ https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blo
 
 | File | Description |
 |------|-------------|
-| `fig_01_landscape.png` | f(x) and f′(x) on [−1, 4.5]; kink at x=3 and global minimizer marked |
-| `fig_02_gd_trajectories.png` | GD trajectories (η=0.05, T=60) split by convergent vs kink-region initializations |
-| `fig_02b_protocol_trajectories.png` | Protocol replication (handout Fig 4): x0 ∈ {−1.0, 0.5, 2.0}, η=0.15, overlaid on f(x) |
-| `fig_03_step_sweep.png` | Step-size sweep η ∈ {0.05, 0.10, 0.15, 0.20}: x_t and log f-gap vs iteration |
-| `fig_03b_step_sensitivity_bar.png` | Bar chart of final objective gap at K=200 for each step size |
-| `fig_04_step_geometry.png` | Local geometry of one GD step from x0=2.0 with η=0.2; tangent line and update arrow |
-| `fig_05_sgd_paths.png` | SGD sample paths (3 seeds) and aggregated gap with IQR band (20 seeds), constant η |
-| `fig_06_sgd_schedule_comparison.png` | Constant vs diminishing schedule: median gap + IQR band across 20 seeds |
-| `fig_07_quadratic_sweep.png` | Quadratic baseline: stable step sizes and divergence at η=2.1 |
+| `fig_01_landscape.png` | Objective and derivative across the kink at x=3 |
+| `fig_02_gd_trajectories.png` | GD trajectories from convergent and kink-region starts |
+| `fig_03_protocol_trajectories.png` | Protocol starts x0 ∈ {−1.0, 0.5, 2.0} with η=0.15 |
+| `fig_04_step_sweep.png` | Step-size sweep: x_t and log gap versus iteration |
+| `fig_05_step_geometry.png` | Single GD step geometry from x0=2.0 with η=0.2 |
+| `fig_06_sgd_paths.png` | SGD sample paths and aggregated gap for constant η |
+| `fig_07_sgd_schedule_comparison.png` | Constant vs diminishing SGD schedule across 20 seeds |
+| `fig_08_quadratic_sweep.png` | Quadratic baseline showing stable and divergent step sizes |
