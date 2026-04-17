@@ -24,6 +24,50 @@ class IncidentPlanner:
         """Configure planner with model/tooling parameters."""
         self.config = config
 
+    @staticmethod
+    def _alert_context(observations: Dict[str, Any]) -> Dict[str, str]:
+        alert = observations.get("alerts_latest") if isinstance(observations, dict) else {}
+        alert = alert if isinstance(alert, dict) else {}
+        return {
+            "symptom": str(alert.get("symptom", "")).strip().lower(),
+            "severity": str(alert.get("severity", "")).strip().lower(),
+            "service": str(alert.get("service", "staging-api")).strip() or "staging-api",
+            "alert_id": str(alert.get("id", "ALRT-0001")).strip() or "ALRT-0001",
+        }
+
+    @staticmethod
+    def _classify_incident(symptom: str, severity: str) -> str:
+        if any(token in symptom for token in ("crash", "crashloop", "deploy", "rollout", "pod", "fail", "restart")):
+            return "crash_or_deploy"
+        if any(token in symptom for token in ("cpu", "memory", "spike")) or severity in {"high", "critical"}:
+            return "cpu_spike"
+        return "fallback"
+
+    @staticmethod
+    def _budget_is_tight(budget: Any) -> bool:
+        if budget is None:
+            return False
+        tokens = getattr(budget, "tokens", None)
+        ms = getattr(budget, "ms", None)
+        if isinstance(budget, dict):
+            tokens = budget.get("tokens", tokens)
+            ms = budget.get("ms", ms)
+        try:
+            tokens = int(tokens)
+        except (TypeError, ValueError):
+            tokens = 0
+        try:
+            ms = int(ms)
+        except (TypeError, ValueError):
+            ms = 0
+        return tokens <= 20 or ms <= 20
+
+    @staticmethod
+    def _runbook_query(incident_class: str) -> str:
+        if incident_class == "crash_or_deploy":
+            return "crash"
+        return "cpu"
+
     # ------------------------------------------------------------------
     # Core planning
     # ------------------------------------------------------------------
@@ -37,40 +81,27 @@ class IncidentPlanner:
         Returns an ordered list of OPAL step dicts:
           [{"step_id": "...", "type": "callTool", "name": "...", "arguments": {...}}, ...]
         """
-        obs_text = str(observations).lower()
+        alert = self._alert_context(observations)
+        incident_class = self._classify_incident(alert["symptom"], alert["severity"])
+        budget_tight = self._budget_is_tight(budget)
 
-        # High-severity CPU / memory incidents → full diagnostic path
-        if any(kw in obs_text for kw in ["cpu", "memory", "spike", "high"]):
-            tool_sequence = [
-                "retrieve_runbook",
-                "run_diagnostic",
-                "summarize_incident",
-            ]
-        # Deployment / crashloop → runbook + summary (no raw diagnostic)
-        elif any(kw in obs_text for kw in ["deploy", "crash", "pod", "fail"]):
-            tool_sequence = [
-                "retrieve_runbook",
-                "summarize_incident",
-            ]
-        # Default fallback
+        # Keep the planner simple: default paths stay the same, and tight budget trims the longest path.
+        if budget_tight and incident_class in {"cpu_spike", "fallback"}:
+            tool_sequence = ["retrieve_runbook", "summarize_incident"]
+        elif incident_class == "crash_or_deploy":
+            tool_sequence = ["retrieve_runbook", "summarize_incident"]
         else:
-            tool_sequence = [
-                "retrieve_runbook",
-                "run_diagnostic",
-                "summarize_incident",
-            ]
+            tool_sequence = ["retrieve_runbook", "run_diagnostic", "summarize_incident"]
 
         logger.info("Plan selected: %s", tool_sequence)
 
-        # Extract alert context from observations to populate step arguments
-        alert = observations.get("alerts_latest") or {}
-        alert_id = alert.get("id", "ALRT-0001") if isinstance(alert, dict) else "ALRT-0001"
-        service = alert.get("service", "staging-api") if isinstance(alert, dict) else "staging-api"
-        symptom = alert.get("symptom", "incident") if isinstance(alert, dict) else "incident"
-        _keyword = symptom.split()[0].lower() if symptom else "incident"
+        runbook_query = self._runbook_query(incident_class)
+        symptom = alert["symptom"] or "incident"
+        service = alert["service"]
+        alert_id = alert["alert_id"]
 
         _step_args: Dict[str, Dict[str, Any]] = {
-            "retrieve_runbook": {"query": _keyword, "top_k": 2},
+            "retrieve_runbook": {"query": runbook_query, "top_k": 2},
             "run_diagnostic": {"command": "kubectl top pod", "host": service},
             "create_incident": {
                 "id": "INC-001",

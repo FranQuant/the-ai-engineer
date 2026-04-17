@@ -368,14 +368,14 @@ async def handle_session(ws, logger, memory):
                     if not valid:
                         status = "error"
                         response = _validation_error_response(req_id, errors)
-                        await ws.send(json.dumps(response))
-                        continue
-
-                latency_ms, result = timed(call_tool, memory, name, arguments)
-
-                session_budget.consume(tokens_used=10, latency_ms=latency_ms)
-
-                response = {"jsonrpc": "2.0", "id": req_id, "result": result}
+                    else:
+                        latency_ms, result = timed(call_tool, memory, name, arguments)
+                        session_budget.consume(tokens_used=10, latency_ms=latency_ms)
+                        response = {"jsonrpc": "2.0", "id": req_id, "result": result}
+                else:
+                    latency_ms, result = timed(call_tool, memory, name, arguments)
+                    session_budget.consume(tokens_used=10, latency_ms=latency_ms)
+                    response = {"jsonrpc": "2.0", "id": req_id, "result": result}
 
             else:
                 status = "error"

@@ -133,6 +133,16 @@ class MCPClient:
         except Exception:
             raise RuntimeError(f"Malformed JSON response: {raw!r}")
 
+        try:
+            response_id = response["id"]
+        except (KeyError, TypeError):
+            raise RuntimeError(f"Missing 'id' field in response: {response}")
+
+        if response_id != req_id:
+            raise RuntimeError(
+                f"JSON-RPC response id mismatch: expected {req_id}, got {response_id!r}"
+            )
+
         # Telemetry: receive
         if self.telemetry and self.ctx:
             self.telemetry.log(

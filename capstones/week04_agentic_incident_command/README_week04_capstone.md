@@ -9,8 +9,8 @@ Primary submission artifact:
 </p>
 
 <ul>
-<li>Remote MCP agent - the primary graded path, using JSON-RPC over WebSockets to communicate with the MCP server.</li>
-<li>Local deterministic agent - supporting evidence for debugging, replay, and reviewer validation.</li>
+<li>Remote MCP agent path - the primary graded submission path, using JSON-RPC over WebSockets to communicate with the MCP server.</li>
+<li>Local deterministic agent path - supporting evidence for debugging, replay, and reviewer validation only.</li>
 <li>Shared telemetry system - every OPAL phase logs structured JSONL to the Week 4 <code>artifacts/</code> directory.</li>
 </ul>
 
@@ -74,37 +74,42 @@ capstones/week04_agentic_incident_command/
 │   ├── schemas.py
 │   ├── telemetry.py
 │   └── samples/
-└── 02_incident_command_agent/
-    ├── cli.py
-    ├── config.py
-    ├── conftest.py
-    ├── demo_remote.py
-    ├── incident_agent.py
-    ├── incident_memory.py
-    ├── incident_planner.py
-    ├── incident_schemas.py
-    ├── mcp_client.py
-    ├── mcp_server.py
-    ├── remote_agent.py
-    ├── replay.py
-    ├── telemetry.py
-    ├── test_integration.py
-    ├── test_tools.py
-    └── requirements.txt
+├── 02_incident_command_agent/
+│   ├── cli.py
+│   ├── config.py
+│   ├── config.yaml  # read-only documentation mirror of config.py
+│   ├── conftest.py
+│   ├── demo_remote.py
+│   ├── incident_agent.py
+│   ├── incident_memory.py
+│   ├── incident_planner.py
+│   ├── incident_schemas.py
+│   ├── mcp_client.py
+│   ├── mcp_server.py
+│   ├── remote_agent.py
+│   ├── replay.py
+│   ├── telemetry.py
+│   ├── test_integration.py
+│   └── test_tools.py
+└── artifacts/
+    ├── sample_summary.md
+    └── telemetry.jsonl
 ```
+
+`config.yaml` is present as a read-only documentation mirror of the runtime configuration; `config.py` remains the source of truth.
 
 ---
 
 ## 3. Key Features
 
 ### Primary Graded Path
-The remote MCP flow is the submission artifact:
+The remote MCP flow is the submission artifact. The local `incident_agent.py`
+path mirrors the same OPAL loop in-process and is supporting evidence for
+deterministic replay and reviewer validation only:
 
 - `mcp_server.py` exposes tools and resources over WebSockets.
 - `mcp_client.py` connects to `ws://127.0.0.1:8765/mcp` through the shared config surface in `config.py`.
 - `remote_agent.py` observes MCP resources, plans locally, acts through RPC, and writes Learn-phase deltas back to memory.
-
-The local `incident_agent.py` path mirrors the same OPAL loop in-process and is best treated as deterministic evidence and a debugging aid.
 
 ### Adaptive Planning
 `incident_planner.py` is observation-driven. It does not return a fixed 5-step plan.
@@ -223,4 +228,3 @@ This file is the escalation artifact an on-call engineer receives. If the agent 
 - **Remote Learn writes are best-effort.**
   The remote Learn phase attempts to persist a memory delta via `append_memory_delta`.
   If the server is unreachable or the write fails, the error is treated as non-fatal and the loop completes without persistence.
-

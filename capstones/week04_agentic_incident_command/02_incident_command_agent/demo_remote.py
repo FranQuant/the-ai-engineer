@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Any, Dict
 
 from config import ARTIFACTS_DIR, MCP_SERVER_URI, fresh_telemetry_sink
-from mcp_server import RUNBOOKS
 from incident_planner import IncidentPlanner
 from mcp_client import MCPClient
 from remote_agent import RemoteIncidentAgent
@@ -19,22 +18,11 @@ from telemetry import RunContext, TelemetryLogger, new_correlation_id
 SAMPLE_SUMMARY_PATH = ARTIFACTS_DIR / "sample_summary.md"
 
 
-def _select_runbook(service: str, retrieved: list[Dict[str, Any]]) -> Dict[str, Any]:
+def _top_runbook(retrieved: list[Dict[str, Any]]) -> Dict[str, Any] | None:
     for runbook in retrieved:
-        if isinstance(runbook, dict) and runbook.get("steps"):
+        if isinstance(runbook, dict) and runbook.get("title"):
             return runbook
-
-    for runbook in RUNBOOKS:
-        if not isinstance(runbook, dict):
-            continue
-        if runbook.get("service") == service and "cpu" in str(runbook.get("title", "")).lower():
-            return runbook
-
-    for runbook in RUNBOOKS:
-        if isinstance(runbook, dict) and runbook.get("service") == service:
-            return runbook
-
-    return RUNBOOKS[0]
+    return None
 
 
 def _extract_tool_result(summary: Dict[str, Any], tool_name: str) -> Dict[str, Any]:
@@ -60,7 +48,7 @@ def _render_sample_summary(summary: Dict[str, Any], correlation_id: str) -> str:
     if isinstance(retrieve_result, dict):
         retrieved_runbooks = retrieve_result.get("data", {}).get("results", []) or []
 
-    runbook = _select_runbook(service, retrieved_runbooks)
+    runbook = _top_runbook(retrieved_runbooks)
     recommended_actions = list(runbook.get("steps", [])) if isinstance(runbook, dict) else []
 
     executed_steps = []
@@ -76,7 +64,7 @@ def _render_sample_summary(summary: Dict[str, Any], correlation_id: str) -> str:
         f"- Correlation ID: `{correlation_id}`",
         f"- Alert ID: `{alert_id}`",
         f"- Service: `{service}`",
-        f"- Runbook: `{runbook.get('title', 'unknown')}`" if isinstance(runbook, dict) else "- Runbook: `unknown`",
+        f"- Runbook: `{runbook.get('title', 'unknown')}`" if isinstance(runbook, dict) else "- Runbook: No runbook hits returned.",
         "",
         "## Executed Plan",
     ]

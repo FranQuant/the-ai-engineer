@@ -363,7 +363,11 @@ class IncidentAgent:
         matches = [
             rb
             for rb in runbooks
-            if isinstance(rb, dict) and query in rb.get("title", "").lower()
+            if isinstance(rb, dict)
+            and (
+                query in rb.get("title", "").lower()
+                or any(query in step.lower() for step in rb.get("steps", []))
+            )
         ]
 
         # -----------------------------------------------------------
