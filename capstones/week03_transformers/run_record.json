@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-16T12:05:52",
+  "timestamp": "2026-04-17T13:47:04",
   "seed": 0,
   "d_model": 64,
   "num_heads": 4,
@@ -9,7 +9,7 @@
   "batch_size": 32,
   "learning_rate": 0.0003,
   "steps": 1000,
-  "final_train_loss": 0.2636,
-  "final_val_loss": 6.2596,
+  "final_train_loss": 0.2245,
+  "final_val_loss": 7.2379,
   "checkpoint": "mini_gpt.pt"
 }

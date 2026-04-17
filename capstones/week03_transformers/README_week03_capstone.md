@@ -5,7 +5,7 @@
 <h1>Week 03 Capstone — Mini GPT Transformer</h1>
 
 <p>
-<strong>Primary submission notebook:</strong> <code>week03_master_capstone.ipynb</code><br>
+<strong>Primary grading artifact:</strong> <code>week03_master_capstone.ipynb</code><br>
 </p>
 
 </td>
@@ -21,18 +21,17 @@ https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blo
 
 ## Submission Boundary
 
-- `week03_master_capstone.ipynb` is the primary Week 03 submission notebook.
-- The modular Python files remain part of the implementation and are reused by the notebook.
-- `mini_gpt.pt` and `run_record.json` are the saved training artifacts.
+- `week03_master_capstone.ipynb` is the primary Week 03 grading artifact.
+- `mini_gpt.pt`, `run_record.json`, `training_curve.png`, and the modular Python files are included for reproducibility and inspection.
+- The notebook imports and exercises the modular implementation files used for the tiny transformer stack.
 
 ## What The Master Notebook Covers
 
 - Tiny character corpus and tokenizer
 - Scaled dot-product attention with causal masking
-- Multi-head self-attention
-- Pre-layernorm transformer block
-- Tiny decoder-only language model
-- Train/val split and real optimization loop
+- Multi-head self-attention and pre-layernorm transformer block
+- Tiny decoder-only language model training
+- Train/validation split and optimization loop
 - Checkpoint save and run record save
 - Greedy and temperature-based sampling
 
@@ -40,7 +39,7 @@ https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blo
 
 ```text
 week03_transformers/
-├── week03_master_capstone.ipynb       # Primary submission notebook
+├── week03_master_capstone.ipynb       # Primary grading artifact
 ├── mini_gpt.pt                        # Saved model checkpoint
 ├── mini_transformer.py
 ├── multihead_attention.py
@@ -54,15 +53,17 @@ week03_transformers/
 
 ## How To Run
 
-1. Open `week03_master_capstone.ipynb` in Colab or run it locally from the repository checkout.
-2. Execute the notebook top-to-bottom. It will train the model, save
-   `mini_gpt.pt`, write `run_record.json`, and plot `training_curve.png`.
+1. Open `week03_master_capstone.ipynb` in a clean runtime, such as a fresh Colab session or a fresh local kernel.
+2. Run the notebook top-to-bottom. It sets the deterministic seed and config used for the recorded run, then trains the model and regenerates `mini_gpt.pt`, `run_record.json`, and `training_curve.png`.
 
 ## Training Results
 Final train loss: 0.2636 | Final val loss: 6.2596
-The large train/val gap is expected: the validation split is only 5 tokens on a
-~50-character corpus. The model memorises the training sequence; the gap is a
-corpus-size artifact, not a model defect.
+The large train/val gap is expected for this toy autoregressive LM. The corpus is tiny, the validation split is only 5 tokens, and the train/validation distributions differ at token level, so the validation loss has high variance. This gap reflects data scarcity and split mismatch, not an implementation bug.
+
+## Sampling Examples
+
+- Sampling examples are demonstrated in the notebook.
+- They can also be regenerated from the saved checkpoint (`mini_gpt.pt`) without retraining.
 
 ## Notes
 
@@ -72,4 +73,4 @@ corpus-size artifact, not a model defect.
 
 ## Checkpoint Commit Note
 
-`mini_gpt.pt` is intentionally committed via `git add -f` despite the `*.pt` rule in `.gitignore.` It is the graded Week 03 checkpoint artifact and is included so reviewers can load and inspect the trained model without re-running training. Other `.pt` files remain untracked.
+`mini_gpt.pt` is intentionally committed via `git add -f` despite the `*.pt` rule in `.gitignore`. It is the graded Week 03 checkpoint artifact and is included so reviewers can load and inspect the trained model without re-running training. Other `.pt` files remain untracked.
