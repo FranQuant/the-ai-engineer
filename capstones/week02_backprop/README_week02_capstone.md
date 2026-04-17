@@ -31,6 +31,20 @@ The main Week 2 submission artifact is [week02_master_capstone.ipynb](week02_mas
 This notebook consolidates the verified Week 2 evidence into one compact submission.
 
 
+## Run locally
+
+From the repo root, install the notebook dependencies from `requirements.txt` and a platform-appropriate PyTorch wheel, then open the notebook:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+jupyter lab capstones/week02_backprop/week02_master_capstone.ipynb
+```
+
+For a non-interactive check, run `jupyter nbconvert --execute --to notebook --inplace capstones/week02_backprop/week02_master_capstone.ipynb`.
+
+
 ## Evidence summary
 
 In the verified master notebook:
@@ -38,7 +52,7 @@ In the verified master notebook:
 - Finite-difference gradient check: max abs diff `9.79e-12`
 - Torch forward parity: abs diff `1.09e-10`
 - Torch manual backward parity vs NumPy: max abs diff `3.66e-08`
-- Fixed-batch manual vs autograd agreement: max abs diff `0.00e+00`
+- Fixed-batch manual vs autograd agreement: max abs diff `0.0`
 - `nn.Sequential` parity check: max abs diff `0.00e+00`
 - Best validation loss: `0.072691`
 - Best validation accuracy: `0.9300`
@@ -65,5 +79,4 @@ $$
 PyTorch's built-in `MSELoss(reduction="mean")` computes the batch mean of
 $(f - y)^2$. This changes gradient scaling, but not the underlying fixed points
 of the optimization problem.
-
 
