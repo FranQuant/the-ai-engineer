@@ -76,6 +76,7 @@ class IncidentMemoryStore:
             {"uri": "memory://plans/current", "type": "plan"},
             {"uri": "memory://alerts/latest", "type": "alert"},
             {"uri": "memory://runbooks/index", "type": "runbook_list"},
+            # Backward-compatible alias for older callers that still use the legacy URI.
             {"uri": "memory://memory/deltas", "type": "delta_list"},
         ]
 
@@ -96,6 +97,7 @@ class IncidentMemoryStore:
             return self._data["alerts"].get("latest", {})
         if uri == "memory://runbooks/index":
             return list(self._data["runbooks"].get("index", []))
+        # Backward-compatible alias for older callers that still use the legacy URI.
         if uri == "memory://memory/deltas":
             return {"items": list(self._data["deltas"])}
         raise ValueError(f"Unknown resource URI: {uri}")

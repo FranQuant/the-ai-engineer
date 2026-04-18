@@ -22,6 +22,10 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
   <img src="https://img.shields.io/badge/License-Educational%20Use-green">
 </p>
 
+## Start Here
+
+Review [`capstones/week04_agentic_incident_command/02_incident_command_agent/`](capstones/week04_agentic_incident_command/02_incident_command_agent/) as the main Week 04 artifact.
+
 ---
 
 ## Weekly Capstones Overview
@@ -32,6 +36,8 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
 | **2** | **Backpropagation**               | [`week02_master_capstone.ipynb`](capstones/week02_backprop/week02_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                      | Colab-ready master notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb)        |
 | **3** | **Tiny Transformer**              | [`week03_master_capstone.ipynb`](capstones/week03_transformers/week03_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                | Colab-ready master notebook — [Open in Colab](https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/week03_master_capstone.ipynb) |
 | **4** | **Agentic Incident Command**      | [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`mcp_client.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_client.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Remote MCP server/client workflow. The local deterministic runner is supporting evidence.                                                                      |
+
+Week 04 is the primary capstone deliverable and represents the full agentic system: MCP + OPAL + telemetry + replay.
 
 ---
 
@@ -76,6 +82,8 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 
 For Week 4 details, telemetry, guardrails, and architecture notes, see the dedicated Week 4 README:
 [`capstones/week04_agentic_incident_command/README_week04_capstone.md`](capstones/week04_agentic_incident_command/README_week04_capstone.md)
+
+Telemetry logs and incident summaries for inspection are stored in `capstones/week04_agentic_incident_command/artifacts/`.
 
 ---
 

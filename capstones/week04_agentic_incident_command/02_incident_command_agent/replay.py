@@ -13,8 +13,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
-from telemetry import Budget, TelemetryEvent
-
 
 @dataclass
 class ReplayEvent:

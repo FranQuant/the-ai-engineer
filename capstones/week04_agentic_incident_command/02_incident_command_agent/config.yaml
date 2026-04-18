@@ -1,8 +1,8 @@
-# config.yaml — Documentation mirror of config.py + incident_schemas.py
+# config.yaml — Non-executable documentation mirror of config.py + incident_schemas.py
 #
-# THIS FILE IS READ-ONLY DOCUMENTATION.
-# The authoritative source of truth is config.py (and incident_schemas.py for
-# tool registry metadata). Do not load this file at runtime; edit config.py instead.
+# THIS FILE IS DOCUMENTATION ONLY. IT IS NOT LOADED BY ANY RUNTIME PATH.
+# config.py is the sole runtime source of truth; incident_schemas.py supplies
+# tool registry metadata used at runtime. Update config.py for behavior changes.
 #
 # Purpose: human-readable reference for operators, CI pipelines, and future ports
 # of this agent to environments that prefer YAML-driven configuration.

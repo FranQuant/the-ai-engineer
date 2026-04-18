@@ -26,6 +26,12 @@ non-production trace demonstration. The capstone agent in
 discipline requirement. The mismatch is intentional and documented here so it
 is not mistaken for a bug.
 
+## Submission Scope
+
+This warm-up harness is supporting material for the Week 04 capstone. The
+primary graded artifact is `02_incident_command_agent/`; this module exists to
+demonstrate the mechanics that feed into it.
+
 ## Components
 - **mcp_tool_harness_server.py** — exposes 3 tools and 3 memory:// resources  
 - **mcp_tool_harness_client.py** — runs a single deterministic OPAL loop  

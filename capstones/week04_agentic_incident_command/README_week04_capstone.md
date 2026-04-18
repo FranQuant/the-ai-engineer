@@ -23,6 +23,14 @@ Primary submission artifact:
 </tr>
 </table>
 
+## Submission Scope
+
+The primary graded artifact for Week 04 is `02_incident_command_agent/`. It
+includes the remote MCP-backed Incident Command Agent, OPAL loop execution,
+telemetry/replay support, and generated artifacts in `artifacts/`.
+`01_tool_harness/` and local CLI utilities are supporting components and are
+not graded independently.
+
 ## 1. Architecture 
 
 ### A. OPAL Loop
@@ -96,7 +104,8 @@ capstones/week04_agentic_incident_command/
     └── telemetry.jsonl
 ```
 
-`config.yaml` is present as a read-only documentation mirror of the runtime configuration; `config.py` remains the source of truth.
+`config.yaml` is a documentation/portability mirror only; it is not loaded at
+runtime. `config.py` is the sole runtime source of truth.
 
 ---
 
@@ -138,7 +147,8 @@ Each OPAL phase emits:
 
 Telemetry is written to `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` through the shared `TELEMETRY_SINK` in `config.py`.
 
-Replay is available via:
+Replay enables deterministic reconstruction of the OPAL loop from telemetry
+logs for inspection, debugging, and audit without re-executing the system:
 
 ```bash
 python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
