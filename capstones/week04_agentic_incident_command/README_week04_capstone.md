@@ -226,15 +226,17 @@ This file is the escalation artifact an on-call engineer receives. If the agent 
 
 ## 8. Known Limitations
 
-- **Telemetry logging does not rotate internally.**
-  `TelemetryLogger` appends to `artifacts/telemetry.jsonl` with no built-in size cap or rotation.
-  The demo runner mitigates this by archiving any existing file to a timestamped
-  `telemetry_YYYYMMDD_HHMMSS.jsonl` before starting a new run.
+- **Telemetry logging is file-based (no internal rotation).**  
+  `TelemetryLogger` appends to `artifacts/telemetry.jsonl` without a built-in size cap.  
+  The demo runner mitigates this by archiving any existing file to a timestamped  
+  `telemetry_YYYYMMDD_HHMMSS.jsonl` before each run. This keeps runs isolated and replayable.
 
-- **Planner is rule-based, not learned across loops**.
-  The planner selects tool paths from observation keywords (e.g., CPU/memory vs deploy/crash).
-  Each OPAL loop replans from scratch; no cross-loop learning or policy update occurs.
+- **Planner is rule-based (no cross-loop learning).**  
+  The planner selects tool paths from observation keywords (e.g., CPU/memory vs deploy/crash).  
+  Each OPAL loop replans from scratch; no persistent policy update or learning across loops is implemented.  
+  This is intentional to keep the decision logic transparent and auditable.
 
-- **Remote Learn writes are best-effort.**
-  The remote Learn phase attempts to persist a memory delta via `append_memory_delta`.
-  If the server is unreachable or the write fails, the error is treated as non-fatal and the loop completes without persistence.
+- **Remote Learn persistence is best-effort.**  
+  The Learn phase attempts to persist a memory delta via `append_memory_delta`.  
+  If the server is unreachable or the write fails, the error is treated as non-fatal and the loop completes.  
+  Telemetry still captures the full execution trace for offline inspection and replay.
