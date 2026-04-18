@@ -22,9 +22,6 @@ Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path
   <img src="https://img.shields.io/badge/License-Educational%20Use-green">
 </p>
 
-## Start Here
-
-Review [`capstones/week04_agentic_incident_command/02_incident_command_agent/`](capstones/week04_agentic_incident_command/02_incident_command_agent/) as the main Week 04 artifact.
 
 ---
 
