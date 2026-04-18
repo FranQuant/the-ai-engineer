@@ -23,7 +23,7 @@ https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blo
 
 - `week03_master_capstone.ipynb` is the primary Week 03 grading artifact.
 - `mini_gpt.pt`, `run_record.json`, and `training_curve.png` are included as reproducibility artifacts.
-- The notebook is fully self-contained: all transformer components (attention, multi-head attention, transformer block, and language model) are implemented directly inside the notebook for transparent grading.
+- The notebook is fully self-contained: all transformer components (attention, multi-head attention, transformer block, and language model) are implemented directly inside the notebook.
 
 ## What The Master Notebook Covers
 
