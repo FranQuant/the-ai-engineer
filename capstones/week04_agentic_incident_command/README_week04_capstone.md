@@ -28,8 +28,7 @@ Primary submission artifact:
 The primary graded artifact for Week 04 is `02_incident_command_agent/`. It
 includes the remote MCP-backed Incident Command Agent, OPAL loop execution,
 telemetry/replay support, and generated artifacts in `artifacts/`.
-`01_tool_harness/` and local CLI utilities are supporting components and are
-not graded independently.
+`01_tool_harness/` and local CLI utilities are supporting components.
 
 ## 1. Architecture 
 
