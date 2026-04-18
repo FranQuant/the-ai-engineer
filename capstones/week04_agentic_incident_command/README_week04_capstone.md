@@ -33,6 +33,30 @@ not graded independently.
 
 ## 1. Architecture 
 
+### System Architecture
+```text
++---------------------------+        JSON-RPC / MCP         +------------------------------+
+|  memory:// resources      | <---------------------------> |  Remote Incident Agent       |
+|  - alerts/latest          |                               |  - Observe                   |
+|  - runbooks/index         |                               |  - Plan                      |
+|  - deltas/recent          |                               |  - Act                       |
+|  - plans/current          |                               |  - Learn                     |
++-------------+-------------+                               +---------------+--------------+
+              |                                                             |
+              v                                                             v
+      +------------------+                                         +----------------------+
+      |   MCP Server     |                                         |  Telemetry Logger    |
+      |   tools/resources|                                         |  artifacts/*.jsonl   |
+      +------------------+                                         +----------+-----------+
+                                                                                |
+                                                                                v
+                                                                   +-------------------------+
+                                                                   | Replay + sample_summary |
+                                                                   +-------------------------+
+```
+This diagram shows the primary graded remote MCP path, including resources,
+OPAL phases, telemetry, and replayable artifacts.
+
 ### A. OPAL Loop
 ```mermaid
 flowchart LR
