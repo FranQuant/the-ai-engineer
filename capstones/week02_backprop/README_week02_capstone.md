@@ -24,7 +24,7 @@ This folder packages the Week 2 backprop submission following the TAE program st
 
 The main Week 2 submission artifact is [week02_master_capstone.ipynb](week02_master_capstone.ipynb).
 
-<a target="_blank" href="https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/>
 </a>
 

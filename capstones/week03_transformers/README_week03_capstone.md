@@ -16,7 +16,7 @@
 </table>
 
 [![Open Primary In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
-https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week03_transformers/week03_master_capstone.ipynb
+https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week03_transformers/week03_master_capstone.ipynb
 )
 
 ## Submission Boundary
