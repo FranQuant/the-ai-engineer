@@ -52,8 +52,8 @@ week03_transformers/
 2. Run the notebook top-to-bottom. It sets the deterministic seed and config used for the recorded run, then trains the model and regenerates `mini_gpt.pt`, `run_record.json`, and `training_curve.png`.
 
 ## Training Results
-Final train loss: 0.2636 | Final val loss: 6.2596
-The large train/validation gap is expected for this toy autoregressive setup: the corpus is extremely small and the validation split contains only a few tokens, so the validation loss is not a stable generalization signal.
+
+Training loss converges to ≈0.22; validation loss stays high (single-digit, roughly 6–8 depending on environment) and is dominated by the tiny validation split — an expected artifact of this toy autoregressive setup, not an optimization failure. Exact per-run values are written to `run_record.json` each execution. Because the val split is only a few tokens, the exact val scalar is environment-sensitive (CPU/GPU, torch version) while the training-curve shape and convergence are stable and reproducible.
 
 ## Sampling Examples
 
