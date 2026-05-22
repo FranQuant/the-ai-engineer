@@ -330,10 +330,26 @@ async def handle_session(ws, logger, memory):
 
         req_id = request.get("id")
         method = request.get("method")
-        params = request.get("params", {}) or {}
+        raw_params = request.get("params")
+        params: Dict[str, Any] = {}
 
         if req_id is None:
             continue  # notification
+
+        if raw_params is not None and not isinstance(raw_params, dict):
+            await ws.send(json.dumps({
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "error": {"code": -32602, "message": "Invalid params: params must be an object"},
+            }))
+            continue
+
+        if isinstance(raw_params, dict):
+            params = raw_params
+
+        _meta = params.get("_meta")
+        client_correlation_id = _meta.get("correlationId") if isinstance(_meta, dict) else None
+        event_correlation_id = client_correlation_id or ctx.correlation_id
 
         phase = "observe" if method in ("initialize", "getResource") else "act"
         status = "ok"
@@ -359,23 +375,31 @@ async def handle_session(ws, logger, memory):
                 }
 
             elif method == "callTool":
-                name = params.get("name")
-                arguments = params.get("arguments", {}) or {}
+                if session_budget.tokens <= 0 or session_budget.ms <= 0:
+                    status = "error"
+                    response = {
+                        "jsonrpc": "2.0",
+                        "id": req_id,
+                        "error": {"code": -32000, "message": "Budget exhausted"},
+                    }
+                else:
+                    name = params.get("name")
+                    arguments = params.get("arguments", {}) or {}
 
-                schema = tool_schemas.get(name)
-                if schema:
-                    valid, errors = validate_arguments(schema, arguments)
-                    if not valid:
-                        status = "error"
-                        response = _validation_error_response(req_id, errors)
+                    schema = tool_schemas.get(name)
+                    if schema:
+                        valid, errors = validate_arguments(schema, arguments)
+                        if not valid:
+                            status = "error"
+                            response = _validation_error_response(req_id, errors)
+                        else:
+                            latency_ms, result = timed(call_tool, memory, name, arguments)
+                            session_budget.consume(tokens_used=10, latency_ms=latency_ms)
+                            response = {"jsonrpc": "2.0", "id": req_id, "result": result}
                     else:
                         latency_ms, result = timed(call_tool, memory, name, arguments)
                         session_budget.consume(tokens_used=10, latency_ms=latency_ms)
                         response = {"jsonrpc": "2.0", "id": req_id, "result": result}
-                else:
-                    latency_ms, result = timed(call_tool, memory, name, arguments)
-                    session_budget.consume(tokens_used=10, latency_ms=latency_ms)
-                    response = {"jsonrpc": "2.0", "id": req_id, "result": result}
 
             else:
                 status = "error"
@@ -397,7 +421,7 @@ async def handle_session(ws, logger, memory):
 
         logger.log(
             TelemetryEvent(
-                correlation_id=ctx.correlation_id,
+                correlation_id=event_correlation_id,
                 loop_id=ctx.loop_id,
                 phase=phase,
                 method=method,

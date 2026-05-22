@@ -186,7 +186,7 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 - Guarded transitions: Observe -> Plan -> Act -> Learn is recorded with explicit `*_start` and `*_end` events, and `plan_guardrail` / `act_guardrail` events mark truncation or stop conditions.
 - Review surfaces: reviewers can inspect budgets, tool request and response payloads, the selected plan, executed step results, and memory surfaces such as `memory://alerts/latest`, `memory://runbooks/index`, `memory://plans/current`, `memory://deltas/recent`, `memory://incidents/{id}`, and `memory://evidence/{id}`.
 - Remote Learn now persists `memory://plans/current` before `learn_end`, so the same run's trace shows the plan write in-band.
-- Single-run isolation: the client and server each generate their own `correlation_id` per session. To isolate one execution, filter by `loop_id: "loop-1"` or by the client-side `correlation_id` (all `rpc_send`/`rpc_recv`/`observe_*`/`plan_*`/`act_*`/`learn_*` events carry it). Server-side `observe`/`act` events carry the server's own session ID; they can be joined to the client trace via the `id` field in the request payload.
+- Single-run isolation: the client propagates its `correlation_id` in every JSON-RPC request via `params._meta.correlationId`. The server reads it and tags its `observe`/`act` telemetry events with the same ID, falling back to a session-scoped ID only when `_meta` is absent. To isolate one execution, filter by `correlation_id` — all client-side (`rpc_send`, `rpc_recv`, `observe_*`, `plan_*`, `act_*`, `learn_*`) and server-side (`observe`, `act`) events for a run share one value. Use `loop_id` to distinguish multiple OPAL loops within the same session.
 - Deterministic evidence: the evidence set comes from fixtures, memory resources, and telemetry logs, not RNG seeds.
 
 ## 5. Verification
@@ -263,3 +263,12 @@ This file is the escalation artifact an on-call engineer receives. If the agent 
   The Learn phase attempts to persist a memory delta via `append_memory_delta`.  
   If the server is unreachable or the write fails, the error is treated as non-fatal and the loop completes.  
   Telemetry still captures the full execution trace for offline inspection and replay.
+
+### Known Limitations / Future Hardening
+
+- **Tool-argument schema validation is top-level only.**  
+  `validate_arguments` checks required fields, top-level primitive types, and integer bounds.  
+  Full nested JSON Schema validation — array item schemas, `additionalProperties: false`, depth/size  
+  limits, and enum constraints — is deferred as production hardening. For deployments with untrusted  
+  inputs, replace `validate_arguments` with a conformant JSON Schema validator (e.g., `jsonschema`)  
+  and declare `additionalProperties: false` plus explicit size/depth limits on all tool schemas.

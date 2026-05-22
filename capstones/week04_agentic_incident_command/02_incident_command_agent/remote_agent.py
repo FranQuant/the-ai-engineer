@@ -187,20 +187,21 @@ class RemoteIncidentAgent:
                 metrics = result.get("metrics", {}) if isinstance(result, dict) else {}
                 latency_ms = int(metrics.get("latency_ms", 0) or 0)
                 cumulative_latency += latency_ms
+                self.budget.consume(latency_ms=latency_ms)
 
-                # Guardrail: latency budget
-                if cumulative_latency > self.max_latency_ms:
+                # Guardrail: ms budget
+                if self.budget.ms <= 0:
                     self.telemetry.log(
                         TelemetryEvent(
                             correlation_id=ctx.correlation_id,
                             loop_id=ctx.loop_id,
                             phase="act_guardrail",
-                            method="latency_budget",
+                            method="ms_budget",
                             status="error",
                             latency_ms=latency_ms,
                             budget=self.budget,
                             payload={
-                                "reason": "latency_budget_exceeded",
+                                "reason": "ms_budget_exceeded",
                                 "cumulative_ms": cumulative_latency,
                             },
                         )

@@ -8,6 +8,7 @@ Now MCP-compliant with:
 
 from __future__ import annotations
 
+import asyncio
 import json
 from typing import Any, Dict, Optional
 
@@ -60,17 +61,22 @@ def _unwrap_mcp_result(result: Dict[str, Any]) -> Any:
 # Client implementation
 # ---------------------------------------------------------------------------
 
+_RPC_TIMEOUT_S = 10.0
+
+
 class MCPClient:
     def __init__(
         self,
         uri: str = MCP_SERVER_URI,
         telemetry: Optional[TelemetryLogger] = None,
         budget: Optional[Budget] = None,
+        rpc_timeout_s: float = _RPC_TIMEOUT_S,
     ) -> None:
         self.uri = uri
         self._ws: Optional[websockets.WebSocketClientProtocol] = None
         self._next_id = 1
         self.telemetry = telemetry
+        self.rpc_timeout_s = rpc_timeout_s
         self.budget = budget or Budget(
             tokens=DEFAULT_BUDGET_TOKENS,
             ms=DEFAULT_BUDGET_MS,
@@ -108,6 +114,9 @@ class MCPClient:
         req_id = self._next_id
         self._next_id += 1
 
+        if self.ctx:
+            params = {**params, "_meta": {"correlationId": self.ctx.correlation_id}}
+
         request = {"jsonrpc": "2.0", "id": req_id, "method": method, "params": params}
 
         # Telemetry: send
@@ -126,7 +135,13 @@ class MCPClient:
             )
 
         await self._ws.send(json.dumps(request))
-        raw = await self._ws.recv()
+        try:
+            raw = await asyncio.wait_for(self._ws.recv(), timeout=self.rpc_timeout_s)
+        except asyncio.TimeoutError:
+            raise RuntimeError(
+                f"RPC timeout after {self.rpc_timeout_s}s: "
+                f"no response for id={req_id}, method={method!r}"
+            )
 
         try:
             response = json.loads(raw)
