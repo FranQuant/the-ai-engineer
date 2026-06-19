@@ -33,8 +33,6 @@ Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based a
 | **3** | **Tiny Transformer**              | [`week03_master_capstone.ipynb`](capstones/week03_transformers/week03_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week03_transformers/week03_master_capstone.ipynb) |
 | **4** | **Agentic Incident Command**      | [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`mcp_client.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_client.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Remote MCP server/client workflow. The local deterministic runner is supporting evidence.                                                                      |
 
-Week 04 is the primary capstone deliverable and represents the full agentic system: MCP + OPAL + telemetry + replay.
-
 ---
 
 ## Repository Structure
