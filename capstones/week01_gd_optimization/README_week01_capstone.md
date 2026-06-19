@@ -53,7 +53,7 @@ https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/cap
 
 ## Verification
 
-- Finite-difference gradient check (both smooth branches, max error < 1e-6, asserted at runtime)
+- Finite-difference gradient check: the analytic derivative is compared against a centered finite-difference approximation across multiple test points on both sides of the kink at x=3 (avoiding the non-differentiable point itself), with max error < 1e-6 asserted at runtime
 
 ---
 
