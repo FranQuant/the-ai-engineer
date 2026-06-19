@@ -4,8 +4,7 @@
 
 <h1>The AI Engineer</h1>
 
-Weeks 1–3 are notebook-centered ML/DL deliverables.  
-Week 4 is an MCP-based agentic systems capstone whose <b>primary submission path</b> is the remote MCP server/client workflow, with a local deterministic mirror retained as supporting evidence for replay, debugging, and reviewer validation.
+Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based agentic incident-command capstone (Week 4), graded on the <b>remote MCP server/client path</b> with a local deterministic mirror as supporting evidence.
 
 </td>
 
@@ -109,4 +108,4 @@ Notes:
 All content in this repository is provided **for educational and illustrative purposes only**.
 No guarantees are made regarding correctness, performance, reliability, or suitability for any production environment.
 
-© 2025 Francisco Salazar
+© 2026 Francisco Salazar
