@@ -27,13 +27,13 @@ https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/cap
 
 ## What The Master Notebook Covers
 
-- Tiny character corpus and tokenizer
+- arXiv character corpus and tokenizer (3 transformer papers)
 - Scaled dot-product attention with causal masking
 - Multi-head self-attention and pre-layernorm transformer block
-- Tiny decoder-only language model training
+- Decoder-only language model training with dropout and GPT-2-style init
 - Train/validation split and optimization loop
 - Checkpoint save and run record save
-- Greedy and temperature-based sampling
+- Greedy and temperature-based sampling, with a text-quality scorecard
 
 ## Folder Contents
 
@@ -53,12 +53,23 @@ week03_transformers/
 
 ## Training Results
 
-Training loss converges to ≈0.22; validation loss stays high (single-digit, roughly 6–8 depending on environment) and is dominated by the tiny validation split — an expected artifact of this toy autoregressive setup, not an optimization failure. Exact per-run values are written to `run_record.json` each execution. Because the val split is only a few tokens, the exact val scalar is environment-sensitive (CPU/GPU, torch version) while the training-curve shape and convergence are stable and reproducible.
+The recorded run was trained on a Colab T4 GPU.
 
-## Sampling Examples
+- **Corpus:** 363,134 characters from 3 arXiv papers (1706.03762 "Attention Is All You Need", 1810.04805 "BERT", 2005.14165 "GPT-3"), character-level, vocab size 48.
+- **Token split:** 326,820 train / 36,314 val.
+- **Config:** block_size 64, d_model 256, 8 heads, 4 layers, 3000 iters, dropout 0.1 — ~3.17M parameters.
+- **Final losses:** train 1.6446, val 2.1046.
 
-- Sampling examples are demonstrated in the notebook.
-- They can also be regenerated from the saved checkpoint (`mini_gpt.pt`) without retraining.
+The model trains healthily: train and val loss track together throughout, with a final gap of only ~0.45 — no severe overfitting. The network learns the character and word statistics of transformer papers (technical vocabulary, punctuation, and spacing). Exact per-run values are written to `run_record.json` on each execution; the training-curve shape and convergence are stable and reproducible.
+
+## Sampling & Decoding
+
+The notebook compares decoding strategies and quantifies them with a self-contained text-quality scorecard:
+
+- **Temperature sampling (T=0.8, top-k=5)** produces paper-flavored text that stays close to the corpus distribution — char-KL ≈ 0.20 and an in-corpus-word fraction ≈ 78%.
+- **Greedy decoding** exhibits the classic repetition-collapse failure mode (char-KL ≈ 1.86).
+
+This contrast is a deliberate demonstration of how decoding strategy shapes output quality, not a defect of the model. Sampling examples run in the notebook and can also be regenerated from the saved checkpoint (`mini_gpt.pt`) without retraining.
 
 ## Notes
 
