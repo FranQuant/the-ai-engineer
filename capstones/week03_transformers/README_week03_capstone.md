@@ -53,21 +53,21 @@ week03_transformers/
 
 ## Training Results
 
-The recorded run was trained on a Colab T4 GPU.
+The recorded run was trained on a Colab GPU.
 
-- **Corpus:** 363,134 characters from 3 arXiv papers (1706.03762 "Attention Is All You Need", 1810.04805 "BERT", 2005.14165 "GPT-3"), character-level, vocab size 48.
-- **Token split:** 326,820 train / 36,314 val.
-- **Config:** block_size 64, d_model 256, 8 heads, 4 layers, 3000 iters, dropout 0.1 — ~3.17M parameters.
-- **Final losses:** train 1.6446, val 2.1046.
+- **Corpus:** ~348,000 characters from 3 arXiv papers (1706.03762 "Attention Is All You Need", 1810.04805 "BERT", 2005.14165 "GPT-3"), cleaned (HTML stripped, lowercased, LaTeX/citation noise removed, multi-digit number runs deleted), character-level, vocab size 49.
+- **Token split:** ~313,800 train / ~34,900 val.
+- **Config:** block_size 64, d_model 256, 8 heads, 4 layers, d_ff 1024, batch_size 64, lr 3e-4, 3000 iters, dropout 0.1 — ~3.17M parameters.
+- **Final losses:** train 1.5766, val 2.1197.
 
-The model trains healthily: train and val loss track together throughout, with a final gap of only ~0.45 — no severe overfitting. The network learns the character and word statistics of transformer papers (technical vocabulary, punctuation, and spacing). Exact per-run values are written to `run_record.json` on each execution; the training-curve shape and convergence are stable and reproducible.
+The model trains healthily: train and val loss track together throughout, with a final gap of only ~0.54 — no severe overfitting. The network learns the character and word statistics of transformer papers (technical vocabulary, punctuation, and spacing). Exact per-run values are written to `run_record.json` on each execution; the training-curve shape and convergence are stable and reproducible.
 
 ## Sampling & Decoding
 
-The notebook compares decoding strategies and quantifies them with a self-contained text-quality scorecard:
+The notebook compares decoding strategies and quantifies them with a self-contained text-quality scorecard (char-KL versus the corpus and in-corpus-word fraction):
 
-- **Temperature sampling (T=0.8, top-k=5)** produces paper-flavored text that stays close to the corpus distribution — char-KL ≈ 0.20 and an in-corpus-word fraction ≈ 78%.
-- **Greedy decoding** exhibits the classic repetition-collapse failure mode (char-KL ≈ 1.86).
+- **Temperature sampling (T=0.8, top-k=5)** produces clean, paper-flavored text that stays close to the corpus distribution — char-KL ≈ 0.13 and an in-corpus-word fraction ≈ 86%.
+- **Greedy decoding** exhibits the classic repetition-collapse failure mode (char-KL ≈ 0.96).
 
 This contrast is a deliberate demonstration of how decoding strategy shapes output quality, not a defect of the model. Sampling examples run in the notebook and can also be regenerated from the saved checkpoint (`mini_gpt.pt`) without retraining.
 
