@@ -71,6 +71,10 @@ The notebook compares decoding strategies and quantifies them with a self-contai
 
 This contrast is a deliberate demonstration of how decoding strategy shapes output quality, not a defect of the model. Sampling examples run in the notebook and can also be regenerated from the saved checkpoint (`mini_gpt.pt`) without retraining.
 
+## yoctoGPT Comparison (Appendix)
+
+`week03_yocto_comparison.ipynb` is a fairness-controlled appendix that trains Yves Hilpisch's reference [yoctoGPT](https://github.com/yhilpisch/yoctoGPT) on the same arXiv corpus at matched configuration and scores both models with the same metrics. yoctoGPT comes out ahead on all three (val loss 1.5973 vs 2.1197; temperature char-KL 0.0934 vs 0.13; in-corpus words 98.2% vs 86%), with more coherent samples. The gap is **not** architectural — the from-scratch model matches yoctoGPT on core design (SDPA scaling, Pre-LN blocks, GELU FFN, weight tying) — but reflects yoctoGPT's more mature training loop (optimized SDPA path, EMA weight averaging, AMP, `min_lr` cosine flooring, tuned eval cadence). The appendix thus validates the from-scratch implementation as architecturally correct while honestly quantifying what production training refinements buy. (The "mine" numbers are from the committed master run on a near-identical live-fetched corpus, not byte-identical to the appendix's; the gap far exceeds that variance.)
+
 ## Notes
 
 - The notebook is fully self-contained and does not depend on hidden local state.
