@@ -55,10 +55,10 @@ week03_transformers/
 
 The recorded run was trained on a Colab GPU.
 
-- **Corpus:** ~348,000 characters from 3 arXiv papers (1706.03762 "Attention Is All You Need", 1810.04805 "BERT", 2005.14165 "GPT-3"), cleaned (HTML stripped, lowercased, LaTeX/citation noise removed, multi-digit number runs deleted), character-level, vocab size 49.
-- **Token split:** ~313,800 train / ~34,900 val.
+- **Corpus:** 330,233 characters from 3 arXiv papers (1706.03762 "Attention Is All You Need", 1810.04805 "BERT", 2005.14165 "GPT-3"), cleaned (HTML stripped, lowercased, LaTeX/citation noise removed, multi-digit number runs deleted), character-level, vocab size 48.
+- **Token split:** ~297,200 train / ~33,000 val.
 - **Config:** block_size 64, d_model 256, 8 heads, 4 layers, d_ff 1024, batch_size 64, lr 3e-4, 3000 iters, dropout 0.1 — ~3.17M parameters.
-- **Final losses:** train 1.5766, val 2.1197.
+- **Final losses:** train 1.5731, val 2.1110.
 
 The model trains healthily: train and val loss track together throughout, with a final gap of only ~0.54 — no severe overfitting. The network learns the character and word statistics of transformer papers (technical vocabulary, punctuation, and spacing). Exact per-run values are written to `run_record.json` on each execution; the training-curve shape and convergence are stable and reproducible.
 
@@ -66,14 +66,14 @@ The model trains healthily: train and val loss track together throughout, with a
 
 The notebook compares decoding strategies and quantifies them with a self-contained text-quality scorecard (char-KL versus the corpus and in-corpus-word fraction):
 
-- **Temperature sampling (T=0.8, top-k=5)** produces clean, paper-flavored text that stays close to the corpus distribution — char-KL ≈ 0.13 and an in-corpus-word fraction ≈ 86%.
-- **Greedy decoding** exhibits the classic repetition-collapse failure mode (char-KL ≈ 0.96).
+- **Temperature sampling (T=0.8, top-k=5)** produces clean, paper-flavored text that stays close to the corpus distribution — char-KL ≈ 0.0786 and an in-corpus-word fraction ≈ 87.5%.
+- **Greedy decoding** exhibits the classic repetition-collapse failure mode (char-KL ≈ 0.4948).
 
 This contrast is a deliberate demonstration of how decoding strategy shapes output quality, not a defect of the model. Sampling examples run in the notebook and can also be regenerated from the saved checkpoint (`mini_gpt.pt`) without retraining.
 
 ## yoctoGPT Comparison (Appendix)
 
-`week03_yocto_comparison.ipynb` is a fairness-controlled appendix that trains Yves Hilpisch's reference [yoctoGPT](https://github.com/yhilpisch/yoctoGPT) on the same arXiv corpus at matched configuration and scores both models with the same metrics. yoctoGPT comes out ahead on all three (val loss 1.5973 vs 2.1197; temperature char-KL 0.0934 vs 0.13; in-corpus words 98.2% vs 86%), with more coherent samples. The gap is **not** architectural — the from-scratch model matches yoctoGPT on core design (SDPA scaling, Pre-LN blocks, GELU FFN, weight tying) — but reflects yoctoGPT's more mature training loop (optimized SDPA path, EMA weight averaging, AMP, `min_lr` cosine flooring, tuned eval cadence). The appendix thus validates the from-scratch implementation as architecturally correct while honestly quantifying what production training refinements buy. (The "mine" numbers are from the committed master run on a near-identical live-fetched corpus, not byte-identical to the appendix's; the gap far exceeds that variance.)
+`week03_yocto_comparison.ipynb` is a fairness-controlled appendix that trains Yves Hilpisch's reference [yoctoGPT](https://github.com/yhilpisch/yoctoGPT) on the same arXiv corpus at matched configuration and scores both models with the same metrics. yoctoGPT comes out ahead on two of the three (val loss 1.5973 vs 2.1110; in-corpus words 98.2% vs 87.5%) and produces more coherent samples, while the from-scratch model edges it on temperature char-KL (0.0786 vs 0.0934). The gap is **not** architectural — the from-scratch model matches yoctoGPT on core design (SDPA scaling, Pre-LN blocks, GELU FFN, weight tying) — but reflects yoctoGPT's more mature training loop (optimized SDPA path, EMA weight averaging, AMP, `min_lr` cosine flooring, tuned eval cadence). The appendix thus validates the from-scratch implementation as architecturally correct while honestly quantifying what production training refinements buy. Both models trained on the committed frozen corpus (`arxiv_corpus.txt`, 330,233 characters), so the comparison is byte-identical and exactly reproducible.
 
 ## Notes
 
