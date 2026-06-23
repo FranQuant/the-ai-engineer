@@ -54,18 +54,3 @@ https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/cap
 ## Verification
 
 - Finite-difference gradient check: the analytic derivative is compared against a centered finite-difference approximation across multiple test points on both sides of the kink at x=3 (avoiding the non-differentiable point itself), with max error < 1e-6 asserted at runtime
-
----
-
-## Output Figures
-
-| File | Description |
-|------|-------------|
-| `fig_01_landscape.png` | Objective and derivative across the kink at x=3 |
-| `fig_02_gd_trajectories.png` | GD trajectories from convergent and kink-region starts |
-| `fig_03_protocol_trajectories.png` | Protocol starts x0 ∈ {−1.0, 0.5, 2.0} with η=0.15 |
-| `fig_04_step_sweep.png` | Step-size sweep: x_t and log gap versus iteration |
-| `fig_05_step_geometry.png` | Single GD step geometry from x0=2.0 with η=0.2 |
-| `fig_06_sgd_paths.png` | SGD sample paths and aggregated gap for constant η |
-| `fig_07_sgd_schedule_comparison.png` | Constant vs diminishing SGD schedule across 20 seeds |
-| `fig_08_quadratic_sweep.png` | Quadratic baseline showing stable and divergent step sizes |
