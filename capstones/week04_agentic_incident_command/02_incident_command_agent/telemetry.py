@@ -75,7 +75,7 @@ class TelemetryLogger:
         """
         Record telemetry event and consume budget.
 
-        Fix #8:
+        Budget consumption per event:
         - tokens: 1 token per event
         - ms: use event.latency_ms
         - dollars: unchanged (0.0)

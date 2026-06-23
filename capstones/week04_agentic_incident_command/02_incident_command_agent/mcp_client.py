@@ -1,7 +1,7 @@
 """
 JSON-RPC 2.0 WebSocket client for the Incident MCP server with telemetry.
 Now MCP-compliant with:
-- Proper content[]/mimeType unwrapping (Fix #7B)
+- Proper content[]/mimeType unwrapping
 - Strict JSON-RPC error handling
 - Request/response validation helpers
 """
@@ -84,7 +84,6 @@ class MCPClient:
         )
         self.ctx: Optional[RunContext] = None
 
-        # Fix 5C
         self.server_info: Optional[Dict[str, Any]] = None
         self.server_protocol: Optional[str] = None
 
@@ -182,7 +181,7 @@ class MCPClient:
         if result is None:
             raise RuntimeError(f"Missing 'result' field in response: {response}")
 
-        # MCP unwrap (Fix #7B)
+        # MCP unwrap
         return _unwrap_mcp_result(result)
 
     # -----------------------------------------------------------------------

@@ -264,6 +264,16 @@ This file is the escalation artifact an on-call engineer receives. If the agent 
   If the server is unreachable or the write fails, the error is treated as non-fatal and the loop completes.  
   Telemetry still captures the full execution trace for offline inspection and replay.
 
+- **Single-tenant by design.**  
+  The server uses one shared in-process `IncidentMemoryStore` and a per-session budget.  
+  Concurrent clients would interleave memory state, so multi-client use is out of scope.  
+  Multi-tenant isolation (per-session stores) is a documented stretch goal.
+
+- **Budget is checked pre-call, not reserved.**  
+  Each guardrail checks the ms budget *before* a tool call, so a single call can overshoot  
+  the remaining budget before the next check runs. This is acceptable for the synthetic  
+  deterministic tools here, whose latencies are tiny and known, but is noted for production hardening.
+
 ### Known Limitations / Future Hardening
 
 - **Tool-argument schema validation is top-level only.**  

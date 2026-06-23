@@ -11,7 +11,7 @@ from config import (
     DEFAULT_BUDGET_DOLLARS,
     DEFAULT_BUDGET_MS,
     DEFAULT_BUDGET_TOKENS,
-    DEFAULT_MAX_RETRIES,
+    DEFAULT_MAX_FAILURES,
     DEFAULT_MAX_STEPS,
 )
 from telemetry import Budget, RunContext, TelemetryEvent, TelemetryLogger
@@ -29,7 +29,7 @@ class RemoteIncidentAgent:
         )
         self.max_steps = DEFAULT_MAX_STEPS
         self.max_latency_ms = DEFAULT_BUDGET_MS
-        self.max_retries = DEFAULT_MAX_RETRIES
+        self.max_failures = DEFAULT_MAX_FAILURES
 
     # ------------------------------------------------------------------
     # OPAL: Observe
@@ -169,7 +169,7 @@ class RemoteIncidentAgent:
             if step.get("type") == "callTool":
 
                 name = step.get("name", "")
-                arguments = step.get("arguments", {}) or {}   # <-- FIXED
+                arguments = step.get("arguments", {}) or {}
 
                 try:
                     result = await self.client.call_tool(name, arguments)
@@ -208,22 +208,22 @@ class RemoteIncidentAgent:
                     )
                     break
 
-                # Guardrail: retries
+                # Guardrail: failure budget
                 if status != "ok":
                     failure_count += 1
 
-                if failure_count > self.max_retries:
+                if failure_count > self.max_failures:
                     self.telemetry.log(
                         TelemetryEvent(
                             correlation_id=ctx.correlation_id,
                             loop_id=ctx.loop_id,
                             phase="act_guardrail",
-                            method="max_retries",
+                            method="max_failures",
                             status="error",
                             latency_ms=latency_ms,
                             budget=self.budget,
                             payload={
-                                "reason": "max_retries_exceeded",
+                                "reason": "max_failures_exceeded",
                                 "failures": failure_count,
                             },
                         )
@@ -292,8 +292,24 @@ class RemoteIncidentAgent:
         }
         try:
             await self.client.call_tool("append_memory_delta", {"delta": delta})
-        except Exception:
-            pass  # non-fatal: telemetry continues even if write fails
+        except Exception as exc:
+            # Non-fatal: the loop still completes, but make the failed Learn write
+            # visible in the trace instead of silently discarding it.
+            self.telemetry.log(
+                TelemetryEvent(
+                    correlation_id=ctx.correlation_id,
+                    loop_id=ctx.loop_id,
+                    phase="learn_guardrail",
+                    method="append_memory_delta",
+                    status="error",
+                    latency_ms=0,
+                    budget=self.budget,
+                    payload={
+                        "reason": "append_memory_delta_failed",
+                        "error": str(exc),
+                    },
+                )
+            )
 
         learn_result = {
             "deltas": deltas,

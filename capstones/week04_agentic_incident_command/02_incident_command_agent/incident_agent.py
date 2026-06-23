@@ -15,7 +15,7 @@ from config import (
     DEFAULT_BUDGET_DOLLARS,
     DEFAULT_BUDGET_MS,
     DEFAULT_BUDGET_TOKENS,
-    DEFAULT_MAX_RETRIES,
+    DEFAULT_MAX_FAILURES,
     DEFAULT_MAX_STEPS,
 )
 from incident_memory import IncidentMemoryStore
@@ -43,7 +43,7 @@ class IncidentAgent:
         )
         self.max_steps = DEFAULT_MAX_STEPS
         self.max_latency_ms = DEFAULT_BUDGET_MS
-        self.max_retries = DEFAULT_MAX_RETRIES
+        self.max_failures = DEFAULT_MAX_FAILURES
         self.LOCAL_TOOLS = {
             "retrieve_runbook": self._local_retrieve_runbook,
             "run_diagnostic": self._local_run_diagnostic,
@@ -241,18 +241,18 @@ class IncidentAgent:
                     )
                     break
 
-                if failure_count > self.max_retries:
+                if failure_count > self.max_failures:
                     self.telemetry.log(
                         TelemetryEvent(
                             correlation_id=ctx.correlation_id,
                             loop_id=ctx.loop_id,
                             phase="act_guardrail",
-                            method="max_retries",
+                            method="max_failures",
                             status="error",
                             latency_ms=latency_ms,
                             budget=self.budget,
                             payload={
-                                "reason": "max_retries_exceeded",
+                                "reason": "max_failures_exceeded",
                                 "failures": failure_count,
                             },
                         )
