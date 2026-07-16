@@ -59,6 +59,8 @@ In the verified master notebook:
 - Checkpoint smoke test: the best checkpoint reloaded and reproduced the saved validation metrics
 - Diagnostics: 4-panel figure with train/val loss, validation accuracy, mean gradient norm, and mean hidden ReLU activity
 
+![Week 2 diagnostics](week02_diagnostics.png)
+
 
 ## Developmental progression
 

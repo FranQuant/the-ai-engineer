@@ -42,7 +42,7 @@ the-ai-engineer/
 ├── assets/
 ├── capstones/
 │   ├── week01_gd_optimization/   # GD optimization notebook (figures regenerate on run)
-│   ├── week02_backprop/          # Backprop notebook + saved weights
+│   ├── week02_backprop/          # Backprop notebook + diagnostics figure (checkpoint regenerates on run)
 │   ├── week03_transformers/      # Tiny transformer training + checkpoint
 │   └── week04_agentic_incident_command/
 │       ├── 01_tool_harness/      # Warm-up: minimal MCP server/client
