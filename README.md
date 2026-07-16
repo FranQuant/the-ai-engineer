@@ -41,7 +41,7 @@ Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based a
 the-ai-engineer/
 ├── assets/
 ├── capstones/
-│   ├── week01_gd_optimization/   # GD optimization notebook + figures
+│   ├── week01_gd_optimization/   # GD optimization notebook (figures regenerate on run)
 │   ├── week02_backprop/          # Backprop notebook + saved weights
 │   ├── week03_transformers/      # Tiny transformer training + checkpoint
 │   └── week04_agentic_incident_command/
