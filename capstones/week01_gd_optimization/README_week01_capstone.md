@@ -25,7 +25,9 @@ piecewise non-smooth objective
 $$f(x) = \left|\tfrac{1}{2}x^3 - \tfrac{3}{2}x^2\right| + \tfrac{1}{2}x$$
 
 which has a kink (non-differentiability) at $x = 3$ and a global minimizer at
-$x^\star = 1 - \tfrac{2\sqrt{3}}{3} \approx -0.155$.
+$x^\star = 1 - \tfrac{2\sqrt{3}}{3} \approx -0.155$. The notebook is a controlled
+study of how step size, initialization, gradient noise, and smoothness interact,
+on the simplest objective that exhibits all four.
 
 A convex quadratic baseline $q(x) = \tfrac{1}{2}x^2$ is included as a clean
 stability reference for step-size analysis. All runs are seeded for
@@ -35,11 +37,10 @@ reproducibility in Colab or locally.
 
 ## How to Run
 
-The notebook runs top-to-bottom without external data and uses only **NumPy** + **Matplotlib**.
-
-Runs on a stock Colab runtime (NumPy and Matplotlib are preinstalled); no
-install cell is needed. For bare local environments, install from the repo
-root with `pip install -r requirements.txt`.
+The notebook runs top-to-bottom with no external data, using only NumPy and
+Matplotlib — both preinstalled on a stock Colab runtime, so no install cell
+is needed. For a bare local environment, run `pip install -r requirements.txt`
+from the repo root. All runs are seeded; figures save deterministically.
 
 It runs on:
 
