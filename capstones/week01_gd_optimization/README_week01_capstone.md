@@ -37,6 +37,10 @@ reproducibility in Colab or locally.
 
 The notebook runs top-to-bottom without external data and uses only **NumPy** + **Matplotlib**.
 
+Runs on a stock Colab runtime (NumPy and Matplotlib are preinstalled); no
+install cell is needed. For bare local environments, install from the repo
+root with `pip install -r requirements.txt`.
+
 It runs on:
 
 - Google Colab  
