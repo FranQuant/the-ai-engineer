@@ -1,0 +1,204 @@
+{
+  "acceptance_checks": {
+    "candidate_outside_repository": true,
+    "checkpoint_kinds": true,
+    "checkpoint_publication_policy": true,
+    "csv_best_agreement": true,
+    "exact_filenames": true,
+    "identity_agreement": true,
+    "inventory_matches_files": true,
+    "mode_name_isolation": true,
+    "png_signatures": true,
+    "reload_validation_agreement": true,
+    "repository_unmodified_during_run": true,
+    "samples_best_checkpoint_settings": true,
+    "six_pre_run_json_artifacts_nonempty": true
+  },
+  "architecture": {
+    "block_size": 128,
+    "d_ff": 1024,
+    "d_model": 256,
+    "dropout": 0.1,
+    "num_heads": 8,
+    "num_layers": 4,
+    "parameter_count": 3178240
+  },
+  "artifacts": {
+    "attention_plot": {
+      "filename": "finance_minigpt_attention.png",
+      "sha256": "ee6c9d8c2c2a3740bacf79e985c096f97056c73f5f0f1d5d3077d22a5f56230d",
+      "size_bytes": 67659
+    },
+    "best_checkpoint": {
+      "filename": "finance_minigpt_best.pt",
+      "sha256": "c2b7d44b655d667382e7f318bf9f7eeabbdf25215adad22bd5449ff8292dfb49",
+      "size_bytes": 13074792
+    },
+    "final_checkpoint": {
+      "filename": "finance_minigpt_final.pt",
+      "sha256": "a6f2bc36986be45b17ce5013b00897606c9cb25956bf44af09154aaa02ddc82b",
+      "size_bytes": 38546611
+    },
+    "metrics": {
+      "filename": "finance_minigpt_metrics.csv",
+      "sha256": "3f93d83aae4718f2e96a206601494814e54b028728cfb58d3a73c1272a03346e",
+      "size_bytes": 135567
+    },
+    "samples": {
+      "filename": "finance_minigpt_samples.json",
+      "sha256": "9196aa6e39284207dc7ea1d5aaf7ea8742235a6a6f0f19bca2b789437a42f37a",
+      "size_bytes": 64372
+    },
+    "training_plot": {
+      "filename": "finance_minigpt_training.png",
+      "sha256": "e2635e0d6bce985d16e2504a2d023fc9d2f7ac2fa5e4e92e84dc939e7a7e59c3",
+      "size_bytes": 89714
+    }
+  },
+  "best_step": 1220,
+  "best_validation_loss": 1.8916519146487343,
+  "completion_status": "complete",
+  "corpus": {
+    "documents": 90,
+    "id": "fomc-statements-2015-2025-v2",
+    "manifest_sha256": "3fc37f4a8ea0cc358269e7f8e37bf310cc96da4ba3981d361038a30a4511c2f2",
+    "sha256": "c632b6a2e7bcfc0360e9fe18113a2ec1c9edce2d42f83b4ff96f5ce4d74ea125",
+    "train_documents": 82,
+    "validation_documents": 8
+  },
+  "elapsed_seconds": 71.26362760299997,
+  "environment": {
+    "cuda_available": true,
+    "device": "cuda",
+    "mps_available": false,
+    "numpy": "2.0.2",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "python": "3.12.13",
+    "torch": "2.11.0+cu128"
+  },
+  "exhaustive_validation": {
+    "cross_entropy": 1.8916519146487343,
+    "perplexity": 6.630312349647294,
+    "reconciliation_difference": 0.0,
+    "tokens": 2105600,
+    "tolerance": 1e-06,
+    "windows": 16450
+  },
+  "final_step": 1220,
+  "git": {
+    "branch": "capstone/week03-fomc",
+    "clean": true,
+    "commit": "b0c3903135779ec7ba78d43f89b859454458a4da",
+    "porcelain": ""
+  },
+  "limitations": [
+    "Distributional metrics do not establish coherence, factual correctness, prediction skill, or economic value.",
+    "Attention weight is not causal explanation."
+  ],
+  "parameter_count": 3178240,
+  "reload": {
+    "atol": 1e-07,
+    "max_abs_logit_difference": 0.0,
+    "normalized_device": "cpu",
+    "policy": "exact",
+    "reconstructed_device_before_normalization": "cuda:0",
+    "reconstructed_dtype": "torch.float32",
+    "reconstructed_shape": [
+      1,
+      24,
+      73
+    ],
+    "reference_device_before_normalization": "cuda:0",
+    "reference_dtype": "torch.float32",
+    "reference_shape": [
+      1,
+      24,
+      73
+    ],
+    "rtol": 1e-06
+  },
+  "resolved_configuration": {
+    "amp": false,
+    "architecture": {
+      "block_size": 128,
+      "d_ff": 1024,
+      "d_model": 256,
+      "dropout": 0.1,
+      "num_heads": 8,
+      "num_layers": 4
+    },
+    "attention_implementation": "from-scratch",
+    "authorized_training": true,
+    "batch_size": 32,
+    "best_path": "/content/week03_finance_minigpt_canonical_candidate/finance_minigpt_best.pt",
+    "betas": [
+      0.9,
+      0.95
+    ],
+    "eval_batch_size": 128,
+    "filenames": {
+      "attention_plot": "finance_minigpt_attention.png",
+      "best_checkpoint": "finance_minigpt_best.pt",
+      "final_checkpoint": "finance_minigpt_final.pt",
+      "metrics": "finance_minigpt_metrics.csv",
+      "run_record": "finance_minigpt_run.json",
+      "samples": "finance_minigpt_samples.json",
+      "training_plot": "finance_minigpt_training.png"
+    },
+    "final_path": "/content/week03_finance_minigpt_canonical_candidate/finance_minigpt_final.pt",
+    "generation": {
+      "continuation_characters": 200,
+      "prompts": [
+        "The Committee decided to",
+        "Inflation has",
+        "The labor market",
+        "The target range for the federal funds rate",
+        "In assessing the appropriate stance of monetary policy"
+      ],
+      "stochastic_seeds": [
+        1000,
+        1001,
+        1002,
+        1003,
+        1004
+      ],
+      "temperature": 0.8,
+      "top_k": 20
+    },
+    "grad_clip": 1.0,
+    "lr": 0.0003,
+    "min_lr": 3e-05,
+    "output_dir": "/content/week03_finance_minigpt_canonical_candidate",
+    "precision": "FP32",
+    "run_id": "phase4-canonical-20260720T141501Z-532748ca",
+    "run_mode": "phase4-canonical",
+    "seed": 0,
+    "status": "canonical-candidate",
+    "steps": 1221,
+    "token_budget": 5001216,
+    "tokens_per_step": 4096,
+    "validation_steps": [
+      0,
+      250,
+      500,
+      750,
+      1000,
+      1220
+    ],
+    "warmup_steps": 61,
+    "weight_decay": 0.1
+  },
+  "run_id": "phase4-canonical-20260720T141501Z-532748ca",
+  "run_json_filename": "finance_minigpt_run.json",
+  "run_mode": "phase4-canonical",
+  "run_status": "canonical-candidate",
+  "schema_version": "finance-minigpt-run-v2",
+  "steps_completed": 1221,
+  "throughput_tokens_per_second": 86046.41054355598,
+  "tokens_processed": 5001216,
+  "training_elapsed_seconds": 58.12230827999997,
+  "warnings": [
+    "Greedy decoding and validation should reproduce after reload. Seeded stochastic decoding should reproduce on the same PyTorch/device backend; exact samples are not guaranteed across CUDA, MPS, and CPU because backend sampling may differ. This does not imply model or checkpoint inconsistency.",
+    "Canonical candidate artifacts require separate review before any Git promotion."
+  ]
+}

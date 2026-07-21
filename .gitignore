@@ -95,6 +95,10 @@ datasets/
 *.npz
 *.npy
 
+# Week 3 — reviewed canonical inference/results artifacts
+!capstones/week03_transformers/results/canonical/finance_minigpt_best.pt
+!capstones/week03_transformers/results/canonical/finance_minigpt_metrics.csv
+
 # ----------------------------
 # TAE Program Artifacts
 # ----------------------------
