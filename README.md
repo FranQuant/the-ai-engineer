@@ -4,7 +4,7 @@
 
 <h1>The AI Engineer</h1>
 
-Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based agentic incident-command capstone (Week 4), graded on the <b>remote MCP server/client path</b> with a local deterministic mirror as supporting evidence.
+Notebook-centered ML/DL deliverables for Weeks 1–3, plus an in-progress Week 4 MCP-based agentic incident-command capstone.
 
 </td>
 
@@ -17,7 +17,7 @@ Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based a
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-yellow?logo=python&logoColor=white">
   <img src="https://img.shields.io/badge/Weeks_1--3-Colab_Ready-blue?logo=googlecolab&logoColor=white">
-  <img src="https://img.shields.io/badge/Week_4-Remote_MCP_Workflow-purple">
+  <img src="https://img.shields.io/badge/Week_4-Work_in_Progress-lightgrey">
   <img src="https://img.shields.io/badge/License-Educational%20Use-green">
 </p>
 
@@ -30,8 +30,8 @@ Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based a
 | ----- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1** | **Gradient Descent Optimization** | [`gd_capstone.ipynb`](capstones/week01_gd_optimization/gd_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                                     | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)                   |
 | **2** | **Backpropagation**               | [`week02_master_capstone.ipynb`](capstones/week02_backprop/week02_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                      | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb)        |
-| **3** | **Tiny Transformer**              | [`week03_master_capstone.ipynb`](capstones/week03_transformers/week03_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week03_transformers/week03_master_capstone.ipynb) |
-| **4** | **Agentic Incident Command**      | [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`mcp_client.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_client.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Remote MCP server/client workflow. The local deterministic runner is supporting evidence.                                                                      |
+| **3** | **FOMC Transformer**              | [`week03_master_capstone.ipynb`](capstones/week03_transformers/week03_master_capstone.ipynb) · [guide](capstones/week03_transformers/README_week03_capstone.md) · [canonical results](capstones/week03_transformers/results/canonical/) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/week03-capstone-v1/capstones/week03_transformers/week03_master_capstone.ipynb) |
+| **4** | **Agentic Incident Command (work in progress)** | [`README_week04_capstone.md`](capstones/week04_agentic_incident_command/README_week04_capstone.md) | Not yet presented as a verified or complete release. |
 
 ---
 
@@ -43,7 +43,7 @@ the-ai-engineer/
 ├── capstones/
 │   ├── week01_gd_optimization/   # GD optimization notebook (figures regenerate on run)
 │   ├── week02_backprop/          # Backprop notebook + diagnostics figure (checkpoint regenerates on run)
-│   ├── week03_transformers/      # Tiny transformer training + checkpoint
+│   ├── week03_transformers/      # FOMC Transformer + frozen canonical results
 │   └── week04_agentic_incident_command/
 │       ├── 01_tool_harness/      # Warm-up: minimal MCP server/client
 │       ├── 02_incident_command_agent/  # Primary capstone (graded)
@@ -56,31 +56,11 @@ the-ai-engineer/
 
 ---
 
-## Week 4 Verification Entry Points
+## Week 3 release candidate
 
-From the repository root:
+The Week 3 [notebook](capstones/week03_transformers/week03_master_capstone.ipynb) is the self-contained entry point. The [capstone guide](capstones/week03_transformers/README_week03_capstone.md) documents provenance, architecture, results, limitations, and the six-file [canonical artifact set](capstones/week03_transformers/results/canonical/). The future immutable Colab release is pinned to `week03-capstone-v1` and defaults to validation-only with training disabled.
 
-```bash
-# Terminal A: start the MCP server
-python capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py
-
-# Terminal B: run the primary graded remote MCP path
-python capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py
-
-# Replay a telemetry trace
-python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
-
-# Supporting deterministic local run
-python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py
-
-# Run the test suite
-pytest capstones/week04_agentic_incident_command/02_incident_command_agent/
-```
-
-For Week 4 details, telemetry, guardrails, and architecture notes, see the dedicated Week 4 README:
-[`capstones/week04_agentic_incident_command/README_week04_capstone.md`](capstones/week04_agentic_incident_command/README_week04_capstone.md)
-
-Telemetry logs and incident summaries for inspection are stored in `capstones/week04_agentic_incident_command/artifacts/`.
+Week 4 remains work in progress. Its files are preserved, but this README does not claim that release is verified or complete.
 
 ---
 
@@ -97,7 +77,7 @@ pip install -r requirements.txt
 Notes:
 
 * Weeks 1–3 can be reviewed directly in GitHub and opened in Colab from the links above.
-* Week 4 is designed for a local Python environment because it depends on a live MCP server/client interaction and replayable telemetry artifacts.
+* Week 4 is still under development and is not part of the verified Week 3 release candidate.
 
 ---
 
