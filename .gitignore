@@ -61,7 +61,7 @@ Thumbs.db
 # Machine Learning Artifacts
 # ----------------------------
 # Checkpoints, weights, runs, and outputs
-# *.pt — mini_gpt.pt in capstones/week03_transformers/ is committed intentionally
+# Canonical Week 3 checkpoint is committed intentionally under results/canonical/.
 # via `git add -f` to provide a reproducible grading checkpoint. All other .pt files remain ignored.
 *.pt
 # Week 2 — checkpoint (may land at repo root if run from root)
