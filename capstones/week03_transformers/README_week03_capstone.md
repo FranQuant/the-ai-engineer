@@ -17,6 +17,7 @@ Readers can follow how to:
 - implement scaled causal attention and multi-head self-attention from tensor operations;
 - assemble sinusoidal positions, Pre-LN blocks, and a decoder-only Transformer;
 - keep document windows inside a frozen chronological split;
+- trace one AdamW optimization step from batch construction through gradient clipping and scheduling;
 - distinguish numerical optimization from semantic generation quality;
 - reconcile immutable artifacts and reconstruct a checkpoint without retraining.
 
@@ -79,7 +80,7 @@ The optimizer-bearing final checkpoint and raw evidence archive are intentionall
 
 ## Default validation-only path
 
-From a local checkout, open the notebook and run all cells without setting Week 3 mode variables. It verifies the corpus and manifest, runs 48 bounded implementation checks, verifies all six canonical artifacts and 13 canonical acceptance checks, reloads the checkpoint, and renders the trajectory, all ten samples, scorecard, training plot, and masking diagnostic. Training remains disabled.
+From a local checkout, open the notebook and run all cells without setting Week 3 mode variables. The opening runtime summary reports Python, PyTorch, device, Colab status, repository root, and run mode. The notebook then verifies the corpus and manifest, runs 48 bounded implementation checks, verifies all six canonical artifacts and 13 canonical acceptance checks, reloads the checkpoint, and renders the trajectory, all ten samples, scorecard, training plot, and masking diagnostic. Training remains disabled.
 
 ## Automatic Colab behavior
 
@@ -89,10 +90,6 @@ From a local checkout, open the notebook and run all cells without setting Week 
 4. Validation-only mode discovers the frozen corpus and six canonical artifacts, validates them, and displays results.
 
 No ZIP upload, manual clone, credential, or private filesystem path is required. `WEEK03_REVISION` is only a temporary override for private/local validation before the public tag exists; the released default stays pinned to `week03-capstone-v1`.
-
-## Optional training: disabled
-
-Training is unnecessary for this release and never starts automatically. Guarded training code remains visible only for educational completeness and requires deliberate authorization plus an external output directory. Do not enable it for ordinary Colab use or release validation, and do not replace the immutable canonical artifacts.
 
 ## Limitations
 
