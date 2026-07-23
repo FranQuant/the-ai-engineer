@@ -54,6 +54,8 @@ In the verified master notebook:
 - Torch manual backward parity vs NumPy: max abs diff `3.66e-08`
 - Fixed-batch manual vs autograd agreement: max abs diff `0.0`
 - `nn.Sequential` parity check: max abs diff `0.00e+00`
+- `nn.Sequential` trained with SGD (Section 11b): train loss 0.3735 -> 0.0893 over 80 epochs, val acc 0.89
+- Per-unit ReLU activity and error-location measurement (Section 13b): no dead/always-on units; misclassified points concentrate near the class boundary (median |x1*x2| 0.031 vs 0.241)
 - Best validation loss: `0.072691`
 - Best validation accuracy: `0.9300`
 - Checkpoint smoke test: the best checkpoint reloaded and reproduced the saved validation metrics
