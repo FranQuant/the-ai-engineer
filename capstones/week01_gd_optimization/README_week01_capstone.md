@@ -12,7 +12,7 @@ Checklist — plus the Week 1 Coaching Guide acceptance rubric.
 </td>
 
 <td align="right" width="200">
-<img src="../../assets/tae_logo.png" alt="TAE Banner" width="160">
+<img src="https://theaiengineer.dev/tae_logo_gw_flatter.png" alt="TAE Banner" width="160">
 </td>
 </tr>
 </table>
@@ -42,7 +42,8 @@ experiments:
 The notebook is self-verifying: assertions pin the implementation to the handout's
 published values (the overshoot sequence, the step-geometry update $x' = 1.9$, and
 the closed-form minimum $f(x^\star) = \tfrac{3}{2} - \tfrac{8}{9}\sqrt{3}$). The
-measured SGD steady-state floors match the handout's Prop. 2 prediction within 3–12%.
+median SGD final gaps at K = 200 (20 seeds) are consistent with the handout's Prop. 2
+steady-state prediction to within 3–12%.
 
 ## How to Run
 
