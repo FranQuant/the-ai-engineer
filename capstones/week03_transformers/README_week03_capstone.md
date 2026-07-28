@@ -39,14 +39,7 @@ do use real FOMC names and correct procedural/policy language.
 
 ## Pipeline
 
-| Stage | Character-level | BPE (extension) |
-|---|---|---|
-| Tokenize | 102-character vocab | 4,000-entry vocab, BPE trained from scratch |
-| Architecture | SDPA → Self-Attn → Multi-Head Attn → Transformer Block → LM *(identical code, both paths)* | |
-| Model size | 4.76M params | 5.76M params |
-| Train | 6,000 steps + resume phase | 6,000 steps + resume phase |
-| Sample | Greedy + `top_k=40` | Greedy + `top_k=40` |
-| **Compare** | **→ Fair Comparison: bits/char, Char-KL ←** | |
+![Week 3 pipeline: shared attention/transformer code, branching into character-level and BPE paths, merging at Fair Comparison](week03_pipeline_diagram.png)
 
 Every stage is verified against a hand-computable example before the next is
 built on top of it. The BPE path reuses the identical model code, trained on
@@ -59,8 +52,9 @@ the same corpus, for a direct comparison rather than a separate model.
 `build_fomc_minutes_corpus.py` / `merge_fomc_corpus.py`; provenance in
 `fomc_training_corpus_manifest.json`.
 
-Pre-2010 minutes aren't included (legacy URL scheme on the Fed's site,
-disclosed in the manifest's `known_coverage_gap`) — BPE's larger vocabulary
+Pre-2010 minutes aren't included — they live under a legacy URL scheme on the
+Fed's site that this corpus's builder doesn't crawl (disclosed in the
+manifest's `known_coverage_gap`). Because of that, BPE's larger vocabulary
 gets much less data per entry than char-level's, which is likely why it
 needed stronger regularization to train well.
 
