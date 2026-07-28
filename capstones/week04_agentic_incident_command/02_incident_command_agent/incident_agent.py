@@ -241,7 +241,7 @@ class IncidentAgent:
                     )
                     break
 
-                if failure_count > self.max_failures:
+                if failure_count >= self.max_failures:
                     self.telemetry.log(
                         TelemetryEvent(
                             correlation_id=ctx.correlation_id,
