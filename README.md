@@ -1,18 +1,11 @@
-<table width="100%">
-<tr>
-<td style="vertical-align: top;">
+<img src="https://theaiengineer.dev/tae_logo_gw_flatter.png" width="35%" align="right">
 
-<h1>The AI Engineer</h1>
+# The AI Engineer
 
-Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based agentic incident-command capstone (Week 4), graded on the <b>remote MCP server/client path</b> with a local deterministic mirror as supporting evidence.
-
-</td>
-
-<td align="right" width="200">
-  <img src="assets/tae_logo.png" alt="TAE Logo" width="160">
-</td>
-</tr>
-</table>
+Four weekly capstones for The AI Engineer program: gradient descent, backpropagation,
+and a tiny transformer from scratch (Weeks 1–3, all Colab-ready notebooks), culminating
+in an MCP-based agentic incident-command system (Week 4), graded on its remote MCP
+server/client workflow with a local deterministic run as supporting evidence.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-yellow?logo=python&logoColor=white">
@@ -20,7 +13,6 @@ Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based a
   <img src="https://img.shields.io/badge/Week_4-Remote_MCP_Workflow-purple">
   <img src="https://img.shields.io/badge/License-Educational%20Use-green">
 </p>
-
 
 ---
 
@@ -30,7 +22,7 @@ Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based a
 | ----- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1** | **Gradient Descent Optimization** | [`gd_capstone.ipynb`](capstones/week01_gd_optimization/gd_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                                     | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)                   |
 | **2** | **Backpropagation**               | [`week02_master_capstone.ipynb`](capstones/week02_backprop/week02_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                      | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb)        |
-| **3** | **Tiny Transformer**              | [`week03_master_capstone.ipynb`](capstones/week03_transformers/week03_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week03_transformers/week03_master_capstone.ipynb) |
+| **3** | **Tiny Transformer**              | [`week03_tiny_transformer.ipynb`](capstones/week03_transformers/week03_tiny_transformer.ipynb)                                                                                                                                                                                                                                                                                                                                | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week03_transformers/week03_tiny_transformer.ipynb) |
 | **4** | **Agentic Incident Command**      | [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`mcp_client.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_client.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Remote MCP server/client workflow. The local deterministic runner is supporting evidence.                                                                      |
 
 ---
@@ -39,11 +31,10 @@ Notebook-centered ML/DL deliverables (Weeks 1–3) culminating in an MCP-based a
 
 ```text
 the-ai-engineer/
-├── assets/
 ├── capstones/
-│   ├── week01_gd_optimization/   # GD optimization notebook (figures regenerate on run)
-│   ├── week02_backprop/          # Backprop notebook + diagnostics figure (checkpoint regenerates on run)
-│   ├── week03_transformers/      # Tiny transformer training + checkpoint
+│   ├── week01_gd_optimization/   # GD/SGD notebook + 8 generated figures
+│   ├── week02_backprop/          # Manual → autograd → nn.Module, one notebook
+│   ├── week03_transformers/      # Tiny transformer + BPE extension, from scratch
 │   └── week04_agentic_incident_command/
 │       ├── 01_tool_harness/      # Warm-up: minimal MCP server/client
 │       ├── 02_incident_command_agent/  # Primary capstone (graded)
