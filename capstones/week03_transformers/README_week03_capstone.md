@@ -69,5 +69,3 @@ upload needed. ~1 hr on T4, ~35 min on L4.
 - BPE is a labeled extension, not a replacement — both models kept and
   reported, including the finding that reversed which one wins
 - Metrics are from a small number of seeded runs, not averaged
-
-<img src="https://theaiengineer.dev/tae_logo_gw_flatter.png" width="35%" align="right">
