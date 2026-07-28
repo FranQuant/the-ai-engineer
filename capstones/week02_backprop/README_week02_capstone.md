@@ -7,8 +7,8 @@
 
 
 <p>
-This folder packages the Week 2 backprop submission following the TAE program structure.<br>
-
+This folder contains the full Week-02 Capstone completed following the TAE Program structure.<br>
+The goal is to implement a tiny <strong>1-hidden-layer MLP</strong>, step-by-step, moving from fully manual NumPy backprop to PyTorch’s <code>nn.Module</code> API.
 </p>
 
 </td>
@@ -20,53 +20,14 @@ This folder packages the Week 2 backprop submission following the TAE program st
 </tr>
 </table>
 
-## Primary submission notebook
 
-The main Week 2 submission artifact is [week02_master_capstone.ipynb](week02_master_capstone.ipynb).
+All notebooks use:
 
-<a target="_blank" href="https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb">
-  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/>
-</a>
+- Deterministic seeds  
+- Same XOR-style synthetic dataset  
+- Same MLP architecture  
 
-This notebook consolidates the verified Week 2 evidence into one compact submission.
-
-
-## Run locally
-
-From the repo root, install the notebook dependencies from `requirements.txt` and a platform-appropriate PyTorch wheel, then open the notebook:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-jupyter lab capstones/week02_backprop/week02_master_capstone.ipynb
-```
-
-For a non-interactive check, run `jupyter nbconvert --execute --to notebook --inplace capstones/week02_backprop/week02_master_capstone.ipynb`.
-
-
-## Evidence summary
-
-In the verified master notebook:
-
-- Finite-difference gradient check: max abs diff `9.79e-12`
-- Torch forward parity: abs diff `1.09e-10`
-- Torch manual backward parity vs NumPy: max abs diff `3.66e-08`
-- Fixed-batch manual vs autograd agreement: max abs diff `0.0`
-- `nn.Sequential` parity check: max abs diff `0.00e+00`
-- `nn.Sequential` trained with SGD (Section 11b): train loss 0.3735 -> 0.0893 over 80 epochs, val acc 0.89
-- Per-unit ReLU activity and error-location measurement (Section 13b): no dead/always-on units; misclassified points concentrate near the class boundary (median |x1*x2| 0.031 vs 0.241)
-- Best validation loss: `0.072691`
-- Best validation accuracy: `0.9300`
-- Checkpoint smoke test: the best checkpoint reloaded and reproduced the saved validation metrics
-- Diagnostics: 4-panel figure with train/val loss, validation accuracy, mean gradient norm, and mean hidden ReLU activity
-
-![Week 2 diagnostics](week02_diagnostics.png)
-
-
-## Developmental progression
-
-The Week 2 solution builds from manual NumPy backprop through PyTorch forward parity, PyTorch autograd, and `nn.Module` training. The equations below capture the shared model structure used across that progression:
+Forward pass:
 
 $$
 a_1 = W_1 x + b_1,\qquad
@@ -74,13 +35,121 @@ h_1 = \mathrm{ReLU}(a_1),\qquad
 f = W_2 h_1 + b_2
 $$
 
-Loss (per sample):
+Loss:
 
 $$
-L = \tfrac{1}{2}(f - y)^2
+L = \frac{1}{2}(f - y)^2
 $$
 
-PyTorch's built-in `MSELoss(reduction="mean")` computes the batch mean of
-$(f - y)^2$. This changes gradient scaling, but not the underlying fixed points
-of the optimization problem.
+
+<table>
+<tr>
+
+<td width="50%" valign="top">
+
+<h3>Notebook 01 — <code>01_numpy_manual.ipynb</code></h3>
+
+<a target="_blank" href="https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/01_numpy_manual.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/>
+</a>
+
+<b>Goal:</b> Manual forward + backward pass in NumPy.<br>
+<b>Features:</b><br>
+– Manual ReLU + derivative<br>
+– Full chain-rule backprop<br>
+– Gradient checks<br>
+– Source-of-truth implementation
+
+</td>
+
+<td width="50%" valign="top">
+
+<h3>Notebook 02 — <code>02_pytorch_no_autograd.ipynb</code></h3>
+
+<a target="_blank" href="https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/02_pytorch_no_autograd.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/>
+</a>
+
+<b>Goal:</b> Reproduce NumPy forward pass in PyTorch without autograd.<br>
+<b>Features:</b><br>
+– <code>requires_grad = False</code><br>
+– Forward consistency vs NumPy<br>
+– Ensures math alignment before autograd<br>
+– Same seeds + dataset
+
+</td>
+
+</tr>
+
+<tr>
+
+<td width="50%" valign="top">
+
+<h3>Notebook 03 — <code>03_pytorch_autograd.ipynb</code></h3>
+
+<a target="_blank" href="https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/03_pytorch_autograd.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+<b>Goal:</b> Use PyTorch autograd and compare with manual gradients.<br>
+<b>Features:</b><br>
+– <code>loss.backward()</code> gradient flow<br>
+– Manual vs autograd gradient match<br>
+– Optional finite differences<br>
+– Prepares for <code>nn.Module</code>
+
+</td>
+
+<td width="50%" valign="top">
+
+<h3>Notebook 04 — <code>04_pytorch_nn_module.ipynb</code></h3>
+
+<a target="_blank" href="https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week02_backprop/04_pytorch_nn_module.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+<b>Goal:</b> Wrap the model in <code>nn.Module</code> and train with mini-batch SGD.<br>
+<b>Features:</b><br>
+– Custom <code>TwoLayerXOR</code><br>
+– <code>DataLoader</code> shuffling<br>
+– SGD training loop (~200 epochs)<br>
+– Loss + gradient-norm diagnostics
+
+</td>
+
+</tr>
+</table>
+
+
+## Summary
+
+This 4-notebook progression builds the full intuition and engineering workflow:
+
+1. Manual gradients  
+2. Torch forward  
+3. Torch autograd  
+4. `nn.Module` + training loop  
+
+It prepares the foundation for future Capstones involving:
+
+- Deep networks  
+- Optimizers  
+- Regularization  
+- Vision/sequence models  
+- Reinforcement learning  
+- Agentic training workflows  
+
+---
+
+## Dependencies (Minimal)
+
+Minimal packages used in Week 02:
+
+```text
+numpy
+matplotlib
+torch
+```
+
+For the full environment used during development, see the root-level `requirements.txt`.
 

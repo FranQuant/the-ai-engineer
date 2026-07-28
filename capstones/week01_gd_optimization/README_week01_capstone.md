@@ -2,89 +2,86 @@
 <tr>
 <td style="vertical-align: top;">
 
-<h1>Week 1 Capstone — Gradient-Based Optimization: From Calculus to GD/SGD</h1>
+<h1>Week 1 Capstone — Gradient Descent Optimization</h1>
 
-This folder contains the Week-1 capstone for *The AI Engineer* program (Core Track),
-implementing the case-study handout *Gradient-Based Optimization Case Study: From
-Calculus to GD/SGD* — its Section 7 experiments protocol and p. 13 Capstone Delivery
-Checklist — plus the Week 1 Coaching Guide acceptance rubric.
+This folder contains the Week-1 capstone for *The AI Engineer* program.  
+The goal is to implement and visualize basic gradient-based optimization  
+methods on simple 1-D functions.
 
 </td>
 
 <td align="right" width="200">
-<img src="https://theaiengineer.dev/tae_logo_gw_flatter.png" alt="TAE Banner" width="160">
+<img src="../../assets/tae_logo.png" alt="TAE Banner" width="160">
 </td>
 </tr>
 </table>
 
+
 ## Overview
 
-The notebook analyzes the 1-D piecewise-smooth objective
+This notebook explores the behavior of Gradient Descent (GD) and Stochastic Gradient Descent (SGD) on two instructional objectives:
 
-$$f(x) = \left|\tfrac{1}{2}x^3 - \tfrac{3}{2}x^2\right| + \tfrac{1}{2}x$$
+1. **Quadratic baseline**
+   • Convex and smooth  
+   • Used to study stability and learning-rate effects  
+   • Includes the required step-size sweep
 
-with a kink at $x = 3$ and unique global minimizer
-$x^\star = 1 - \tfrac{2\sqrt{3}}{3} \approx -0.1547$, then runs the prescribed
-experiments:
+2. **Cubic non-convex function**
+   • Exhibits multiple basins of attraction  
+   • Highlights divergence vs. convergence paths  
+   • Demonstrates noisy vs. diminishing-noise SGD trajectories  
 
-- Analytic-vs-numeric gradient check on both smooth branches (max error ≈ 2e-9)
-- GD: 3 initializations × 4 step sizes, K = 200 — step geometry, trajectories,
-  overshoot demo, and steps-to-tolerance comparison
-- SGD (the handout's eq. (5) additive-noise model): constant vs diminishing schedules
-  from the protocol starts, 20 seeds per configuration, median + IQR curves, and
-  paired final-gap statistics
-- An empirical probe of the kink's limit-cycle trap and basin-escape fractions
-- A quadratic stability baseline calibrating the 2/L step-size thresholds
-  (coach-guide scope)
-- Metrics table: final gap, best-so-far gap, and steps-to-tolerance for every
-  configuration
+All experiments are one-dimensional, enabling direct visualization of optimization dynamics.
 
-The notebook is self-verifying: assertions pin the implementation to the handout's
-published values (the overshoot sequence, the step-geometry update $x' = 1.9$, and
-the closed-form minimum $f(x^\star) = \tfrac{3}{2} - \tfrac{8}{9}\sqrt{3}$). The
-median SGD final gaps at K = 200 (20 seeds) are consistent with the handout's Prop. 2
-steady-state prediction to within 3–12%.
+---
+
+## What’s Implemented
+
+• Deterministic Gradient Descent  
+• Stochastic Gradient Descent with:
+  – Constant step size  
+  – Diminishing step size  
+
+• **Single shared NumPy RNG for reproducibility**  
+  (`rng = np.random.default_rng(SEED)`)  
+  Fresh trajectories can be produced by supplying a new RNG instance.
+
+• Convergence diagnostics:
+  – Final gap  
+  – Best gap  
+  – Steps-to-tolerance  
+
+• Visualizations:
+  – GD step-size sweep (quadratic)  
+  – Cubic function and derivative  
+  – GD trajectories from multiple initializations  
+  – SGD vs. diminishing-SGD trajectories
+
+---
+
+## File Structure
+
+```text
+week01_gd_optimization/
+│
+├── gd_capstone.ipynb          # Full implementation & plots
+└── README_week01_capstone.md  # This document
+```
+
+---
 
 ## How to Run
 
-Single click — the Colab badge below (also atop the notebook). The first cell
-installs any missing packages (a no-op on stock Colab) and the notebook runs
-top-to-bottom without edits in under 2 minutes, seed fixed at 1. All data are
-generated programmatically; figures save deterministically to `assets/` (relative
-paths, dpi = 300).
+The notebook runs top-to-bottom on:
 
-Locally: `jupyter lab gd_capstone.ipynb` → Run All. For a bare environment,
-`pip install -r requirements.txt` from the repo root (only NumPy and Matplotlib are
-required).
+- Google Colab  
+- Local Jupyter Notebook  
+- GitHub Codespaces  
 
 ### Open in Google Colab
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
+https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb
+)
 
-## Verification
-
-- Gradient check: analytic derivative vs centered finite differences at 18 points on
-  both sides of the kink (avoiding $x = 3$ itself), max error asserted < 1e-6 at
-  runtime (measured ≈ 2.2e-9).
-- Source-pinned asserts: the handout's overshoot sequence
-  $(0.5, -0.475, 0.283, -0.454, 0.249)$ and step-geometry value are reproduced
-  exactly; the quadratic baseline's empirical contraction matches $|1-\eta a|$ to
-  machine precision.
-- Reproducibility footer records Python/NumPy/Matplotlib versions and all seeds.
-
-## Deliverables
-
-- Notebook: [`gd_capstone.ipynb`](https://github.com/FranQuant/the-ai-engineer/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)
-  (kept output-stripped in the repo; reproduce all outputs via the Colab badge)
-- Saved figures: `assets/` (8 files, generated by the notebook)
-- Repo: https://github.com/FranQuant/the-ai-engineer
-
-## Honest-Reporting Notes
-
-The handout's Figs. 6–9 and 11 are explicitly schematic; every figure here is an
-actual seeded run, and each real-vs-schematic difference is disclosed where it
-occurs: GD final gaps saturate at machine precision (so the step-size comparison
-reports steps-to-tolerance), and the Fig. 7 replication keeps its illustration start
-$x_0 = 2.2$, which lies inside the kink's basin and honestly bounces against the
-kink wall rather than approaching $x^\star$. Log-scale gap plots are clipped at
-machine epsilon (disclosed in captions).
+Dependencies: **NumPy** and **Matplotlib** only
