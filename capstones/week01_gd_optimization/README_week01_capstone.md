@@ -1,87 +1,45 @@
-<table width="100%">
-<tr>
-<td style="vertical-align: top;">
+<img src="https://theaiengineer.dev/tae_logo_gw_flatter.png" width="35%" align="right">
 
-<h1>Week 1 Capstone — Gradient Descent Optimization</h1>
+# Week 1 Capstone — Gradient Descent Optimization
 
-This folder contains the Week-1 capstone for *The AI Engineer* program.  
-The goal is to implement and visualize basic gradient-based optimization  
-methods on simple 1-D functions.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)
 
-</td>
+Implements and visualizes gradient descent (GD) and stochastic gradient
+descent (SGD) from scratch on two one-dimensional objectives — a convex
+quadratic baseline and a non-convex cubic with multiple basins of attraction.
 
-<td align="right" width="200">
-<img src="../../assets/tae_logo.png" alt="TAE Banner" width="160">
-</td>
-</tr>
-</table>
+## What's inside
 
+| Section | Contents |
+|---|---|
+| Objectives | Quadratic baseline (convex, smooth) + cubic (non-convex, multi-basin) |
+| GD | Deterministic gradient descent, step-size sweep |
+| SGD | Constant and diminishing step-size schedules |
+| Reproducibility | Single shared NumPy RNG (`np.random.default_rng(SEED)`) |
+| Diagnostics | Final gap, best gap, steps-to-tolerance |
 
-## Overview
+## Results
 
-This notebook explores the behavior of Gradient Descent (GD) and Stochastic Gradient Descent (SGD) on two instructional objectives:
+Eight figures (`assets/fig_01` through `fig_08`) covering the loss landscape,
+GD trajectories from multiple initializations, the step-size sweep, SGD vs.
+diminishing-SGD paths, and a step-geometry/schedule comparison.
 
-1. **Quadratic baseline**
-   • Convex and smooth  
-   • Used to study stability and learning-rate effects  
-   • Includes the required step-size sweep
+## Run it
 
-2. **Cubic non-convex function**
-   • Exhibits multiple basins of attraction  
-   • Highlights divergence vs. convergence paths  
-   • Demonstrates noisy vs. diminishing-noise SGD trajectories  
+Colab badge above → Run All. Pure NumPy + Matplotlib, no GPU needed, runs in
+under a minute. Locally: `jupyter lab gd_capstone.ipynb` → Run All.
 
-All experiments are one-dimensional, enabling direct visualization of optimization dynamics.
-
----
-
-## What’s Implemented
-
-• Deterministic Gradient Descent  
-• Stochastic Gradient Descent with:
-  – Constant step size  
-  – Diminishing step size  
-
-• **Single shared NumPy RNG for reproducibility**  
-  (`rng = np.random.default_rng(SEED)`)  
-  Fresh trajectories can be produced by supplying a new RNG instance.
-
-• Convergence diagnostics:
-  – Final gap  
-  – Best gap  
-  – Steps-to-tolerance  
-
-• Visualizations:
-  – GD step-size sweep (quadratic)  
-  – Cubic function and derivative  
-  – GD trajectories from multiple initializations  
-  – SGD vs. diminishing-SGD trajectories
-
----
-
-## File Structure
+## Deliverables
 
 ```text
 week01_gd_optimization/
-│
-├── gd_capstone.ipynb          # Full implementation & plots
-└── README_week01_capstone.md  # This document
+├── gd_capstone.ipynb              # full implementation, plots, diagnostics
+├── assets/                        # 8 generated figures
+└── README_week01_capstone.md
 ```
 
----
+## Notes
 
-## How to Run
-
-The notebook runs top-to-bottom on:
-
-- Google Colab  
-- Local Jupyter Notebook  
-- GitHub Codespaces  
-
-### Open in Google Colab
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
-https://colab.research.google.com/github/FranQuant/the_ai_engineer_capstones/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb
-)
-
-Dependencies: **NumPy** and **Matplotlib** only
+- Dependencies: NumPy and Matplotlib only
+- Deterministic given the shared RNG seed; a fresh RNG instance reproduces
+  new trajectories
