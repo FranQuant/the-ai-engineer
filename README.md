@@ -2,10 +2,7 @@
 
 # The AI Engineer
 
-Four weekly capstones for The AI Engineer program: gradient descent, backpropagation,
-and a tiny transformer from scratch (Weeks 1–3, all Colab-ready notebooks), culminating
-in an MCP-based agentic incident-command system (Week 4), graded on its remote MCP
-server/client workflow with a local deterministic run as supporting evidence.
+Four capstones, from-scratch: gradient descent, backpropagation, and a tiny transformer (Weeks 1–3, all Colab-ready), culminating in an MCP-based agentic incident-command system (Week 4) — graded on its remote server/client workflow, with a local deterministic run as supporting evidence.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-yellow?logo=python&logoColor=white">
