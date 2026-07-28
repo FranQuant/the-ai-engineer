@@ -212,7 +212,7 @@ class RemoteIncidentAgent:
                 if status != "ok":
                     failure_count += 1
 
-                if failure_count >= self.max_failures:
+                if failure_count > self.max_failures:
                     self.telemetry.log(
                         TelemetryEvent(
                             correlation_id=ctx.correlation_id,
