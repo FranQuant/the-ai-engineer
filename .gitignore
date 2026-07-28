@@ -61,8 +61,7 @@ Thumbs.db
 # Machine Learning Artifacts
 # ----------------------------
 # Checkpoints, weights, runs, and outputs
-# *.pt — mini_gpt.pt in capstones/week03_transformers/ is committed intentionally
-# via `git add -f` to provide a reproducible grading checkpoint. All other .pt files remain ignored.
+# Checkpoints are not committed for any week; regenerated on each run.
 *.pt
 # Week 2 — checkpoint (may land at repo root if run from root)
 week02_best_two_layer_xor.pt
@@ -94,13 +93,6 @@ datasets/
 *.h5
 *.npz
 *.npy
-
-# ----------------------------
-# TAE Program Artifacts
-# ----------------------------
-# PDF course materials (password-protected)
-assets/*.pdf
-resources/*.pdf
 
 # ----------------------------
 # Local config / credentials
