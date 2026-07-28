@@ -39,7 +39,7 @@ do use real FOMC names and correct procedural/policy language.
 
 ## Pipeline
 
-![Week 3 pipeline: shared attention/transformer code, branching into character-level and BPE paths, merging at Fair Comparison](week03_pipeline_diagram.png)
+<img src="week03_pipeline_diagram.png" alt="Week 3 pipeline: shared attention/transformer code, branching into character-level and BPE paths, merging at Fair Comparison" width="700">
 
 Every stage is verified against a hand-computable example before the next is
 built on top of it. The BPE path reuses the identical model code, trained on
