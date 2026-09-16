@@ -45,7 +45,7 @@ week02_backprop/
 
 ## Notes
 
-- Dependencies: NumPy, Matplotlib, PyTorch
+- Dependencies: NumPy, Matplotlib, scikit-learn, PyTorch
 - Checkpoint not committed (regenerated on each run)
 - Foundation for later capstones: deeper networks, optimizers,
   regularization, and sequence/vision models
