@@ -29,7 +29,7 @@ Four capstones, from-scratch: gradient descent, backpropagation, and a tiny tran
 ```text
 the-ai-engineer/
 ├── capstones/
-│   ├── week01_gd_optimization/   # GD/SGD notebook + 8 generated figures
+│   ├── week01_gd_optimization/   # GD/SGD notebook with inline figures
 │   ├── week02_backprop/          # Manual → autograd → nn.Module, one notebook
 │   ├── week03_transformers/      # Tiny transformer + BPE extension, from scratch
 │   └── week04_agentic_incident_command/

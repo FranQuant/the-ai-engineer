@@ -6,40 +6,46 @@
 
 Implements and visualizes gradient descent (GD) and stochastic gradient
 descent (SGD) from scratch on two one-dimensional objectives — a convex
-quadratic baseline and a non-convex cubic with multiple basins of attraction.
+quadratic baseline and a nonconvex, nonsmooth piecewise-cubic objective.
 
 ## What's inside
 
 | Section | Contents |
 |---|---|
-| Objectives | Quadratic baseline (convex, smooth) + cubic (non-convex, multi-basin) |
+| Objectives | Quadratic baseline (convex, smooth) + nonconvex, nonsmooth piecewise-cubic objective |
 | GD | Deterministic gradient descent, step-size sweep |
 | SGD | Constant and diminishing step-size schedules |
-| Reproducibility | Single shared NumPy RNG (`np.random.default_rng(SEED)`) |
-| Diagnostics | Final gap, best gap, steps-to-tolerance |
+| Reproducibility | Explicit per-run NumPy generators with recorded seeds; matching seeds pair noise across configurations. |
+| Diagnostics | Per-seed SGD summaries, success/non-hit counts, conditional first-hit statistics, and mean/SE comparisons with linearized theory |
 
 ## Results
 
-Eight figures (`assets/fig_01` through `fig_08`) covering the loss landscape,
-GD trajectories from multiple initializations, the step-size sweep, SGD vs.
-diminishing-SGD paths, and a step-geometry/schedule comparison.
+Figures and diagnostic tables are displayed inline in `gd_capstone.ipynb`.
+Run all cells and save the notebook to retain the outputs.
 
 ## Run it
 
-Colab badge above → Run All. Pure NumPy + Matplotlib, no GPU needed, runs in
-under a minute. Locally: `jupyter lab gd_capstone.ipynb` → Run All.
+Colab badge above → Run All. NumPy + Matplotlib computations, no GPU needed,
+with a target runtime under two minutes with dependencies installed.
+Fresh hosted Colab verification of the revised notebook is pending.
+
+Locally, from the repository root:
+
+```bash
+cd capstones/week01_gd_optimization
+jupyter lab gd_capstone.ipynb
+```
 
 ## Deliverables
 
 ```text
 week01_gd_optimization/
 ├── gd_capstone.ipynb              # full implementation, plots, diagnostics
-├── assets/                        # 8 generated figures
 └── README_week01_capstone.md
 ```
 
 ## Notes
 
-- Dependencies: NumPy and Matplotlib only
-- Deterministic given the shared RNG seed; a fresh RNG instance reproduces
-  new trajectories
+- Numerical and plotting dependencies: NumPy and Matplotlib.
+  HTML tables use IPython.display; local execution requires Jupyter.
+- A fresh generator initialized with the same seed reproduces the same noise sequence. Different seeds produce different realizations.
