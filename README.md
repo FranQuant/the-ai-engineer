@@ -2,7 +2,7 @@
 
 # The AI Engineer
 
-Four capstones, from-scratch: gradient descent, backpropagation, and a tiny transformer (Weeks 1–3, all Colab-ready), culminating in an MCP-based agentic incident-command system (Week 4) — graded on its remote server/client workflow, with a local deterministic run as supporting evidence.
+The AI Engineer capstones: gradient descent, deep learning, and transformers from scratch, culminating in an agentic MCP-based incident-command system with telemetry and replay.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-yellow?logo=python&logoColor=white">
