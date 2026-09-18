@@ -106,6 +106,7 @@ def validate_arguments(schema: Dict[str, Any], arguments: Dict[str, Any]):
         expected_type = properties[name].get("type")
         if expected_type and not _type_matches(value, expected_type):
             errors[name] = f"Expected {expected_type}"
+            continue
 
         if expected_type == "integer":
             minimum = properties[name].get("minimum")
@@ -162,11 +163,37 @@ def tool_run_diagnostic(arguments: Dict[str, Any]):
 
 def tool_summarize_incident(arguments: Dict[str, Any], memory: IncidentMemoryStore):
     alert_id = arguments.get("alert_id") or ALERT["id"]
-    evidence = arguments.get("evidence", [])
+    raw_evidence = arguments.get("evidence", [])
+    evidence = [
+        item
+        for item in raw_evidence
+        if isinstance(item, str)
+        and item not in {"retrieve_runbook", "run_diagnostic", "summarize_incident"}
+    ]
+
+    diagnostic_result = None
+    for item in evidence:
+        if not item.startswith("diagnostic:"):
+            continue
+        try:
+            diagnostic = json.loads(item.removeprefix("diagnostic:"))
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if isinstance(diagnostic, dict) and diagnostic.get("result"):
+            diagnostic_result = str(diagnostic["result"])
+            break
+
+    if diagnostic_result:
+        diagnostic_sentence = f"Recorded diagnostic result: {diagnostic_result}"
+    else:
+        diagnostic_sentence = (
+            "No successful diagnostic result was available; run manual diagnostics "
+            "or escalate for further investigation."
+        )
 
     summary = (
         f"Incident {alert_id}: CPU spikes observed on staging-api. "
-        "Diagnostics show pods healthy and CPU normalized. "
+        f"{diagnostic_sentence} "
         "Recommend restart if sustained > 90% for 5 minutes. "
         "Capture logs before restart; monitor for recurrence."
     )
@@ -384,22 +411,28 @@ async def handle_session(ws, logger, memory):
                     }
                 else:
                     name = params.get("name")
-                    arguments = params.get("arguments", {}) or {}
+                    arguments = params.get("arguments", {})
 
-                    schema = tool_schemas.get(name)
-                    if schema:
-                        valid, errors = validate_arguments(schema, arguments)
-                        if not valid:
-                            status = "error"
-                            response = _validation_error_response(req_id, errors)
+                    if not isinstance(arguments, dict):
+                        status = "error"
+                        response = _validation_error_response(
+                            req_id, {"arguments": "Expected object"}
+                        )
+                    else:
+                        schema = tool_schemas.get(name)
+                        if schema:
+                            valid, errors = validate_arguments(schema, arguments)
+                            if not valid:
+                                status = "error"
+                                response = _validation_error_response(req_id, errors)
+                            else:
+                                latency_ms, result = timed(call_tool, memory, name, arguments)
+                                session_budget.consume(tokens_used=10, latency_ms=latency_ms)
+                                response = {"jsonrpc": "2.0", "id": req_id, "result": result}
                         else:
                             latency_ms, result = timed(call_tool, memory, name, arguments)
                             session_budget.consume(tokens_used=10, latency_ms=latency_ms)
                             response = {"jsonrpc": "2.0", "id": req_id, "result": result}
-                    else:
-                        latency_ms, result = timed(call_tool, memory, name, arguments)
-                        session_budget.consume(tokens_used=10, latency_ms=latency_ms)
-                        response = {"jsonrpc": "2.0", "id": req_id, "result": result}
 
             else:
                 status = "error"

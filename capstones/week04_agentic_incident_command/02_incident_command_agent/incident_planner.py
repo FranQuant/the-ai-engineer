@@ -115,7 +115,7 @@ class IncidentPlanner:
             },
             "summarize_incident": {
                 "alert_id": alert_id,
-                "evidence": list(tool_sequence),
+                "evidence": [],
             },
         }
 

@@ -137,7 +137,7 @@ runtime. `config.py` is the sole runtime source of truth.
 ### Primary Graded Path
 The remote MCP flow is the submission artifact. The local `incident_agent.py`
 path mirrors the same OPAL loop in-process and is supporting evidence for
-deterministic replay and reviewer validation only:
+offline telemetry replay and reviewer validation only:
 
 - `mcp_server.py` exposes tools and resources over WebSockets.
 - `mcp_client.py` connects to `ws://127.0.0.1:8765/mcp` through the shared config surface in `config.py`.
@@ -170,8 +170,9 @@ Each OPAL phase emits:
 
 Telemetry is written to `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` through the shared `TELEMETRY_SINK` in `config.py`.
 
-Replay enables deterministic reconstruction of the OPAL loop from telemetry
-logs for inspection, debugging, and audit without re-executing the system:
+Replay deterministically orders and displays recorded JSONL events offline for
+inspection, debugging, and audit. It does not call live tools, reconstruct MCP
+server memory, or re-execute the incident:
 
 ```bash
 python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
@@ -185,7 +186,8 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 - Replayability: `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` contains the full event stream, including `phase`, `method`, `status`, `latency_ms`, `budget`, and `payload` for each step.
 - Guarded transitions: Observe -> Plan -> Act -> Learn is recorded with explicit `*_start` and `*_end` events, and `plan_guardrail` / `act_guardrail` events mark truncation or stop conditions.
 - Review surfaces: reviewers can inspect budgets, tool request and response payloads, the selected plan, executed step results, and memory surfaces such as `memory://alerts/latest`, `memory://runbooks/index`, `memory://plans/current`, `memory://deltas/recent`, `memory://incidents/{id}`, and `memory://evidence/{id}`.
-- Remote Learn now persists `memory://plans/current` before `learn_end`, so the same run's trace shows the plan write in-band.
+- Remote Learn writes `memory://plans/current` before `learn_end`, so the same run's trace shows the plan write in-band. Plans and deltas live in the MCP server's in-process memory and remain available only for the server process lifetime; no durable database is used.
+- Summary evidence cites the alert resource, retrieved runbook resources, and successful current-run diagnostic results. Failed or skipped diagnostics are not represented as successful, and diagnostic-success wording appears only when successful diagnostic evidence exists.
 - Single-run isolation: the client propagates its `correlation_id` in every JSON-RPC request via `params._meta.correlationId`. The server reads it and tags its `observe`/`act` telemetry events with the same ID, falling back to a session-scoped ID only when `_meta` is absent. To isolate one execution, filter by `correlation_id` — all client-side (`rpc_send`, `rpc_recv`, `observe_*`, `plan_*`, `act_*`, `learn_*`) and server-side (`observe`, `act`) events for a run share one value. Use `loop_id` to distinguish multiple OPAL loops within the same session.
 - Deterministic evidence: the evidence set comes from fixtures, memory resources, and telemetry logs, not RNG seeds.
 
@@ -193,7 +195,7 @@ python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.p
 
 From the repo root:
 
-The demo runners archive any existing `artifacts/telemetry.jsonl` to a timestamped `telemetry_YYYYMMDD_HHMMSS.jsonl` file before writing new events, so prior runs are preserved instead of overwritten.
+Artifact warning: the remote demo archives any existing `artifacts/telemetry.jsonl` to a timestamped `telemetry_YYYYMMDD_HHMMSS.jsonl` file, then replaces `artifacts/sample_summary.md` with the latest handoff summary.
 
 ### Server Startup
 Terminal A:
@@ -232,9 +234,11 @@ pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_
 ## 6. Guardrails
 
 - `Budget(tokens=2000, ms=150, dollars=0.0)` is centralized in `config.py`
-- `max_steps = 5`
-- `max_retries = 2`
-- Cumulative latency tracked per OPAL loop
+- `max_steps = 5` enforces the action step ceiling
+- `max_failures = 2` stops action after two failed tool results; failed calls are not retried
+- Action/tool latency is accumulated and enforced by the agent, and the server rejects calls when its session-side token or latency availability is exhausted
+- Agent/client token and dollar values are recorded or descriptive; they do not enforce actual LLM-token usage or real monetary spend
+- The latency guardrail covers measured action/tool latency, not a full-loop wall-clock deadline
 - Guardrail events: `plan_guardrail`, `act_guardrail`
 
 ---
@@ -243,7 +247,7 @@ pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_
 
 After each remote OPAL loop, `demo_remote.py` writes `artifacts/sample_summary.md` — a markdown document containing the correlation ID, alert ID, the executed plan steps with arguments, the triage summary text, and the recommended runbook actions.
 
-This file is the escalation artifact an on-call engineer receives. If the agent cannot resolve the incident (e.g. an `act_guardrail` fires on latency or retries), the last written `sample_summary.md` plus `memory://deltas/recent` provide full context for human takeover. The summary is structured so it can be pasted directly into an incident ticket.
+This file is the escalation artifact an on-call engineer receives. If the agent cannot resolve the incident (e.g. an `act_guardrail` fires on latency or failed tool results), the last written `sample_summary.md` plus `memory://deltas/recent` provide context for human takeover while the server process remains running. The summary is structured so it can be pasted directly into an incident ticket.
 
 ---
 
@@ -259,8 +263,8 @@ This file is the escalation artifact an on-call engineer receives. If the agent 
   Each OPAL loop replans from scratch; no persistent policy update or learning across loops is implemented.  
   This is intentional to keep the decision logic transparent and auditable.
 
-- **Remote Learn persistence is best-effort.**  
-  The Learn phase attempts to persist a memory delta via `append_memory_delta`.  
+- **Remote Learn memory writes are best-effort.**
+  The Learn phase attempts to write an in-process memory delta via `append_memory_delta`.
   If the server is unreachable or the write fails, the error is treated as non-fatal and the loop completes.  
   Telemetry still captures the full execution trace for offline inspection and replay.
 

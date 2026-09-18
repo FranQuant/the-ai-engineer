@@ -4,6 +4,7 @@ Remote Incident Agent that drives planning and action through an MCP client with
 
 from __future__ import annotations
 
+import json
 import time
 from typing import Any, Dict, List, Optional
 
@@ -30,6 +31,46 @@ class RemoteIncidentAgent:
         self.max_steps = DEFAULT_MAX_STEPS
         self.max_latency_ms = DEFAULT_BUDGET_MS
         self.max_failures = DEFAULT_MAX_FAILURES
+
+    @staticmethod
+    def _summary_evidence(
+        summary_step: Dict[str, Any],
+        prior_results: List[Dict[str, Any]],
+    ) -> List[str]:
+        """Build deterministic citations from successful work in this execution."""
+        arguments = summary_step.get("arguments", {}) or {}
+        alert_id = str(arguments.get("alert_id", "")).strip()
+        evidence = [f"memory://alerts/latest#{alert_id}"] if alert_id else []
+
+        for item in prior_results:
+            step = item.get("step", {})
+            result = item.get("result", {})
+            if not isinstance(result, dict) or result.get("status") != "ok":
+                continue
+
+            data = result.get("data", {})
+            if step.get("name") == "retrieve_runbook" and isinstance(data, dict):
+                runbooks = data.get("results", [])
+                if isinstance(runbooks, list):
+                    for runbook in runbooks:
+                        runbook_id = runbook.get("id") if isinstance(runbook, dict) else None
+                        if runbook_id:
+                            evidence.append(f"memory://runbooks/index#{runbook_id}")
+
+            if step.get("name") == "run_diagnostic" and isinstance(data, dict):
+                captured = data.get("stdout") or data.get("stderr") or data.get("output") or "<no output>"
+                captured = " ".join(str(captured).split())[:200]
+                diagnostic = {
+                    "command": data.get("command") or step.get("arguments", {}).get("command"),
+                    "host": data.get("host") or step.get("arguments", {}).get("host"),
+                    "result": captured,
+                    "step": step.get("step_id"),
+                }
+                evidence.append(
+                    "diagnostic:" + json.dumps(diagnostic, sort_keys=True, separators=(",", ":"))
+                )
+
+        return list(dict.fromkeys(evidence))
 
     # ------------------------------------------------------------------
     # OPAL: Observe
@@ -170,6 +211,11 @@ class RemoteIncidentAgent:
 
                 name = step.get("name", "")
                 arguments = step.get("arguments", {}) or {}
+
+                if name == "summarize_incident":
+                    arguments = dict(arguments)
+                    arguments["evidence"] = self._summary_evidence(step, results)
+                    step["arguments"] = arguments
 
                 try:
                     result = await self.client.call_tool(name, arguments)

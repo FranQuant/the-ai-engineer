@@ -1,4 +1,4 @@
-# config.yaml — Non-executable documentation mirror of config.py + incident_schemas.py
+# config.yaml — Non-executable configuration contract mirroring config.py + incident_schemas.py
 #
 # THIS FILE IS DOCUMENTATION ONLY. IT IS NOT LOADED BY ANY RUNTIME PATH.
 # config.py is the sole runtime source of truth; incident_schemas.py supplies
@@ -11,7 +11,7 @@
 # Environment toggles
 # ---------------------------------------------------------------------------
 env:
-  colab_tunnel: false          # Set true when running behind an ngrok/Colab tunnel
+  colab_tunnel: false          # Optional/future portability example; not an active runtime toggle
 
 # ---------------------------------------------------------------------------
 # MCP server connection
@@ -33,11 +33,11 @@ mcp:
 # OPAL loop budget + guardrails
 # ---------------------------------------------------------------------------
 budget:
-  tokens: 2000          # Maximum token budget consumed across one OPAL loop
-  ms: 150               # Maximum cumulative wall-clock latency in milliseconds
-  dollars: 0.0          # Maximum spend (deterministic agent — always 0.0)
+  tokens: 2000          # Recorded agent/client value; server separately enforces token availability
+  ms: 150               # Action/tool latency budget, not a full-loop wall-clock deadline
+  dollars: 0.0          # Descriptive value only; no real monetary spend is enforced
   max_steps: 5          # Hard step-count ceiling per OPAL loop
-  max_retries: 2        # Maximum retries per individual tool call before abort
+  max_failures: 2       # Stop after two failed tool results; failed calls are not retried
 
 # ---------------------------------------------------------------------------
 # Artifact paths (relative to 02_incident_command_agent/)
@@ -52,7 +52,7 @@ artifacts:
 # Fields:
 #   description      — human-readable purpose
 #   latency_hint_ms  — expected round-trip latency (stub implementation)
-#   cost_hint_tokens — tokens debited from budget per invocation
+#   cost_hint_tokens — descriptive token-estimation metadata, not the exact runtime debit
 #   required         — required input parameter names (from JSON schema)
 #   optional         — optional input parameter names (from JSON schema)
 # ---------------------------------------------------------------------------
@@ -113,8 +113,8 @@ tools:
 
   - name: write_plan
     description: >
-      Persist the current OPAL plan to memory://plans/current for
-      inspection and replay.
+      Store the current OPAL plan in memory://plans/current for inspection
+      during the MCP server process lifetime.
     latency_hint_ms: 1
     cost_hint_tokens: 3
     required: [plan]        # ordered array of OPAL step descriptors

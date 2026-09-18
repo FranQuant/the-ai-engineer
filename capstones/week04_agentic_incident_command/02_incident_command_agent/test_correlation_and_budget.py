@@ -207,7 +207,66 @@ def test_server_non_dict_meta_does_not_crash(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# Test 5: MCPClient.rpc raises RuntimeError with 'RPC timeout' on recv hang.
+# Test 5: callTool argument validation rejects malformed values without
+#         converting validation failures into internal errors.
+# ---------------------------------------------------------------------------
+
+def _call_retrieve_runbook(tmp_path, arguments):
+    request = json.dumps({
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "callTool",
+        "params": {"name": "retrieve_runbook", "arguments": arguments},
+    })
+    ws = _MockWS([request])
+    memory = IncidentMemoryStore()
+    logger = TelemetryLogger(tmp_path / "tel.jsonl")
+
+    asyncio.run(handle_session(ws, logger, memory))
+
+    assert len(ws.sent) == 1
+    return ws.sent[0]
+
+
+@pytest.mark.parametrize("arguments", ["not-an-object", ["not-an-object"]])
+def test_server_non_dict_tool_arguments_return_32602(tmp_path, arguments):
+    resp = _call_retrieve_runbook(tmp_path, arguments)
+
+    assert resp["error"]["code"] == -32602
+    assert resp["error"]["message"] == "Invalid params"
+
+
+def test_server_string_integer_argument_returns_32602(tmp_path):
+    resp = _call_retrieve_runbook(tmp_path, {"query": "cpu", "top_k": "2"})
+
+    assert resp["error"]["code"] == -32602
+    assert resp["error"]["data"]["top_k"] == "Expected integer"
+
+
+def test_server_boolean_integer_argument_returns_32602(tmp_path):
+    resp = _call_retrieve_runbook(tmp_path, {"query": "cpu", "top_k": True})
+
+    assert resp["error"]["code"] == -32602
+    assert resp["error"]["data"]["top_k"] == "Expected integer"
+
+
+def test_server_out_of_range_integer_argument_returns_32602(tmp_path):
+    resp = _call_retrieve_runbook(tmp_path, {"query": "cpu", "top_k": 6})
+
+    assert resp["error"]["code"] == -32602
+    assert resp["error"]["data"]["top_k"] == "Must be <= 5"
+
+
+def test_server_valid_tool_arguments_still_succeed(tmp_path):
+    resp = _call_retrieve_runbook(tmp_path, {"query": "cpu", "top_k": 1})
+
+    assert "error" not in resp
+    assert resp["result"]["status"] == "ok"
+    assert len(resp["result"]["data"]["results"]) == 1
+
+
+# ---------------------------------------------------------------------------
+# Test 6: MCPClient.rpc raises RuntimeError with 'RPC timeout' on recv hang.
 # ---------------------------------------------------------------------------
 
 def test_rpc_recv_timeout_raises_runtime_error(tmp_path):

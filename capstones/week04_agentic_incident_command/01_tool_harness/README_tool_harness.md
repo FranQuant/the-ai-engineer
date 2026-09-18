@@ -43,7 +43,7 @@ demonstrate the mechanics that feed into it.
 
 **Terminal 1 (server):**
 ```bash
-cd 01_tool_harness
+cd capstones/week04_agentic_incident_command/01_tool_harness
 python mcp_tool_harness_server.py
 ```
 **Terminal 2 (client):**
