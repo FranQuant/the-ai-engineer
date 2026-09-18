@@ -110,3 +110,6 @@ CLAUDE.md
 # Week 1 — generated figures (notebook output)
 capstones/week01_gd_optimization/*.html
 capstones/week01_gd_optimization/fig_*.png
+
+# Week 4 — archived telemetry from previous demo runs
+capstones/week04_agentic_incident_command/artifacts/telemetry_*.jsonl
