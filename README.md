@@ -2,25 +2,26 @@
 
 # The AI Engineer
 
-The AI Engineer capstones: gradient descent, deep learning, and transformers from scratch, culminating in an agentic MCP-based incident-command system with telemetry and replay.
+## Four Capstones · From Optimization to Agentic Systems
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.11-yellow?logo=python&logoColor=white">
-  <img src="https://img.shields.io/badge/Weeks_1--3-Colab_Ready-blue?logo=googlecolab&logoColor=white">
-  <img src="https://img.shields.io/badge/Week_4-Remote_MCP_Workflow-purple">
-  <img src="https://img.shields.io/badge/License-Educational%20Use-green">
-</p>
+A four-capstone portfolio progressing from optimization and backpropagation through transformer training to an auditable, MCP-based agentic incident-command system.
+
+[![The AI Engineer](https://img.shields.io/badge/The%20AI%20Engineer-theaiengineer.dev-2E7D32.svg)](https://theaiengineer.dev/)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![Google Colab](https://img.shields.io/badge/Google%20Colab-Weeks%201--3%20Ready-F9AB00.svg?logo=googlecolab&logoColor=white)](https://colab.research.google.com/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org/)
+![Educational Use](https://img.shields.io/badge/Purpose-Educational%20Use-lightgrey.svg)
 
 ---
 
 ## Weekly Capstones Overview
 
-| Week  | Capstone                          | Primary artifact                                                                                                                                                                                                                                                                                                                                                                                                              | Access / delivery mode                                                                                                                                                                              |
-| ----- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | **Gradient Descent Optimization** | [`gd_capstone.ipynb`](capstones/week01_gd_optimization/gd_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                                     | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)                   |
-| **2** | **Backpropagation**               | [`week02_master_capstone.ipynb`](capstones/week02_backprop/week02_master_capstone.ipynb)                                                                                                                                                                                                                                                                                                                                      | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb)        |
-| **3** | **Tiny Transformer**              | [`week03_tiny_transformer.ipynb`](capstones/week03_transformers/week03_tiny_transformer.ipynb)                                                                                                                                                                                                                                                                                                                                | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week03_transformers/week03_tiny_transformer.ipynb) |
-| **4** | **Agentic Incident Command**      | [`demo_remote.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py) · [`mcp_client.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_client.py) · [`remote_agent.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/remote_agent.py) · [`mcp_server.py`](capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py) | Remote MCP server/client workflow.                                                                      |
+| Week | Capstone | Key concepts | Access |
+| --- | --- | --- | --- |
+| **1** | **Gradient Descent Optimization** | GD/SGD dynamics, learning-rate schedules, stochastic noise, and convergence diagnostics. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb) |
+| **2** | **Backpropagation** | Manual backpropagation, autograd validation, two-layer neural networks, and XOR classification. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week02_backprop/week02_master_capstone.ipynb) |
+| **3** | **Tiny Transformer** | BPE tokenization, causal self-attention, transformer training, and FOMC text generation. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week03_transformers/week03_tiny_transformer.ipynb) |
+| **4** | **Agentic Incident Command** | MCP client/server workflow, OPAL agent loop, guardrails, structured telemetry, and offline replay. | [![View Submission](https://img.shields.io/badge/View-Week%204%20Submission-6f42c1.svg)](capstones/week04_agentic_incident_command/README_week04_capstone.md) |
 
 ---
 
@@ -29,46 +30,18 @@ The AI Engineer capstones: gradient descent, deep learning, and transformers fro
 ```text
 the-ai-engineer/
 ├── capstones/
-│   ├── week01_gd_optimization/   # GD/SGD notebook with inline figures
-│   ├── week02_backprop/          # Manual → autograd → nn.Module, one notebook
-│   ├── week03_transformers/      # Tiny transformer + BPE extension, from scratch
+│   ├── week01_gd_optimization/         # GD/SGD notebook with inline figures
+│   ├── week02_backprop/                # Manual → autograd → nn.Module
+│   ├── week03_transformers/            # Tiny transformer + BPE extension
 │   └── week04_agentic_incident_command/
-│       ├── 01_tool_harness/      # Warm-up: minimal MCP server/client
-│       ├── 02_incident_command_agent/  # Primary capstone (graded)
-│       ├── artifacts/            # Telemetry JSONL + sample summary
+│       ├── 01_tool_harness/            # Warm-up: minimal MCP server/client
+│       ├── 02_incident_command_agent/  # Primary Week 4 capstone
+│       ├── artifacts/                  # Telemetry JSONL + sample summary
 │       └── README_week04_capstone.md
 ├── pytest.ini
 ├── README.md
 └── requirements.txt
 ```
-
----
-
-## Week 4 Verification Entry Points
-
-From the repository root:
-
-```bash
-# Terminal A: start the MCP server
-python capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py
-
-# Terminal B: run the primary graded remote MCP path
-python capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py
-
-# Replay a telemetry trace
-python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
-
-# Supporting deterministic local run
-python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py
-
-# Run the test suite
-pytest capstones/week04_agentic_incident_command/02_incident_command_agent/
-```
-
-For Week 4 details, telemetry, guardrails, and architecture notes, see the dedicated Week 4 README:
-[`capstones/week04_agentic_incident_command/README_week04_capstone.md`](capstones/week04_agentic_incident_command/README_week04_capstone.md)
-
-Telemetry logs and incident summaries for inspection are stored in `capstones/week04_agentic_incident_command/artifacts/`.
 
 ---
 
@@ -84,14 +57,13 @@ pip install -r requirements.txt
 
 Notes:
 
-* Weeks 1–3 can be reviewed directly in GitHub and opened in Colab from the links above.
-* Week 4 is designed for a local Python environment because it depends on a live MCP server/client interaction and replayable telemetry artifacts.
+- Weeks 1–3 can be reviewed directly on GitHub and opened in Google Colab using the badges above.
+- Week 4 runs locally as a multi-process MCP application: one process hosts the server, another runs the agent/client, and the resulting telemetry is written to disk for deterministic replay and audit.
 
 ---
 
-## License (Educational Use)
+## Educational Use
 
-All content in this repository is provided **for educational and illustrative purposes only**.
-No guarantees are made regarding correctness, performance, reliability, or suitability for any production environment.
+All content in this repository is provided **for educational and illustrative purposes only**. No guarantees are made regarding correctness, performance, reliability, or suitability for any production environment.
 
 © 2026 Francisco Salazar

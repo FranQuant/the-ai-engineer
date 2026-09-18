@@ -1,288 +1,134 @@
-<table width="100%">
-<tr>
-<td style="vertical-align: top;">
+<img src="https://theaiengineer.dev/tae_logo_gw_flatter.png" width="30%" align="right">
 
-<h1>Week 04 Capstone - Agentic Incident Command</h1>
+# Week 04 Capstone: Agentic Incident Command
 
-<p>
-Primary submission artifact: 
-</p>
+An auditable incident-response agent built around an **Observe–Plan–Act–Learn (OPAL)** loop and an MCP-style client/server workflow.
 
-<ul>
-<li>Remote MCP agent path - the primary graded submission path, using JSON-RPC over WebSockets to communicate with the MCP server.</li>
-<li>Local deterministic agent path - supporting evidence for debugging, replay, and reviewer validation only.</li>
-<li>Shared telemetry system - every OPAL phase logs structured JSONL to the Week 4 <code>artifacts/</code> directory.</li>
-</ul>
+The primary submission is the remote agent in [`02_incident_command_agent/`](02_incident_command_agent/). It communicates with the MCP server over JSON-RPC/WebSockets, invokes tools under explicit guardrails, writes structured telemetry, and produces a human-readable incident handoff.
 
-</td>
+---
 
-<td align="right" width="200">
-<img src="../../assets/tae_logo.png" alt="TAE Banner" width="160">
-</td>
+## Submission Overview
 
-</tr>
-</table>
+| Surface | Role |
+| --- | --- |
+| [`demo_remote.py`](02_incident_command_agent/demo_remote.py) | Primary remote MCP demonstration |
+| [`mcp_server.py`](02_incident_command_agent/mcp_server.py) | Tools, resources, memory, and server-side budgets |
+| [`remote_agent.py`](02_incident_command_agent/remote_agent.py) | OPAL orchestration and evidence-grounded handoff |
+| [`telemetry.jsonl`](artifacts/telemetry.jsonl) | Replayable execution trace |
+| [`sample_summary.md`](artifacts/sample_summary.md) | Human escalation artifact |
 
-## Submission Scope
+The local deterministic agent and `01_tool_harness/` are supporting validation components rather than the primary submission path.
 
-The primary graded artifact for Week 04 is `02_incident_command_agent/`. It
-includes the remote MCP-backed Incident Command Agent, OPAL loop execution,
-telemetry/replay support, and generated artifacts in `artifacts/`.
-`01_tool_harness/` and local CLI utilities are supporting components.
+---
 
-## 1. Architecture 
+## Architecture
 
-### System Architecture
-```text
-+---------------------------+        JSON-RPC / MCP         +------------------------------+
-|  memory:// resources      | <---------------------------> |  Remote Incident Agent       |
-|  - alerts/latest          |                               |  - Observe                   |
-|  - runbooks/index         |                               |  - Plan                      |
-|  - deltas/recent          |                               |  - Act                       |
-|  - plans/current          |                               |  - Learn                     |
-+-------------+-------------+                               +---------------+--------------+
-              |                                                             |
-              v                                                             v
-      +------------------+                                         +----------------------+
-      |   MCP Server     |                                         |  Telemetry Logger    |
-      |   tools/resources|                                         |  artifacts/*.jsonl   |
-      +------------------+                                         +----------+-----------+
-                                                                                |
-                                                                                v
-                                                                   +-------------------------+
-                                                                   | Replay + sample_summary |
-                                                                   +-------------------------+
-```
-This diagram shows the primary graded remote MCP path, including resources,
-OPAL phases, telemetry, and replayable artifacts.
-
-### A. OPAL Loop
-```mermaid
-flowchart LR
-    O[Observe] --> P[Plan]
-    P --> A[Act]
-    A --> L[Learn]
-    L --> T[Telemetry JSONL]
-```
-
-### B. MCP Client-Server Flow
-```mermaid
-sequenceDiagram
-    participant Client as mcp_client.py
-    participant Server as mcp_server.py
-    participant Agent as remote_agent.py
-
-    Client->>Server: initialize()
-    Server-->>Client: tools + resources
-    Agent->>Client: call_tool(name,args)
-    Client->>Server: callTool
-    Server-->>Client: result
-    Agent->>Client: get_resource
-    Client->>Server: getResource
-    Server-->>Client: memory:// resource
-```
-
-### C. Local Deterministic Tool Flow
 ```mermaid
 flowchart TD
-    IA["IncidentAgent"] --> OBS["Observe"]
-    IA --> PLAN["Plan"]
-    PLAN --> ACT["Act: Local Tools"]
-    ACT --> MEMW["Memory Writes"]
-    ACT --> MEMR["Memory Reads"]
+    A["Remote agent<br/>Observe · Plan · Act · Learn"] --> B["MCP client"]
+    B <--> C["MCP server"]
+    C --> D["Tools + memory resources"]
+    A --> E["Structured telemetry"]
+    E --> F["Offline replay + human handoff"]
 ```
+
+The agent observes MCP resources, creates an evidence-driven plan, executes approved tools, records the complete lifecycle, and writes the resulting plan and incident delta back to server memory.
 
 ---
 
-## 2. Module-by-Module Summary
+## Key Capabilities
 
-```text
-capstones/week04_agentic_incident_command/
-├── 01_tool_harness/  # warm-up harness
-│   ├── README_tool_harness.md
-│   ├── mcp_tool_harness_client.py
-│   ├── mcp_tool_harness_server.py
-│   ├── schemas.py
-│   ├── telemetry.py
-│   └── samples/
-├── 02_incident_command_agent/
-│   ├── cli.py
-│   ├── config.py
-│   ├── config.yaml  # read-only documentation mirror of config.py
-│   ├── conftest.py
-│   ├── demo_remote.py
-│   ├── incident_agent.py
-│   ├── incident_memory.py
-│   ├── incident_planner.py
-│   ├── incident_schemas.py
-│   ├── mcp_client.py
-│   ├── mcp_server.py
-│   ├── remote_agent.py
-│   ├── replay.py
-│   ├── telemetry.py
-│   ├── test_integration.py
-│   └── test_tools.py
-└── artifacts/
-    ├── sample_summary.md
-    └── telemetry.jsonl
-```
+- **Adaptive planning:** tool selection responds to observed incident evidence rather than returning one fixed plan.
+- **MCP client/server workflow:** tools and `memory://` resources are accessed through JSON-RPC over WebSockets.
+- **Guarded execution:** step, failure, latency, token, and descriptive dollar budgets constrain the action loop.
+- **Traceable evidence:** correlation and loop identifiers connect client events, server events, tool results, and summaries.
+- **Deterministic replay:** recorded JSONL events can be inspected without rerunning tools or reconstructing server state.
+- **Human handoff:** each remote run produces an evidence-grounded incident summary suitable for escalation.
 
-`config.yaml` is a documentation/portability mirror only; it is not loaded at
-runtime. `config.py` is the sole runtime source of truth.
+`config.py` is the runtime source of truth. `config.yaml` is retained as a documentation and portability mirror only.
 
 ---
 
-## 3. Key Features
+## Run the Submission
 
-### Primary Graded Path
-The remote MCP flow is the submission artifact. The local `incident_agent.py`
-path mirrors the same OPAL loop in-process and is supporting evidence for
-offline telemetry replay and reviewer validation only:
+Run all commands from the repository root with the project environment activated.
 
-- `mcp_server.py` exposes tools and resources over WebSockets.
-- `mcp_client.py` connects to `ws://127.0.0.1:8765/mcp` through the shared config surface in `config.py`.
-- `remote_agent.py` observes MCP resources, plans locally, acts through RPC, and writes Learn-phase deltas back to memory.
+### 1. Start the MCP server
 
-### Adaptive Planning
-`incident_planner.py` is observation-driven. It does not return a fixed 5-step plan.
-
-- CPU, memory, spike, high -> `retrieve_runbook` -> `run_diagnostic` -> `summarize_incident`
-- deploy, crash, pod, fail -> `retrieve_runbook` -> `summarize_incident`
-- otherwise -> fallback to the CPU/memory path
-
-The planner also derives step arguments from `alerts_latest`, so the payloads stay inspectable in telemetry.
-
-### Deterministic Tools
-Local and remote tools return predictable synthetic envelopes with:
-
-```json
-{ "status": "ok", "data": {...}, "metrics": { "latency_ms": X }}
-```
-
-### Telemetry Everywhere
-Each OPAL phase emits:
-
-- `observe_start/end`
-- `plan_start/end`
-- `act_start/end`
-- `learn_start/end`
-- `rpc_send/recv` (remote only)
-
-Telemetry is written to `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` through the shared `TELEMETRY_SINK` in `config.py`.
-
-Replay deterministically orders and displays recorded JSONL events offline for
-inspection, debugging, and audit. It does not call live tools, reconstruct MCP
-server memory, or re-execute the incident:
-
-```bash
-python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
-```
-
-`correlation_id` on the client side spans all rpc_send/recv and OPAL phase events for one run; `loop_id` identifies the OPAL loop within that trace.
-
-## 4. Auditability
-
-
-- Replayability: `capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl` contains the full event stream, including `phase`, `method`, `status`, `latency_ms`, `budget`, and `payload` for each step.
-- Guarded transitions: Observe -> Plan -> Act -> Learn is recorded with explicit `*_start` and `*_end` events, and `plan_guardrail` / `act_guardrail` events mark truncation or stop conditions.
-- Review surfaces: reviewers can inspect budgets, tool request and response payloads, the selected plan, executed step results, and memory surfaces such as `memory://alerts/latest`, `memory://runbooks/index`, `memory://plans/current`, `memory://deltas/recent`, `memory://incidents/{id}`, and `memory://evidence/{id}`.
-- Remote Learn writes `memory://plans/current` before `learn_end`, so the same run's trace shows the plan write in-band. Plans and deltas live in the MCP server's in-process memory and remain available only for the server process lifetime; no durable database is used.
-- Summary evidence cites the alert resource, retrieved runbook resources, and successful current-run diagnostic results. Failed or skipped diagnostics are not represented as successful, and diagnostic-success wording appears only when successful diagnostic evidence exists.
-- Single-run isolation: the client propagates its `correlation_id` in every JSON-RPC request via `params._meta.correlationId`. The server reads it and tags its `observe`/`act` telemetry events with the same ID, falling back to a session-scoped ID only when `_meta` is absent. To isolate one execution, filter by `correlation_id` — all client-side (`rpc_send`, `rpc_recv`, `observe_*`, `plan_*`, `act_*`, `learn_*`) and server-side (`observe`, `act`) events for a run share one value. Use `loop_id` to distinguish multiple OPAL loops within the same session.
-- Deterministic evidence: the evidence set comes from fixtures, memory resources, and telemetry logs, not RNG seeds.
-
-## 5. Verification
-
-From the repo root:
-
-Artifact warning: the remote demo archives any existing `artifacts/telemetry.jsonl` to a timestamped `telemetry_YYYYMMDD_HHMMSS.jsonl` file, then replaces `artifacts/sample_summary.md` with the latest handoff summary.
-
-### Server Startup
 Terminal A:
+
 ```bash
 python capstones/week04_agentic_incident_command/02_incident_command_agent/mcp_server.py
 ```
 
-### Remote MCP Run
+### 2. Run the remote agent
+
 Terminal B:
+
 ```bash
 python capstones/week04_agentic_incident_command/02_incident_command_agent/demo_remote.py
 ```
 
-### Replay
+The demo archives any existing telemetry trace before writing the latest:
+
+- `artifacts/telemetry.jsonl`
+- `artifacts/sample_summary.md`
+
+### 3. Replay the recorded trace
+
 ```bash
-python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
+python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py \
+  --replay capstones/week04_agentic_incident_command/artifacts/telemetry.jsonl
 ```
 
-### Handler Tests
-```bash
-pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_tools.py
-```
+### 4. Run the complete Week 4 test suite
 
-### Supporting Deterministic Run
 ```bash
-python capstones/week04_agentic_incident_command/02_incident_command_agent/cli.py
-```
-
-### Integration Test
-```bash
-pytest capstones/week04_agentic_incident_command/02_incident_command_agent/test_integration.py
+pytest capstones/week04_agentic_incident_command/02_incident_command_agent/
 ```
 
 ---
 
-## 6. Guardrails
+## Validation Evidence
 
-- `Budget(tokens=2000, ms=150, dollars=0.0)` is centralized in `config.py`
-- `max_steps = 5` enforces the action step ceiling
-- `max_failures = 2` stops action after two failed tool results; failed calls are not retried
-- Action/tool latency is accumulated and enforced by the agent, and the server rejects calls when its session-side token or latency availability is exhausted
-- Agent/client token and dollar values are recorded or descriptive; they do not enforce actual LLM-token usage or real monetary spend
-- The latency guardrail covers measured action/tool latency, not a full-loop wall-clock deadline
-- Guardrail events: `plan_guardrail`, `act_guardrail`
+The submitted snapshot was validated with:
 
----
+- **22 automated tests passed**
+- Successful remote MCP client/server execution
+- **41 replayable telemetry events**
+- Complete Observe–Plan–Act–Learn lifecycle
+- Evidence-grounded incident summary and recommended actions
+- Correlated client-side and server-side execution records
 
-## 7. Human Handoff Output
-
-After each remote OPAL loop, `demo_remote.py` writes `artifacts/sample_summary.md` — a markdown document containing the correlation ID, alert ID, the executed plan steps with arguments, the triage summary text, and the recommended runbook actions.
-
-This file is the escalation artifact an on-call engineer receives. If the agent cannot resolve the incident (e.g. an `act_guardrail` fires on latency or failed tool results), the last written `sample_summary.md` plus `memory://deltas/recent` provide context for human takeover while the server process remains running. The summary is structured so it can be pasted directly into an incident ticket.
+The supplied [`telemetry.jsonl`](artifacts/telemetry.jsonl) and [`sample_summary.md`](artifacts/sample_summary.md) provide the inspectable submission evidence.
 
 ---
 
-## 8. Known Limitations
+## Guardrails
 
-- **Telemetry logging is file-based (no internal rotation).**  
-  `TelemetryLogger` appends to `artifacts/telemetry.jsonl` without a built-in size cap.  
-  The demo runner mitigates this by archiving any existing file to a timestamped  
-  `telemetry_YYYYMMDD_HHMMSS.jsonl` before each run. This keeps runs isolated and replayable.
+The agent enforces:
 
-- **Planner is rule-based (no cross-loop learning).**  
-  The planner selects tool paths from observation keywords (e.g., CPU/memory vs deploy/crash).  
-  Each OPAL loop replans from scratch; no persistent policy update or learning across loops is implemented.  
-  This is intentional to keep the decision logic transparent and auditable.
+- Maximum plan length: `5` steps
+- Maximum failed tool calls: `2`
+- Action/tool latency budget: `150 ms`
+- Recorded token budget: `2000`
+- No retry after a failed tool call
+- Explicit `plan_guardrail` and `act_guardrail` telemetry events
 
-- **Remote Learn memory writes are best-effort.**
-  The Learn phase attempts to write an in-process memory delta via `append_memory_delta`.
-  If the server is unreachable or the write fails, the error is treated as non-fatal and the loop completes.  
-  Telemetry still captures the full execution trace for offline inspection and replay.
+Token and dollar fields are recorded for auditability; they do not measure actual LLM-token consumption or monetary spend. The latency budget applies to measured action/tool time rather than the complete loop wall-clock time.
 
-- **Single-tenant by design.**  
-  The server uses one shared in-process `IncidentMemoryStore` and a per-session budget.  
-  Concurrent clients would interleave memory state, so multi-client use is out of scope.  
-  Multi-tenant isolation (per-session stores) is a documented stretch goal.
+---
 
-- **Budget is checked pre-call, not reserved.**  
-  Each guardrail checks the ms budget *before* a tool call, so a single call can overshoot  
-  the remaining budget before the next check runs. This is acceptable for the synthetic  
-  deterministic tools here, whose latencies are tiny and known, but is noted for production hardening.
+## Scope and Limitations
 
-### Known Limitations / Future Hardening
+This capstone prioritizes transparency, deterministic validation, and auditability over production-scale infrastructure:
 
-- **Tool-argument schema validation is top-level only.**  
-  `validate_arguments` checks required fields, top-level primitive types, and integer bounds.  
-  Full nested JSON Schema validation — array item schemas, `additionalProperties: false`, depth/size  
-  limits, and enum constraints — is deferred as production hardening. For deployments with untrusted  
-  inputs, replace `validate_arguments` with a conformant JSON Schema validator (e.g., `jsonschema`)  
-  and declare `additionalProperties: false` plus explicit size/depth limits on all tool schemas.
+- Tools and incident data are deterministic fixtures.
+- Planning is rule-based and does not learn across loops.
+- Server memory is in-process and single-tenant.
+- Telemetry is file-based rather than database-backed.
+- Learn-phase memory writes are best-effort.
+- Tool validation covers required fields, primitive types, and integer bounds rather than complete nested JSON Schema enforcement.
+
+These constraints keep the agent behavior inspectable while identifying clear directions for production hardening.
