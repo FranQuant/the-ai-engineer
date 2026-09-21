@@ -10,7 +10,6 @@ A four-capstone portfolio progressing from optimization and backpropagation thro
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Google Colab](https://img.shields.io/badge/Google%20Colab-Weeks%201--3%20Ready-F9AB00.svg?logo=googlecolab&logoColor=white)](https://colab.research.google.com/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org/)
-![Educational Use](https://img.shields.io/badge/Purpose-Educational%20Use-lightgrey.svg)
 
 ---
 
