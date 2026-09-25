@@ -1,6 +1,6 @@
 # Week 3 Capstone v2 — Design (pre-registration)
 
-Status: FROZEN v0.3 (Phase 0). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
+Status: FROZEN v0.4 (Phase 1 amendment, logged below). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
 
 ## 1. Research question
 
@@ -14,6 +14,7 @@ The tiny decoder-only transformer (handout spec, built from scratch) is the meas
 - **Unit of assignment is the meeting.** A meeting's statement and minutes always go to the same split.
 - **Availability rule:** a meeting is assigned by the date its last document became public. Minutes are released 21 days after the meeting (use the manifest's release date if present; Phase 1 checks this). So a meeting counts as "available" at meeting date + 21 days.
 - **Boundary exclusion:** any meeting whose availability date falls within 30 days of a split boundary (2019-12-31 or 2021-12-31) is excluded from all splits and counted. This makes the assignment robust to the exact release date.
+- Clarifications (v0.4): "within 30 days" means |availability − boundary| ≤ 30 days; a meeting with no minutes (e.g. unscheduled 2020 meetings) has availability = meeting date; per-year tables group by meeting year. Unmatched meetings in N are allowed (H2 uses F only).
 - Splits by availability date:
 
 | Split | Availability date | Role |
@@ -28,7 +29,7 @@ The tiny decoder-only transformer (handout spec, built from scratch) is the meas
 
 ## 3. Text normalization and document format
 
-- Normalization, applied identically to every document before anything else: Unicode NFD, remove combining marks, NFC. Fixed a priori; no other edits.
+- Normalization, applied identically to every document before anything else, in this order: (1) Unicode NFD; (2) remove combining marks (category Mn); (3) remove format characters (category Cf, e.g. zero-width joiner); (4) fixed map: ø→o, Ø→O, and delete ®, ™, ©; (5) NFC. No other edits.
 - After normalization, every character in N and F must appear in T. If not, the notebook stops and lists the offending characters (fail closed). Phase 1 checks this on the snapshot.
 - **Body** = the document text after its metadata header (header lines: `date:`, `document_id:`, `meeting_type:`, special tokens). The parser is one function, used for training and scoring alike.
 - Each document is serialized as: `<BOS>` + genre token (`<stmt>` or `<min>`) + body. No date, ID or meeting type anywhere in model input. Estimand: body surprise conditional on genre.
@@ -117,3 +118,4 @@ Textual surprise is not market surprise. One cutoff, not a rolling backtest. N i
 
 - v0.2 (Phase 0, Codex round 1): meeting-level split with availability rule (#1); removed validation-based selection, fixed step count, N/F split (#2); former H2 made exploratory E1 (#3); n-gram agreement made exploratory E2, char–BPE ρ is confirmatory H3 (#4); primary instrument, statistics, bootstrap and labels defined (#5); n-gram fixed as Witten–Bell order 5 (#6); normalization + fail-closed replaces `<unk>` (#7); runtime gate kept in §8 (#8); date/ID removed from input, BOS + genre only (#9); H2 paired within meeting (#10); tokenizer confounds stated (#11); body and scoring assertions defined (#12); pilot and exact thresholds and fallback defined (#13); Colab bootstrap with hash check (#14); seed handling (#15).
 - v0.3 (Phase 0, Codex round 2, frozen): 30-day boundary exclusion (#1); H3 reworded as instrument robustness with confounds explicit (#11); fallback replaced by an infeasibility rule (#13, new #16); clone pinned to tag `week03-v2`, unpinned libraries stated as limitation (#14); CPU now stops the notebook (new #17). #8 stays open by design until the Phase 3 T4 measurement.
+- v0.4 (Phase 1 amendment, 2026-09-24, before any model training; no BPC or other outcome observed): Phase 1 found 3 N/F characters absent from T after v0.3 normalization: ø (21 in F, 2 in N; one staff name, "Vissing-Jørgensen"), U+200D zero-width joiner (2 in F, 1 in N), ® (1 in N, "Fedwire®"). NFD does not decompose ø, and format/symbol characters carry no language content. §3 normalization extended with steps (3)–(4). Fail-closed check unchanged. Also ratified three Phase 1 interpretations of §2 (see clarifications). Split counts at amendment time: T 104 docs, N 32, F 70 (35 matched pairs), 2 boundary meetings excluded.
