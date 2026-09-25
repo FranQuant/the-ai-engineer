@@ -75,7 +75,9 @@ two_layer_xor.pt
 # PyTorch Lightning / Keras / HF outputs
 lightning_logs/
 logs/
-runs/
+**/runs/*
+!capstones/week03_transformers/runs/confirmatory_*
+!capstones/week03_transformers/runs/figures/
 mlruns/
 wandb/
 
