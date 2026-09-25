@@ -1,6 +1,6 @@
 # Week 3 Capstone v2 — Design (pre-registration)
 
-Status: FROZEN v0.5 (Phase 3 amendment, logged below). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
+Status: FROZEN v0.6 (Phase 3 closed, logged below). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
 
 ## 1. Research question
 
@@ -82,6 +82,15 @@ A contradicted or inconclusive hypothesis is reported as such, never tuned away.
   - Seed 2 (char only) is added only if one more char run at the same config and steps, plus its monitoring and F scoring, fits in the budget left after the selection. It never changes config or steps.
   - If nothing qualifies: NO CONFIG FITS, and the study is infeasible under §10.
 - If budget allows (rule above), a second seed for the char transformer; its ρ with seed 1 on F is reported as model uncertainty. Otherwise all claims are limited to seed 1.
+- **Frozen compute settings (Phase 3 pilot, Colab Tesla T4, torch 2.11.0+cu128, commit 1f0cd9d, `pilot/phase3_timing.json`):**
+  - C1: d_model 256, 6 layers, 8 heads, d_ff 1024.
+  - fp16 autocast with GradScaler for training; fp32 scoring (`evaluate.py`).
+  - block_size 256, batch 64, 3,696 steps for each of the char and BPE seed-1 runs.
+  - BPE vocab 2000 (vocab 4000 fit 95.4 s > 90 s).
+  - No second char seed (needs 268.0 s, 24.1 s left).
+  - Projected total 695.9 s.
+- **Frozen training hyperparameters:** AdamW, lr 3e-4 with 200 linear warm-up steps, then cosine decay to 3e-5 at the final step; weight decay 0.1 (both instruments); dropout 0.1; gradient-norm clip 1.0; seed 1. N monitoring at 10 evenly spaced evaluations, each on 20 batches of 64 windows, plotted only.
+- **Runtime contingency:** if the Phase 6 cold T4 Run all exceeds 15 min, multiply both runs' step count by the same factor so the projected total is ≤ 13.5 min. Nothing else changes. The new step count is logged here.
 
 ## 9. Reproducibility and Colab
 
@@ -120,7 +129,7 @@ Resume phases, label smoothing, early stopping, Char-KL, attention-map figure, 3
 
 ## 14. Known limitations (stated up front)
 
-Textual surprise is not market surprise. One cutoff, not a rolling backtest. N includes 2020 pandemic-era language, which may raise N and make H1 harder to support. Small models; absolute BPC is not comparable to published LMs. Tokenizer confounds in §5. Seed limits in §8. Unpinned Colab libraries (§9): results are reproducible to the printed library versions, not bit-identical across Colab updates.
+Textual surprise is not market surprise. One cutoff, not a rolling backtest. N includes 2020 pandemic-era language, which may raise N and make H1 harder to support. Small models; absolute BPC is not comparable to published LMs. Tokenizer confounds in §5. Seed limits in §8. Unpinned Colab libraries (§9): results are reproducible to the printed library versions, not bit-identical across Colab updates. BPE training sees about 43 passes over its T tokens and char about 16; with fixed steps and no early stopping, BPE may overfit, visible in the N curve. H3 compares rankings, not absolute BPC.
 
 ## Change log
 
@@ -128,3 +137,4 @@ Textual surprise is not market surprise. One cutoff, not a rolling backtest. N i
 - v0.3 (Phase 0, Codex round 2, frozen): 30-day boundary exclusion (#1); H3 reworded as instrument robustness with confounds explicit (#11); fallback replaced by an infeasibility rule (#13, new #16); clone pinned to tag `week03-v2`, unpinned libraries stated as limitation (#14); CPU now stops the notebook (new #17). #8 stays open by design until the Phase 3 T4 measurement.
 - v0.4 (Phase 1 amendment, 2026-09-24, before any model training; no BPC or other outcome observed): Phase 1 found 3 N/F characters absent from T after v0.3 normalization: ø (21 in F, 2 in N; one staff name, "Vissing-Jørgensen"), U+200D zero-width joiner (2 in F, 1 in N), ® (1 in N, "Fedwire®"). NFD does not decompose ø, and format/symbol characters carry no language content. §3 normalization extended with steps (3)–(4). Fail-closed check unchanged. Also ratified three Phase 1 interpretations of §2 (see clarifications). Split counts at amendment time: T 104 docs, N 32, F 70 (35 matched pairs), 2 boundary meetings excluded. Observed effect of step (3) on the full corpus: removes 221 soft hyphens (U+00AD), 3 zero-width joiners and 1 left-to-right mark; T character vocabulary 85 → 83.
 - v0.5 (Phase 3 amendment, before any T4 measurement; only CPU smoke-run numbers (not used) had been seen): Precision added as a pilot setting; selection rule and seed-2 rule moved from the pilot notebook into §8 (Codex Phase 3 #2, #4).
+- v0.6 (Phase 3 closed): compute settings chosen by the §8 rule on a Colab T4 (`pilot/phase3_timing.json`); training hyperparameters and the runtime contingency frozen before any training on the real split.

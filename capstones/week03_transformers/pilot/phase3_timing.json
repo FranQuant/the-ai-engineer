@@ -1,0 +1,483 @@
+{
+  "design": "DESIGN.md v0.5 section 8, Phase 3 pilot",
+  "created_utc": "2026-09-25T11:37:34Z",
+  "environment": {
+    "python": "3.13.15",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "Tesla T4",
+    "device": "cuda",
+    "git_commit": "1f0cd9de8a9c2489781185073ea660da32508773",
+    "module_dir": "/content/the-ai-engineer/capstones/week03_transformers",
+    "smoke": false
+  },
+  "settings": {
+    "block_size": 256,
+    "batch": 64,
+    "warmup_steps": 20,
+    "timed_steps": 50,
+    "configs": {
+      "C1": {
+        "d_model": 256,
+        "num_layers": 6,
+        "num_heads": 8,
+        "d_ff": 1024
+      },
+      "C2": {
+        "d_model": 192,
+        "num_layers": 4,
+        "num_heads": 6,
+        "d_ff": 768
+      },
+      "C3": {
+        "d_model": 128,
+        "num_layers": 4,
+        "num_heads": 4,
+        "d_ff": 512
+      }
+    },
+    "precisions": [
+      "fp16",
+      "fp32"
+    ],
+    "monitoring": {
+      "evals_per_run": 10,
+      "batches_per_eval": 20,
+      "windows_per_batch": 64,
+      "warmup_batches": 2,
+      "timed_on": "T windows"
+    },
+    "bootstrap": {
+      "resamples": 2000,
+      "hypotheses": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    "budget_s": 720.0,
+    "min_steps": 1500,
+    "bpe_fit_limit_s": 90.0
+  },
+  "data": {
+    "t_documents": 104,
+    "t_chars": 3777818,
+    "nf_chars_from_manifest": 2807708,
+    "f_chars_from_manifest": 1797554
+  },
+  "bpe": {
+    "4000": {
+      "vocab_size": 4000,
+      "tokens_per_char": 0.3279557141185732,
+      "shortest_doc_body_tokens": 602,
+      "shortest_doc_serialized_tokens": 604,
+      "fit_s": 95.38302859299998,
+      "measured": true
+    },
+    "2000": {
+      "vocab_size": 2000,
+      "tokens_per_char": 0.36985873856284235,
+      "shortest_doc_body_tokens": 649,
+      "shortest_doc_serialized_tokens": 651,
+      "fit_s": 55.32032245300002,
+      "measured": true
+    },
+    "1000": {
+      "vocab_size": 1000,
+      "tokens_per_char": 0.4347088716290727,
+      "shortest_doc_body_tokens": 788,
+      "shortest_doc_serialized_tokens": 790,
+      "fit_s": 28.27269912700001,
+      "measured": true
+    }
+  },
+  "bpe_vocab": 2000,
+  "bpe_vocab_rule": "BPE vocab = the largest of {4000, 2000, 1000} whose shortest T document has >= block_size + 1 = 257 tokens and whose fit time is <= 90 s.",
+  "training_throughput": {
+    "C1/char/fp16": {
+      "s_per_step_median": 0.060364381499994124,
+      "s_per_step_mean": 0.060297656279997225,
+      "s_per_step_min": 0.059257294000019556,
+      "s_per_step_max": 0.06113538500000004,
+      "n_params": 4754944,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.018921353500019222,
+      "monitor_s_per_batch_max": 0.01921953700002632,
+      "monitor_run_s": 3.7842707000038445
+    },
+    "C1/char/fp32": {
+      "s_per_step_median": 0.18209007849998216,
+      "s_per_step_mean": 0.18215292991999946,
+      "s_per_step_min": 0.1810486829999718,
+      "s_per_step_max": 0.18478877900003,
+      "n_params": 4754944,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.058611325500010025,
+      "monitor_s_per_batch_max": 0.06052923599997939,
+      "monitor_run_s": 11.722265100002005
+    },
+    "C1/bpe/fp16": {
+      "s_per_step_median": 0.06687393500001804,
+      "s_per_step_mean": 0.06692440736000435,
+      "s_per_step_min": 0.06510141799998337,
+      "s_per_step_max": 0.06823710599996957,
+      "n_params": 5244928,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.02151408250000486,
+      "monitor_s_per_batch_max": 0.021973565999985567,
+      "monitor_run_s": 4.302816500000972
+    },
+    "C1/bpe/fp32": {
+      "s_per_step_median": 0.20239896850003447,
+      "s_per_step_mean": 0.20241295744000468,
+      "s_per_step_min": 0.2010087390000308,
+      "s_per_step_max": 0.20410775400000603,
+      "n_params": 5244928,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.06437707700001738,
+      "monitor_s_per_batch_max": 0.06550489199997855,
+      "monitor_run_s": 12.875415400003476
+    },
+    "C2/char/fp16": {
+      "s_per_step_median": 0.03231392549997736,
+      "s_per_step_mean": 0.0323726615999999,
+      "s_per_step_min": 0.031574988999977904,
+      "s_per_step_max": 0.033102222999957576,
+      "n_params": 1793280,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.010276205999986132,
+      "monitor_s_per_batch_max": 0.010634922999997798,
+      "monitor_run_s": 2.0552411999972264
+    },
+    "C2/char/fp32": {
+      "s_per_step_median": 0.08847287049999863,
+      "s_per_step_mean": 0.08860225242000525,
+      "s_per_step_min": 0.08616951100003689,
+      "s_per_step_max": 0.09105401099998289,
+      "n_params": 1793280,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.02788650350001376,
+      "monitor_s_per_batch_max": 0.02836555800001861,
+      "monitor_run_s": 5.577300700002752
+    },
+    "C2/bpe/fp16": {
+      "s_per_step_median": 0.03764950400000089,
+      "s_per_step_mean": 0.0377754403400013,
+      "s_per_step_min": 0.03679862600000661,
+      "s_per_step_max": 0.03912069999995538,
+      "n_params": 2160768,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.012550471499992,
+      "monitor_s_per_batch_max": 0.012767719999999372,
+      "monitor_run_s": 2.5100942999984
+    },
+    "C2/bpe/fp32": {
+      "s_per_step_median": 0.1019889350000085,
+      "s_per_step_mean": 0.10226180218000308,
+      "s_per_step_min": 0.10085728699999663,
+      "s_per_step_max": 0.10442960500000709,
+      "n_params": 2160768,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.03189888899999005,
+      "monitor_s_per_batch_max": 0.03295610300000362,
+      "monitor_run_s": 6.37977779999801
+    },
+    "C3/char/fp16": {
+      "s_per_step_median": 0.021175777999985712,
+      "s_per_step_mean": 0.021165786840001602,
+      "s_per_step_min": 0.020574381000017183,
+      "s_per_step_max": 0.021969464999983757,
+      "n_params": 802304,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.006818948000017144,
+      "monitor_s_per_batch_max": 0.006929259000003185,
+      "monitor_run_s": 1.3637896000034289
+    },
+    "C3/char/fp32": {
+      "s_per_step_median": 0.04964941700001191,
+      "s_per_step_mean": 0.04970444780000093,
+      "s_per_step_min": 0.047926302999997006,
+      "s_per_step_max": 0.050897536000036325,
+      "n_params": 802304,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.015299772499986375,
+      "monitor_s_per_batch_max": 0.01573332999998911,
+      "monitor_run_s": 3.059954499997275
+    },
+    "C3/bpe/fp16": {
+      "s_per_step_median": 0.025926505999990468,
+      "s_per_step_mean": 0.025970822660001433,
+      "s_per_step_min": 0.025503613000012137,
+      "s_per_step_max": 0.02673400999998421,
+      "n_params": 1047296,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.008899558000024399,
+      "monitor_s_per_batch_max": 0.009191434999991088,
+      "monitor_run_s": 1.7799116000048798
+    },
+    "C3/bpe/fp32": {
+      "s_per_step_median": 0.05990587049998908,
+      "s_per_step_mean": 0.05970516182000097,
+      "s_per_step_min": 0.057885709000004226,
+      "s_per_step_max": 0.06104087599999275,
+      "n_params": 1047296,
+      "timed_steps": 50,
+      "warmup_steps": 20,
+      "batch": 64,
+      "monitor_s_per_batch_median": 0.018695731999997633,
+      "monitor_s_per_batch_max": 0.019270505999998022,
+      "monitor_run_s": 3.7391463999995267
+    }
+  },
+  "monitoring_run_s": {
+    "C1/char/fp16": 3.7842707000038445,
+    "C1/char/fp32": 11.722265100002005,
+    "C1/bpe/fp16": 4.302816500000972,
+    "C1/bpe/fp32": 12.875415400003476,
+    "C2/char/fp16": 2.0552411999972264,
+    "C2/char/fp32": 5.577300700002752,
+    "C2/bpe/fp16": 2.5100942999984,
+    "C2/bpe/fp32": 6.37977779999801,
+    "C3/char/fp16": 1.3637896000034289,
+    "C3/char/fp32": 3.059954499997275,
+    "C3/bpe/fp16": 1.7799116000048798,
+    "C3/bpe/fp32": 3.7391463999995267
+  },
+  "scoring": {
+    "C1/char": {
+      "s": 66.02851482199998,
+      "chars": 2885134,
+      "s_per_100k_chars": 2.288577058188631,
+      "projected_to": "N+F",
+      "projected_s": 64.25656114892685,
+      "projected_f_s": 41.13840845255206,
+      "warmup_doc": "fomc-2018-09-26",
+      "timed_passes": 1
+    },
+    "C1/bpe": {
+      "s": 26.109706561000053,
+      "chars": 2885134,
+      "s_per_100k_chars": 0.9049737918932034,
+      "projected_to": "F",
+      "projected_s": 16.267392595127955,
+      "projected_f_s": 16.267392595127955,
+      "warmup_doc": "fomc-2018-09-26",
+      "timed_passes": 1
+    },
+    "C2/char": {
+      "s": 46.52433805099997,
+      "chars": 2885134,
+      "s_per_100k_chars": 1.6125538034281934,
+      "projected_to": "N+F",
+      "projected_s": 45.27580214315766,
+      "projected_f_s": 28.986525395675628,
+      "warmup_doc": "fomc-2018-09-26",
+      "timed_passes": 1
+    },
+    "C2/bpe": {
+      "s": 18.49223437699993,
+      "chars": 2885134,
+      "s_per_100k_chars": 0.6409488910047135,
+      "projected_to": "F",
+      "projected_s": 11.52140242821087,
+      "projected_f_s": 11.52140242821087,
+      "warmup_doc": "fomc-2018-09-26",
+      "timed_passes": 1
+    },
+    "C3/char": {
+      "s": 46.773881867,
+      "chars": 2885134,
+      "s_per_100k_chars": 1.6212031006878709,
+      "projected_to": "N+F",
+      "projected_s": 45.518649154261404,
+      "projected_f_s": 29.14200118453885,
+      "warmup_doc": "fomc-2018-09-26",
+      "timed_passes": 1
+    },
+    "C3/bpe": {
+      "s": 19.584521419999987,
+      "chars": 2885134,
+      "s_per_100k_chars": 0.6788080352593671,
+      "projected_to": "F",
+      "projected_s": 12.201940990126163,
+      "projected_f_s": 12.201940990126163,
+      "warmup_doc": "fomc-2018-09-26",
+      "timed_passes": 1
+    }
+  },
+  "ngram": {
+    "estimate": true,
+    "reason": "timing stub; real n-gram not written",
+    "order": 5,
+    "fit_chars": 3777818,
+    "fit_s": 6.364318077000007,
+    "score_chars": 2885134,
+    "score_s": 7.559046501000012,
+    "projected_to": "F",
+    "projected_f_score_s": 4.709588627099668,
+    "total_s": 11.073906704099675
+  },
+  "bootstrap": {
+    "estimate": true,
+    "reason": "timing stub; real analysis not written",
+    "resamples": 2000,
+    "hypotheses": [
+      "H1",
+      "H2",
+      "H3"
+    ],
+    "t_meetings": 65,
+    "t_matched_meetings": 39,
+    "t_documents": 104,
+    "s": 0.7007905369999889
+  },
+  "overheads": {
+    "imports_and_cuda_init": {
+      "s": 5.361736338999975,
+      "measured": true
+    },
+    "clone": {
+      "s": 0.9910833719999914,
+      "measured": true
+    },
+    "load_and_hash_checks": {
+      "s": 2.3009034800000165,
+      "measured": true
+    },
+    "tests_equivalent_checks": {
+      "s": 29.74553042499997,
+      "measured": true
+    },
+    "tokenize_T_for_training": {
+      "s": 1.547805234000009,
+      "measured": true
+    },
+    "figures": {
+      "s": 30.0,
+      "measured": false
+    }
+  },
+  "overheads_total_s": 69.94705884999996,
+  "rule": "DESIGN.md v0.5 section 8, selection rule (pre-registered):\nBudget = 720 s. Subtract, all measured on T only: overheads\n(imports and CUDA init, clone, load and hash checks, checks, tokenization,\nfigures), BPE fit, n-gram fit, char scoring projected to N+F, BPE and n-gram\nscoring projected to F, bootstrap, and N monitoring.\nSplit the remainder equally between the char and BPE seed-1 runs.\nCandidates in the order C1, C2, C3, fp16 before fp32 within each; the first\nwhere both runs get >= 1,500 steps wins, with\nsteps = floor(per-run budget / median s/step) (the minimum of the two).\nBPE vocab = the largest of {4000, 2000, 1000} whose shortest T document has >= block_size + 1 = 257 tokens and whose fit time is <= 90 s. (Applied in 3a.)\nSeed 2 (char only) is added only if one more char run at the same config and\nsteps, plus its monitoring and F scoring, fits in the budget left after the\nselection. It never changes config or steps.\nIf nothing qualifies: NO CONFIG FITS (study infeasible under section 10).",
+  "candidates": [
+    {
+      "config": "C1",
+      "precision": "fp16",
+      "scoring_s": 85.23354237115447,
+      "monitoring_s": 8.087087200004817,
+      "remainder_s": 494.3468805118407,
+      "per_run_s": 247.17344025592035,
+      "s_per_step_char": 0.060364381499994124,
+      "s_per_step_bpe": 0.06687393500001804,
+      "steps": 3696,
+      "qualifies": true
+    },
+    {
+      "config": "C1",
+      "precision": "fp32",
+      "scoring_s": 85.23354237115447,
+      "monitoring_s": 24.59768050000548,
+      "remainder_s": 477.83628721184004,
+      "per_run_s": 238.91814360592002,
+      "s_per_step_char": 0.18209007849998216,
+      "s_per_step_bpe": 0.20239896850003447,
+      "steps": 1180,
+      "qualifies": false
+    },
+    {
+      "config": "C2",
+      "precision": "fp16",
+      "scoring_s": 61.5067931984682,
+      "monitoring_s": 4.565335499995626,
+      "remainder_s": 521.5953813845362,
+      "per_run_s": 260.7976906922681,
+      "s_per_step_char": 0.03231392549997736,
+      "s_per_step_bpe": 0.03764950400000089,
+      "steps": 6926,
+      "qualifies": true
+    },
+    {
+      "config": "C2",
+      "precision": "fp32",
+      "scoring_s": 61.5067931984682,
+      "monitoring_s": 11.957078500000762,
+      "remainder_s": 514.203638384531,
+      "per_run_s": 257.1018191922655,
+      "s_per_step_char": 0.08847287049999863,
+      "s_per_step_bpe": 0.1019889350000085,
+      "steps": 2520,
+      "qualifies": true
+    },
+    {
+      "config": "C3",
+      "precision": "fp16",
+      "scoring_s": 62.430178771487235,
+      "monitoring_s": 3.1437012000083087,
+      "remainder_s": 522.0936301115045,
+      "per_run_s": 261.04681505575223,
+      "s_per_step_char": 0.021175777999985712,
+      "s_per_step_bpe": 0.025926505999990468,
+      "steps": 10068,
+      "qualifies": true
+    },
+    {
+      "config": "C3",
+      "precision": "fp32",
+      "scoring_s": 62.430178771487235,
+      "monitoring_s": 6.799100899996802,
+      "remainder_s": 518.438230411516,
+      "per_run_s": 259.219115205758,
+      "s_per_step_char": 0.04964941700001191,
+      "s_per_step_bpe": 0.05990587049998908,
+      "steps": 4327,
+      "qualifies": true
+    }
+  ],
+  "selection": {
+    "result": "OK",
+    "config": "C1",
+    "d_model": 256,
+    "num_layers": 6,
+    "num_heads": 8,
+    "d_ff": 1024,
+    "precision": "fp16",
+    "block_size": 256,
+    "batch": 64,
+    "steps": 3696,
+    "bpe_vocab": 2000,
+    "char_seed2": false
+  },
+  "seed2": {
+    "added": false,
+    "budget_left_s": 24.074062727795763,
+    "cost_s": 268.0294331765342,
+    "train_s": 223.10675402397828,
+    "monitoring_s": 3.7842707000038445,
+    "f_scoring_s": 41.13840845255206,
+    "config": "C1",
+    "precision": "fp16",
+    "steps": 3696
+  }
+}
