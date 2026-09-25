@@ -143,6 +143,20 @@ def test_uniform_logits_loss_is_log_vocab():
     assert loss.item() == pytest.approx(math.log(vocab), abs=1e-6)
 
 
+def test_loss_accepts_non_contiguous_targets():
+    # WindowSampler returns y = window[:, 1:], a strided view.
+    torch.manual_seed(3)
+    lm = TinyTransformerLM(ModelConfig(
+        vocab_size=11, d_model=16, num_heads=2, num_layers=1, d_ff=32,
+        block_size=8, dropout=0.0))
+    window = torch.randint(0, 11, (4, 9))
+    x, y = window[:, :-1], window[:, 1:]
+    assert not y.is_contiguous()
+    _, loss = lm(x, y)
+    _, loss_ref = lm(x.contiguous(), y.contiguous())
+    assert torch.equal(loss, loss_ref)
+
+
 def test_overfits_ab_pattern():
     torch.manual_seed(1)
     data = torch.tensor([0, 1] * 200)

@@ -1,6 +1,6 @@
 # Week 3 Capstone v2 — Design (pre-registration)
 
-Status: FROZEN v0.4 (Phase 1 amendment, logged below). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
+Status: FROZEN v0.5 (Phase 3 amendment, logged below). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
 
 ## 1. Research question
 
@@ -72,8 +72,16 @@ A contradicted or inconclusive hypothesis is reported as such, never tuned away.
 ## 8. Compute budget and pilot
 
 - Whole notebook ≤ 12 min on a Colab T4 (CPF limit 15), measured by a cold "Run all", including data fetch, checks, both transformers, n-gram, scoring and figures.
-- **Phase 3 timing pilot:** trains on T data only, scores nothing on N or F, and its models are discarded. It may change only compute settings: d_model, layers, heads, d_ff, block_size, batch size, step count, BPE vocab size. Once set, these are logged here and frozen before the real run.
-- If budget allows, a second seed for the char transformer; its ρ with seed 1 on F is reported as model uncertainty. Otherwise all claims are limited to seed 1.
+- **Phase 3 timing pilot:** trains on T data only, scores nothing on N or F, and its models are discarded. It may change only compute settings: d_model, layers, heads, d_ff, block_size, batch size, step count, BPE vocab size, numeric precision (fp16 autocast or fp32). Once set, these are logged here and frozen before the real run.
+- **Selection rule (pre-registered):**
+  - Budget 720 s.
+  - Subtract, all measured on T only: overheads (imports and CUDA init, clone, load and hash checks, checks, tokenization, figures), BPE fit, n-gram fit, char scoring projected to N+F, BPE and n-gram scoring projected to F, bootstrap, and N monitoring.
+  - Split the remainder equally between the char and BPE seed-1 runs.
+  - Candidates in the order C1 (256/6/8/1024), C2 (192/4/6/768), C3 (128/4/4/512) (d_model/layers/heads/d_ff), fp16 before fp32 within each. The first where both runs get ≥ 1,500 steps wins, with steps = floor(per-run budget / median s/step), the minimum of the two.
+  - BPE vocab = the largest of {4000, 2000, 1000} with shortest T document ≥ block_size + 1 tokens and fit ≤ 90 s.
+  - Seed 2 (char only) is added only if one more char run at the same config and steps, plus its monitoring and F scoring, fits in the budget left after the selection. It never changes config or steps.
+  - If nothing qualifies: NO CONFIG FITS, and the study is infeasible under §10.
+- If budget allows (rule above), a second seed for the char transformer; its ρ with seed 1 on F is reported as model uncertainty. Otherwise all claims are limited to seed 1.
 
 ## 9. Reproducibility and Colab
 
@@ -119,3 +127,4 @@ Textual surprise is not market surprise. One cutoff, not a rolling backtest. N i
 - v0.2 (Phase 0, Codex round 1): meeting-level split with availability rule (#1); removed validation-based selection, fixed step count, N/F split (#2); former H2 made exploratory E1 (#3); n-gram agreement made exploratory E2, char–BPE ρ is confirmatory H3 (#4); primary instrument, statistics, bootstrap and labels defined (#5); n-gram fixed as Witten–Bell order 5 (#6); normalization + fail-closed replaces `<unk>` (#7); runtime gate kept in §8 (#8); date/ID removed from input, BOS + genre only (#9); H2 paired within meeting (#10); tokenizer confounds stated (#11); body and scoring assertions defined (#12); pilot and exact thresholds and fallback defined (#13); Colab bootstrap with hash check (#14); seed handling (#15).
 - v0.3 (Phase 0, Codex round 2, frozen): 30-day boundary exclusion (#1); H3 reworded as instrument robustness with confounds explicit (#11); fallback replaced by an infeasibility rule (#13, new #16); clone pinned to tag `week03-v2`, unpinned libraries stated as limitation (#14); CPU now stops the notebook (new #17). #8 stays open by design until the Phase 3 T4 measurement.
 - v0.4 (Phase 1 amendment, 2026-09-24, before any model training; no BPC or other outcome observed): Phase 1 found 3 N/F characters absent from T after v0.3 normalization: ø (21 in F, 2 in N; one staff name, "Vissing-Jørgensen"), U+200D zero-width joiner (2 in F, 1 in N), ® (1 in N, "Fedwire®"). NFD does not decompose ø, and format/symbol characters carry no language content. §3 normalization extended with steps (3)–(4). Fail-closed check unchanged. Also ratified three Phase 1 interpretations of §2 (see clarifications). Split counts at amendment time: T 104 docs, N 32, F 70 (35 matched pairs), 2 boundary meetings excluded. Observed effect of step (3) on the full corpus: removes 221 soft hyphens (U+00AD), 3 zero-width joiners and 1 left-to-right mark; T character vocabulary 85 → 83.
+- v0.5 (Phase 3 amendment, before any T4 measurement; only CPU smoke-run numbers (not used) had been seen): Precision added as a pilot setting; selection rule and seed-2 rule moved from the pilot notebook into §8 (Codex Phase 3 #2, #4).
