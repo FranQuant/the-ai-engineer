@@ -41,21 +41,21 @@ def test_notebooks_are_saved_without_outputs():
                    for c in code), path.name
 
 
-def _uncommitted_changes():
-    """The notebook's `uncommitted_changes`, compiled from cell-01."""
+def _setup_function(name):
+    """A function defined in the notebook's setup cell (cell-01)."""
     nb = json.loads(MAIN.read_text())
     src = "".join(next(c for c in nb["cells"] if c["id"] == "cell-01")
                   ["source"])
     fn = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef)
-              and n.name == "uncommitted_changes")
+              and n.name == name)
     ns = {"subprocess": subprocess, "Path": Path}
     exec(compile(ast.Module([fn], []), MAIN.name, "exec"), ns)
-    return ns["uncommitted_changes"]
+    return ns[name]
 
 
 @pytest.mark.skipif(shutil.which("git") is None, reason="git not installed")
 def test_uncommitted_changes_reads_the_module_dir(tmp_path):
-    check = _uncommitted_changes()
+    check = _setup_function("uncommitted_changes")
     mod, other = tmp_path / "mod", tmp_path / "other"
     mod.mkdir()
     other.mkdir()
@@ -79,3 +79,45 @@ def test_uncommitted_changes_reads_the_module_dir(tmp_path):
     (mod / "new.py").unlink()
     (mod / "a.py").write_text("x = 2\n")  # modified counts
     assert check(mod) is True
+
+
+FIX = "Use Runtime → Disconnect and delete runtime, then Run all again."
+
+
+def _git(repo, *args):
+    return subprocess.run(["git", "-C", str(repo), "-c", "user.name=t",
+                           "-c", "user.email=t@t", "-c",
+                           "advice.detachedHead=false", *args], check=True,
+                          capture_output=True, text=True).stdout.strip()
+
+
+@pytest.mark.skipif(shutil.which("git") is None, reason="git not installed")
+def test_real_mode_refusal(tmp_path):
+    refusal = _setup_function("real_mode_refusal")
+    origin, clone = tmp_path / "origin", tmp_path / "clone"
+    origin.mkdir()
+    _git(origin, "init", "-q")
+    (origin / "a.py").write_text("x = 1\n")
+    _git(origin, "add", ".")
+    _git(origin, "commit", "-q", "-m", "one")
+    _git(origin, "tag", "-a", "run1", "-m", "run1")  # annotated, as REF
+    _git(origin, "commit", "-q", "--allow-empty", "-m", "two")
+    # As the notebook clones: depth 1 at the tag, via a file:// URL so
+    # --depth is honoured.
+    _git(tmp_path, "clone", "-q", "--depth", "1", "--branch", "run1",
+         origin.as_uri(), str(clone))
+
+    assert refusal(clone, "clone", "run1") is None
+    # Existing modules are refused even when they sit at REF.
+    msg = refusal(clone, "local", "run1")
+    assert msg and msg.endswith(FIX)
+    # HEAD moved off REF.
+    _git(clone, "commit", "-q", "--allow-empty", "-m", "three")
+    msg = refusal(clone, "clone", "run1")
+    assert msg and "run1" in msg and msg.endswith(FIX)
+    # REF missing from the clone.
+    msg = refusal(clone, "clone", "no-such-tag")
+    assert msg and "no-such-tag is unresolved" in msg and msg.endswith(FIX)
+    # Not a repository.
+    msg = refusal(tmp_path, "clone", "run1")
+    assert msg and msg.endswith(FIX)
