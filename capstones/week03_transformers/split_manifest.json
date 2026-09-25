@@ -1,0 +1,2136 @@
+{
+  "counts": {
+    "F": {
+      "documents": 70,
+      "matched_pairs": 35,
+      "meetings": 35,
+      "minutes": 35,
+      "statement": 35
+    },
+    "N": {
+      "documents": 32,
+      "matched_pairs": 15,
+      "meetings": 17,
+      "minutes": 15,
+      "statement": 17
+    },
+    "T": {
+      "documents": 104,
+      "matched_pairs": 39,
+      "meetings": 65,
+      "minutes": 65,
+      "statement": 39
+    },
+    "excluded": {
+      "documents": 4,
+      "matched_pairs": 2,
+      "meetings": 2,
+      "minutes": 2,
+      "statement": 2
+    }
+  },
+  "design_version": "v0.4",
+  "meetings": [
+    {
+      "availability_date": "2010-07-14",
+      "documents": [
+        {
+          "body_code_points": 32828,
+          "document_id": "fomc-minutes-2010-06-23",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2010-06-23",
+      "split": "T"
+    },
+    {
+      "availability_date": "2010-08-31",
+      "documents": [
+        {
+          "body_code_points": 42098,
+          "document_id": "fomc-minutes-2010-08-10",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2010-08-10",
+      "split": "T"
+    },
+    {
+      "availability_date": "2012-02-15",
+      "documents": [
+        {
+          "body_code_points": 70571,
+          "document_id": "fomc-minutes-2012-01-25",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2012-01-25",
+      "split": "T"
+    },
+    {
+      "availability_date": "2012-04-03",
+      "documents": [
+        {
+          "body_code_points": 40622,
+          "document_id": "fomc-minutes-2012-03-13",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2012-03-13",
+      "split": "T"
+    },
+    {
+      "availability_date": "2012-05-16",
+      "documents": [
+        {
+          "body_code_points": 46693,
+          "document_id": "fomc-minutes-2012-04-25",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2012-04-25",
+      "split": "T"
+    },
+    {
+      "availability_date": "2012-07-11",
+      "documents": [
+        {
+          "body_code_points": 50602,
+          "document_id": "fomc-minutes-2012-06-20",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2012-06-20",
+      "split": "T"
+    },
+    {
+      "availability_date": "2012-08-22",
+      "documents": [
+        {
+          "body_code_points": 45699,
+          "document_id": "fomc-minutes-2012-08-01",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2012-08-01",
+      "split": "T"
+    },
+    {
+      "availability_date": "2012-10-04",
+      "documents": [
+        {
+          "body_code_points": 49911,
+          "document_id": "fomc-minutes-2012-09-13",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2012-09-13",
+      "split": "T"
+    },
+    {
+      "availability_date": "2012-11-14",
+      "documents": [
+        {
+          "body_code_points": 42837,
+          "document_id": "fomc-minutes-2012-10-24",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2012-10-24",
+      "split": "T"
+    },
+    {
+      "availability_date": "2013-01-02",
+      "documents": [
+        {
+          "body_code_points": 48194,
+          "document_id": "fomc-minutes-2012-12-12",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2012-12-12",
+      "split": "T"
+    },
+    {
+      "availability_date": "2013-02-20",
+      "documents": [
+        {
+          "body_code_points": 70412,
+          "document_id": "fomc-minutes-2013-01-30",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2013-01-30",
+      "split": "T"
+    },
+    {
+      "availability_date": "2013-04-10",
+      "documents": [
+        {
+          "body_code_points": 47940,
+          "document_id": "fomc-minutes-2013-03-20",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2013-03-20",
+      "split": "T"
+    },
+    {
+      "availability_date": "2013-05-22",
+      "documents": [
+        {
+          "body_code_points": 45353,
+          "document_id": "fomc-minutes-2013-05-01",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2013-05-01",
+      "split": "T"
+    },
+    {
+      "availability_date": "2013-07-10",
+      "documents": [
+        {
+          "body_code_points": 53841,
+          "document_id": "fomc-minutes-2013-06-19",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2013-06-19",
+      "split": "T"
+    },
+    {
+      "availability_date": "2013-08-21",
+      "documents": [
+        {
+          "body_code_points": 47236,
+          "document_id": "fomc-minutes-2013-07-31",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2013-07-31",
+      "split": "T"
+    },
+    {
+      "availability_date": "2013-10-09",
+      "documents": [
+        {
+          "body_code_points": 46861,
+          "document_id": "fomc-minutes-2013-09-18",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2013-09-18",
+      "split": "T"
+    },
+    {
+      "availability_date": "2013-11-20",
+      "documents": [
+        {
+          "body_code_points": 50661,
+          "document_id": "fomc-minutes-2013-10-30",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2013-10-30",
+      "split": "T"
+    },
+    {
+      "availability_date": "2014-01-08",
+      "documents": [
+        {
+          "body_code_points": 56900,
+          "document_id": "fomc-minutes-2013-12-18",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2013-12-18",
+      "split": "T"
+    },
+    {
+      "availability_date": "2014-02-19",
+      "documents": [
+        {
+          "body_code_points": 76803,
+          "document_id": "fomc-minutes-2014-01-29",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2014-01-29",
+      "split": "T"
+    },
+    {
+      "availability_date": "2014-04-09",
+      "documents": [
+        {
+          "body_code_points": 53880,
+          "document_id": "fomc-minutes-2014-03-19",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2014-03-19",
+      "split": "T"
+    },
+    {
+      "availability_date": "2014-05-21",
+      "documents": [
+        {
+          "body_code_points": 38004,
+          "document_id": "fomc-minutes-2014-04-30",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2014-04-30",
+      "split": "T"
+    },
+    {
+      "availability_date": "2014-07-09",
+      "documents": [
+        {
+          "body_code_points": 49890,
+          "document_id": "fomc-minutes-2014-06-18",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2014-06-18",
+      "split": "T"
+    },
+    {
+      "availability_date": "2014-08-20",
+      "documents": [
+        {
+          "body_code_points": 52776,
+          "document_id": "fomc-minutes-2014-07-30",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2014-07-30",
+      "split": "T"
+    },
+    {
+      "availability_date": "2014-10-08",
+      "documents": [
+        {
+          "body_code_points": 53029,
+          "document_id": "fomc-minutes-2014-09-17",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2014-09-17",
+      "split": "T"
+    },
+    {
+      "availability_date": "2014-11-19",
+      "documents": [
+        {
+          "body_code_points": 55102,
+          "document_id": "fomc-minutes-2014-10-29",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2014-10-29",
+      "split": "T"
+    },
+    {
+      "availability_date": "2015-01-07",
+      "documents": [
+        {
+          "body_code_points": 43037,
+          "document_id": "fomc-minutes-2014-12-17",
+          "genre": "minutes"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2014-12-17",
+      "split": "T"
+    },
+    {
+      "availability_date": "2015-02-18",
+      "documents": [
+        {
+          "body_code_points": 82101,
+          "document_id": "fomc-minutes-2015-01-28",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3961,
+          "document_id": "fomc-2015-01-28",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2015-01-28",
+      "split": "T"
+    },
+    {
+      "availability_date": "2015-04-08",
+      "documents": [
+        {
+          "body_code_points": 54912,
+          "document_id": "fomc-minutes-2015-03-18",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3984,
+          "document_id": "fomc-2015-03-18",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2015-03-18",
+      "split": "T"
+    },
+    {
+      "availability_date": "2015-05-20",
+      "documents": [
+        {
+          "body_code_points": 50413,
+          "document_id": "fomc-minutes-2015-04-29",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3863,
+          "document_id": "fomc-2015-04-29",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2015-04-29",
+      "split": "T"
+    },
+    {
+      "availability_date": "2015-07-08",
+      "documents": [
+        {
+          "body_code_points": 53219,
+          "document_id": "fomc-minutes-2015-06-17",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3739,
+          "document_id": "fomc-2015-06-17",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2015-06-17",
+      "split": "T"
+    },
+    {
+      "availability_date": "2015-08-19",
+      "documents": [
+        {
+          "body_code_points": 55984,
+          "document_id": "fomc-minutes-2015-07-29",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3701,
+          "document_id": "fomc-2015-07-29",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2015-07-29",
+      "split": "T"
+    },
+    {
+      "availability_date": "2015-10-08",
+      "documents": [
+        {
+          "body_code_points": 49529,
+          "document_id": "fomc-minutes-2015-09-17",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3999,
+          "document_id": "fomc-2015-09-17",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2015-09-17",
+      "split": "T"
+    },
+    {
+      "availability_date": "2015-11-18",
+      "documents": [
+        {
+          "body_code_points": 53690,
+          "document_id": "fomc-minutes-2015-10-28",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3913,
+          "document_id": "fomc-2015-10-28",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2015-10-28",
+      "split": "T"
+    },
+    {
+      "availability_date": "2016-01-06",
+      "documents": [
+        {
+          "body_code_points": 50780,
+          "document_id": "fomc-minutes-2015-12-16",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 4001,
+          "document_id": "fomc-2015-12-16",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2015-12-16",
+      "split": "T"
+    },
+    {
+      "availability_date": "2016-02-17",
+      "documents": [
+        {
+          "body_code_points": 81503,
+          "document_id": "fomc-minutes-2016-01-27",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3730,
+          "document_id": "fomc-2016-01-27",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2016-01-27",
+      "split": "T"
+    },
+    {
+      "availability_date": "2016-04-06",
+      "documents": [
+        {
+          "body_code_points": 51320,
+          "document_id": "fomc-minutes-2016-03-16",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3794,
+          "document_id": "fomc-2016-03-16",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2016-03-16",
+      "split": "T"
+    },
+    {
+      "availability_date": "2016-05-18",
+      "documents": [
+        {
+          "body_code_points": 61635,
+          "document_id": "fomc-minutes-2016-04-27",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3820,
+          "document_id": "fomc-2016-04-27",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2016-04-27",
+      "split": "T"
+    },
+    {
+      "availability_date": "2016-07-06",
+      "documents": [
+        {
+          "body_code_points": 54555,
+          "document_id": "fomc-minutes-2016-06-15",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3593,
+          "document_id": "fomc-2016-06-15",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2016-06-15",
+      "split": "T"
+    },
+    {
+      "availability_date": "2016-08-17",
+      "documents": [
+        {
+          "body_code_points": 67936,
+          "document_id": "fomc-minutes-2016-07-27",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3737,
+          "document_id": "fomc-2016-07-27",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2016-07-27",
+      "split": "T"
+    },
+    {
+      "availability_date": "2016-10-12",
+      "documents": [
+        {
+          "body_code_points": 59060,
+          "document_id": "fomc-minutes-2016-09-21",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3954,
+          "document_id": "fomc-2016-09-21",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2016-09-21",
+      "split": "T"
+    },
+    {
+      "availability_date": "2016-11-23",
+      "documents": [
+        {
+          "body_code_points": 61282,
+          "document_id": "fomc-minutes-2016-11-02",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3930,
+          "document_id": "fomc-2016-11-02",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2016-11-02",
+      "split": "T"
+    },
+    {
+      "availability_date": "2017-01-04",
+      "documents": [
+        {
+          "body_code_points": 55480,
+          "document_id": "fomc-minutes-2016-12-14",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3588,
+          "document_id": "fomc-2016-12-14",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2016-12-14",
+      "split": "T"
+    },
+    {
+      "availability_date": "2017-02-22",
+      "documents": [
+        {
+          "body_code_points": 81513,
+          "document_id": "fomc-minutes-2017-02-01",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3370,
+          "document_id": "fomc-2017-02-01",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2017-02-01",
+      "split": "T"
+    },
+    {
+      "availability_date": "2017-04-05",
+      "documents": [
+        {
+          "body_code_points": 59522,
+          "document_id": "fomc-minutes-2017-03-15",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3534,
+          "document_id": "fomc-2017-03-15",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2017-03-15",
+      "split": "T"
+    },
+    {
+      "availability_date": "2017-05-24",
+      "documents": [
+        {
+          "body_code_points": 56601,
+          "document_id": "fomc-minutes-2017-05-03",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3522,
+          "document_id": "fomc-2017-05-03",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2017-05-03",
+      "split": "T"
+    },
+    {
+      "availability_date": "2017-07-05",
+      "documents": [
+        {
+          "body_code_points": 55644,
+          "document_id": "fomc-minutes-2017-06-14",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3714,
+          "document_id": "fomc-2017-06-14",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2017-06-14",
+      "split": "T"
+    },
+    {
+      "availability_date": "2017-08-16",
+      "documents": [
+        {
+          "body_code_points": 49691,
+          "document_id": "fomc-minutes-2017-07-26",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3402,
+          "document_id": "fomc-2017-07-26",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2017-07-26",
+      "split": "T"
+    },
+    {
+      "availability_date": "2017-10-11",
+      "documents": [
+        {
+          "body_code_points": 57114,
+          "document_id": "fomc-minutes-2017-09-20",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3563,
+          "document_id": "fomc-2017-09-20",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2017-09-20",
+      "split": "T"
+    },
+    {
+      "availability_date": "2017-11-22",
+      "documents": [
+        {
+          "body_code_points": 50674,
+          "document_id": "fomc-minutes-2017-11-01",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3447,
+          "document_id": "fomc-2017-11-01",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2017-11-01",
+      "split": "T"
+    },
+    {
+      "availability_date": "2018-01-03",
+      "documents": [
+        {
+          "body_code_points": 49326,
+          "document_id": "fomc-minutes-2017-12-13",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3230,
+          "document_id": "fomc-2017-12-13",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2017-12-13",
+      "split": "T"
+    },
+    {
+      "availability_date": "2018-02-21",
+      "documents": [
+        {
+          "body_code_points": 80781,
+          "document_id": "fomc-minutes-2018-01-31",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2773,
+          "document_id": "fomc-2018-01-31",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2018-01-31",
+      "split": "T"
+    },
+    {
+      "availability_date": "2018-04-11",
+      "documents": [
+        {
+          "body_code_points": 48462,
+          "document_id": "fomc-minutes-2018-03-21",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2945,
+          "document_id": "fomc-2018-03-21",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2018-03-21",
+      "split": "T"
+    },
+    {
+      "availability_date": "2018-05-23",
+      "documents": [
+        {
+          "body_code_points": 52517,
+          "document_id": "fomc-minutes-2018-05-02",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2768,
+          "document_id": "fomc-2018-05-02",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2018-05-02",
+      "split": "T"
+    },
+    {
+      "availability_date": "2018-07-04",
+      "documents": [
+        {
+          "body_code_points": 47387,
+          "document_id": "fomc-minutes-2018-06-13",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2126,
+          "document_id": "fomc-2018-06-13",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2018-06-13",
+      "split": "T"
+    },
+    {
+      "availability_date": "2018-08-22",
+      "documents": [
+        {
+          "body_code_points": 55255,
+          "document_id": "fomc-minutes-2018-08-01",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2062,
+          "document_id": "fomc-2018-08-01",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2018-08-01",
+      "split": "T"
+    },
+    {
+      "availability_date": "2018-10-17",
+      "documents": [
+        {
+          "body_code_points": 47431,
+          "document_id": "fomc-minutes-2018-09-26",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 1931,
+          "document_id": "fomc-2018-09-26",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2018-09-26",
+      "split": "T"
+    },
+    {
+      "availability_date": "2018-11-29",
+      "documents": [
+        {
+          "body_code_points": 55511,
+          "document_id": "fomc-minutes-2018-11-08",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2009,
+          "document_id": "fomc-2018-11-08",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2018-11-08",
+      "split": "T"
+    },
+    {
+      "availability_date": "2019-01-09",
+      "documents": [
+        {
+          "body_code_points": 56431,
+          "document_id": "fomc-minutes-2018-12-19",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2188,
+          "document_id": "fomc-2018-12-19",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2018-12-19",
+      "split": "T"
+    },
+    {
+      "availability_date": "2019-02-20",
+      "documents": [
+        {
+          "body_code_points": 92736,
+          "document_id": "fomc-minutes-2019-01-30",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2188,
+          "document_id": "fomc-2019-01-30",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2019-01-30",
+      "split": "T"
+    },
+    {
+      "availability_date": "2019-04-10",
+      "documents": [
+        {
+          "body_code_points": 61295,
+          "document_id": "fomc-minutes-2019-03-20",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2286,
+          "document_id": "fomc-2019-03-20",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2019-03-20",
+      "split": "T"
+    },
+    {
+      "availability_date": "2019-05-22",
+      "documents": [
+        {
+          "body_code_points": 62085,
+          "document_id": "fomc-minutes-2019-05-01",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2123,
+          "document_id": "fomc-2019-05-01",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2019-05-01",
+      "split": "T"
+    },
+    {
+      "availability_date": "2019-07-10",
+      "documents": [
+        {
+          "body_code_points": 55145,
+          "document_id": "fomc-minutes-2019-06-19",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2361,
+          "document_id": "fomc-2019-06-19",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2019-06-19",
+      "split": "T"
+    },
+    {
+      "availability_date": "2019-08-21",
+      "documents": [
+        {
+          "body_code_points": 68848,
+          "document_id": "fomc-minutes-2019-07-31",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2646,
+          "document_id": "fomc-2019-07-31",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2019-07-31",
+      "split": "T"
+    },
+    {
+      "availability_date": "2019-10-09",
+      "documents": [
+        {
+          "body_code_points": 71133,
+          "document_id": "fomc-minutes-2019-09-18",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2536,
+          "document_id": "fomc-2019-09-18",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2019-09-18",
+      "split": "T"
+    },
+    {
+      "availability_date": "2019-11-20",
+      "documents": [
+        {
+          "body_code_points": 83193,
+          "document_id": "fomc-minutes-2019-10-30",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2313,
+          "document_id": "fomc-2019-10-30",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2019-10-30",
+      "split": "T"
+    },
+    {
+      "availability_date": "2020-01-01",
+      "documents": [
+        {
+          "body_code_points": 57073,
+          "document_id": "fomc-minutes-2019-12-11",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2104,
+          "document_id": "fomc-2019-12-11",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": "2019-12-31",
+      "meeting_id": "2019-12-11",
+      "split": "excluded"
+    },
+    {
+      "availability_date": "2020-02-19",
+      "documents": [
+        {
+          "body_code_points": 87421,
+          "document_id": "fomc-minutes-2020-01-29",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2113,
+          "document_id": "fomc-2020-01-29",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-01-29",
+      "split": "N"
+    },
+    {
+      "availability_date": "2020-03-03",
+      "documents": [
+        {
+          "body_code_points": 782,
+          "document_id": "fomc-2020-03-03",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-03-03",
+      "split": "N"
+    },
+    {
+      "availability_date": "2020-04-05",
+      "documents": [
+        {
+          "body_code_points": 65223,
+          "document_id": "fomc-minutes-2020-03-15",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 4404,
+          "document_id": "fomc-2020-03-15",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-03-15",
+      "split": "N"
+    },
+    {
+      "availability_date": "2020-03-23",
+      "documents": [
+        {
+          "body_code_points": 3908,
+          "document_id": "fomc-2020-03-23",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-03-23",
+      "split": "N"
+    },
+    {
+      "availability_date": "2020-05-20",
+      "documents": [
+        {
+          "body_code_points": 58879,
+          "document_id": "fomc-minutes-2020-04-29",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2822,
+          "document_id": "fomc-2020-04-29",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-04-29",
+      "split": "N"
+    },
+    {
+      "availability_date": "2020-07-01",
+      "documents": [
+        {
+          "body_code_points": 65704,
+          "document_id": "fomc-minutes-2020-06-10",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2825,
+          "document_id": "fomc-2020-06-10",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-06-10",
+      "split": "N"
+    },
+    {
+      "availability_date": "2020-08-19",
+      "documents": [
+        {
+          "body_code_points": 58970,
+          "document_id": "fomc-minutes-2020-07-29",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2959,
+          "document_id": "fomc-2020-07-29",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-07-29",
+      "split": "N"
+    },
+    {
+      "availability_date": "2020-10-07",
+      "documents": [
+        {
+          "body_code_points": 64789,
+          "document_id": "fomc-minutes-2020-09-16",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3548,
+          "document_id": "fomc-2020-09-16",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-09-16",
+      "split": "N"
+    },
+    {
+      "availability_date": "2020-11-26",
+      "documents": [
+        {
+          "body_code_points": 62558,
+          "document_id": "fomc-minutes-2020-11-05",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3025,
+          "document_id": "fomc-2020-11-05",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-11-05",
+      "split": "N"
+    },
+    {
+      "availability_date": "2021-01-06",
+      "documents": [
+        {
+          "body_code_points": 54323,
+          "document_id": "fomc-minutes-2020-12-16",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3135,
+          "document_id": "fomc-2020-12-16",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2020-12-16",
+      "split": "N"
+    },
+    {
+      "availability_date": "2021-02-17",
+      "documents": [
+        {
+          "body_code_points": 82586,
+          "document_id": "fomc-minutes-2021-01-27",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3205,
+          "document_id": "fomc-2021-01-27",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2021-01-27",
+      "split": "N"
+    },
+    {
+      "availability_date": "2021-04-07",
+      "documents": [
+        {
+          "body_code_points": 56944,
+          "document_id": "fomc-minutes-2021-03-17",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3173,
+          "document_id": "fomc-2021-03-17",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2021-03-17",
+      "split": "N"
+    },
+    {
+      "availability_date": "2021-05-19",
+      "documents": [
+        {
+          "body_code_points": 57584,
+          "document_id": "fomc-minutes-2021-04-28",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3161,
+          "document_id": "fomc-2021-04-28",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2021-04-28",
+      "split": "N"
+    },
+    {
+      "availability_date": "2021-07-07",
+      "documents": [
+        {
+          "body_code_points": 62408,
+          "document_id": "fomc-minutes-2021-06-16",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3124,
+          "document_id": "fomc-2021-06-16",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2021-06-16",
+      "split": "N"
+    },
+    {
+      "availability_date": "2021-08-18",
+      "documents": [
+        {
+          "body_code_points": 68982,
+          "document_id": "fomc-minutes-2021-07-28",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3207,
+          "document_id": "fomc-2021-07-28",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2021-07-28",
+      "split": "N"
+    },
+    {
+      "availability_date": "2021-10-13",
+      "documents": [
+        {
+          "body_code_points": 57075,
+          "document_id": "fomc-minutes-2021-09-22",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3311,
+          "document_id": "fomc-2021-09-22",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2021-09-22",
+      "split": "N"
+    },
+    {
+      "availability_date": "2021-11-24",
+      "documents": [
+        {
+          "body_code_points": 54012,
+          "document_id": "fomc-minutes-2021-11-03",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3994,
+          "document_id": "fomc-2021-11-03",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2021-11-03",
+      "split": "N"
+    },
+    {
+      "availability_date": "2022-01-05",
+      "documents": [
+        {
+          "body_code_points": 61291,
+          "document_id": "fomc-minutes-2021-12-15",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 3391,
+          "document_id": "fomc-2021-12-15",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": "2021-12-31",
+      "meeting_id": "2021-12-15",
+      "split": "excluded"
+    },
+    {
+      "availability_date": "2022-02-16",
+      "documents": [
+        {
+          "body_code_points": 86381,
+          "document_id": "fomc-minutes-2022-01-26",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2768,
+          "document_id": "fomc-2022-01-26",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2022-01-26",
+      "split": "F"
+    },
+    {
+      "availability_date": "2022-04-06",
+      "documents": [
+        {
+          "body_code_points": 56745,
+          "document_id": "fomc-minutes-2022-03-16",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2269,
+          "document_id": "fomc-2022-03-16",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2022-03-16",
+      "split": "F"
+    },
+    {
+      "availability_date": "2022-05-25",
+      "documents": [
+        {
+          "body_code_points": 49282,
+          "document_id": "fomc-minutes-2022-05-04",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2429,
+          "document_id": "fomc-2022-05-04",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2022-05-04",
+      "split": "F"
+    },
+    {
+      "availability_date": "2022-07-06",
+      "documents": [
+        {
+          "body_code_points": 51686,
+          "document_id": "fomc-minutes-2022-06-15",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2410,
+          "document_id": "fomc-2022-06-15",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2022-06-15",
+      "split": "F"
+    },
+    {
+      "availability_date": "2022-08-17",
+      "documents": [
+        {
+          "body_code_points": 55017,
+          "document_id": "fomc-minutes-2022-07-27",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2078,
+          "document_id": "fomc-2022-07-27",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2022-07-27",
+      "split": "F"
+    },
+    {
+      "availability_date": "2022-10-12",
+      "documents": [
+        {
+          "body_code_points": 50879,
+          "document_id": "fomc-minutes-2022-09-21",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2070,
+          "document_id": "fomc-2022-09-21",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2022-09-21",
+      "split": "F"
+    },
+    {
+      "availability_date": "2022-11-23",
+      "documents": [
+        {
+          "body_code_points": 52855,
+          "document_id": "fomc-minutes-2022-11-02",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2470,
+          "document_id": "fomc-2022-11-02",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2022-11-02",
+      "split": "F"
+    },
+    {
+      "availability_date": "2023-01-04",
+      "documents": [
+        {
+          "body_code_points": 50603,
+          "document_id": "fomc-minutes-2022-12-14",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2470,
+          "document_id": "fomc-2022-12-14",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2022-12-14",
+      "split": "F"
+    },
+    {
+      "availability_date": "2023-02-22",
+      "documents": [
+        {
+          "body_code_points": 56460,
+          "document_id": "fomc-minutes-2023-02-01",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2217,
+          "document_id": "fomc-2023-02-01",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2023-02-01",
+      "split": "F"
+    },
+    {
+      "availability_date": "2023-04-12",
+      "documents": [
+        {
+          "body_code_points": 48988,
+          "document_id": "fomc-minutes-2023-03-22",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2421,
+          "document_id": "fomc-2023-03-22",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2023-03-22",
+      "split": "F"
+    },
+    {
+      "availability_date": "2023-05-24",
+      "documents": [
+        {
+          "body_code_points": 53870,
+          "document_id": "fomc-minutes-2023-05-03",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2211,
+          "document_id": "fomc-2023-05-03",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2023-05-03",
+      "split": "F"
+    },
+    {
+      "availability_date": "2023-07-05",
+      "documents": [
+        {
+          "body_code_points": 46016,
+          "document_id": "fomc-minutes-2023-06-14",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2277,
+          "document_id": "fomc-2023-06-14",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2023-06-14",
+      "split": "F"
+    },
+    {
+      "availability_date": "2023-08-16",
+      "documents": [
+        {
+          "body_code_points": 45129,
+          "document_id": "fomc-minutes-2023-07-26",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2234,
+          "document_id": "fomc-2023-07-26",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2023-07-26",
+      "split": "F"
+    },
+    {
+      "availability_date": "2023-10-11",
+      "documents": [
+        {
+          "body_code_points": 42798,
+          "document_id": "fomc-minutes-2023-09-20",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2266,
+          "document_id": "fomc-2023-09-20",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2023-09-20",
+      "split": "F"
+    },
+    {
+      "availability_date": "2023-11-22",
+      "documents": [
+        {
+          "body_code_points": 45387,
+          "document_id": "fomc-minutes-2023-11-01",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2304,
+          "document_id": "fomc-2023-11-01",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2023-11-01",
+      "split": "F"
+    },
+    {
+      "availability_date": "2024-01-03",
+      "documents": [
+        {
+          "body_code_points": 44881,
+          "document_id": "fomc-minutes-2023-12-13",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2357,
+          "document_id": "fomc-2023-12-13",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2023-12-13",
+      "split": "F"
+    },
+    {
+      "availability_date": "2024-02-21",
+      "documents": [
+        {
+          "body_code_points": 48695,
+          "document_id": "fomc-minutes-2024-01-31",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2172,
+          "document_id": "fomc-2024-01-31",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2024-01-31",
+      "split": "F"
+    },
+    {
+      "availability_date": "2024-04-10",
+      "documents": [
+        {
+          "body_code_points": 47795,
+          "document_id": "fomc-minutes-2024-03-20",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2138,
+          "document_id": "fomc-2024-03-20",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2024-03-20",
+      "split": "F"
+    },
+    {
+      "availability_date": "2024-05-22",
+      "documents": [
+        {
+          "body_code_points": 46269,
+          "document_id": "fomc-minutes-2024-05-01",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2627,
+          "document_id": "fomc-2024-05-01",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2024-05-01",
+      "split": "F"
+    },
+    {
+      "availability_date": "2024-07-03",
+      "documents": [
+        {
+          "body_code_points": 42674,
+          "document_id": "fomc-minutes-2024-06-12",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2227,
+          "document_id": "fomc-2024-06-12",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2024-06-12",
+      "split": "F"
+    },
+    {
+      "availability_date": "2024-08-21",
+      "documents": [
+        {
+          "body_code_points": 43654,
+          "document_id": "fomc-minutes-2024-07-31",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2307,
+          "document_id": "fomc-2024-07-31",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2024-07-31",
+      "split": "F"
+    },
+    {
+      "availability_date": "2024-10-09",
+      "documents": [
+        {
+          "body_code_points": 43203,
+          "document_id": "fomc-minutes-2024-09-18",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2291,
+          "document_id": "fomc-2024-09-18",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2024-09-18",
+      "split": "F"
+    },
+    {
+      "availability_date": "2024-11-28",
+      "documents": [
+        {
+          "body_code_points": 48012,
+          "document_id": "fomc-minutes-2024-11-07",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2070,
+          "document_id": "fomc-2024-11-07",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2024-11-07",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-01-08",
+      "documents": [
+        {
+          "body_code_points": 44505,
+          "document_id": "fomc-minutes-2024-12-18",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2222,
+          "document_id": "fomc-2024-12-18",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2024-12-18",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-02-19",
+      "documents": [
+        {
+          "body_code_points": 53097,
+          "document_id": "fomc-minutes-2025-01-29",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2001,
+          "document_id": "fomc-2025-01-29",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2025-01-29",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-04-09",
+      "documents": [
+        {
+          "body_code_points": 47404,
+          "document_id": "fomc-minutes-2025-03-19",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2386,
+          "document_id": "fomc-2025-03-19",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2025-03-19",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-05-28",
+      "documents": [
+        {
+          "body_code_points": 49906,
+          "document_id": "fomc-minutes-2025-05-07",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2108,
+          "document_id": "fomc-2025-05-07",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2025-05-07",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-07-09",
+      "documents": [
+        {
+          "body_code_points": 46245,
+          "document_id": "fomc-minutes-2025-06-18",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 1950,
+          "document_id": "fomc-2025-06-18",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2025-06-18",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-08-20",
+      "documents": [
+        {
+          "body_code_points": 46364,
+          "document_id": "fomc-minutes-2025-07-30",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2115,
+          "document_id": "fomc-2025-07-30",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2025-07-30",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-10-08",
+      "documents": [
+        {
+          "body_code_points": 41115,
+          "document_id": "fomc-minutes-2025-09-17",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2141,
+          "document_id": "fomc-2025-09-17",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2025-09-17",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-11-19",
+      "documents": [
+        {
+          "body_code_points": 54385,
+          "document_id": "fomc-minutes-2025-10-29",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2323,
+          "document_id": "fomc-2025-10-29",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2025-10-29",
+      "split": "F"
+    },
+    {
+      "availability_date": "2025-12-31",
+      "documents": [
+        {
+          "body_code_points": 50413,
+          "document_id": "fomc-minutes-2025-12-10",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2450,
+          "document_id": "fomc-2025-12-10",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2025-12-10",
+      "split": "F"
+    },
+    {
+      "availability_date": "2026-02-18",
+      "documents": [
+        {
+          "body_code_points": 43091,
+          "document_id": "fomc-minutes-2026-01-28",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 1890,
+          "document_id": "fomc-2026-01-28",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2026-01-28",
+      "split": "F"
+    },
+    {
+      "availability_date": "2026-04-08",
+      "documents": [
+        {
+          "body_code_points": 39757,
+          "document_id": "fomc-minutes-2026-03-18",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 1977,
+          "document_id": "fomc-2026-03-18",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2026-03-18",
+      "split": "F"
+    },
+    {
+      "availability_date": "2026-05-20",
+      "documents": [
+        {
+          "body_code_points": 45190,
+          "document_id": "fomc-minutes-2026-04-29",
+          "genre": "minutes"
+        },
+        {
+          "body_code_points": 2157,
+          "document_id": "fomc-2026-04-29",
+          "genre": "statement"
+        }
+      ],
+      "excluded_boundary": null,
+      "meeting_id": "2026-04-29",
+      "split": "F"
+    }
+  ],
+  "rules": {
+    "boundary_exclusion_days": 30,
+    "minutes_release_lag_days": 21,
+    "near_end": "2021-12-31",
+    "normalization": "NFD; drop Mn; drop Cf; map U+00F8->o, U+00D8->O, delete U+00AE U+2122 U+00A9; NFC",
+    "train_end": "2019-12-31"
+  },
+  "schema_version": "1.0",
+  "source": {
+    "corpus_file": "fomc_training_corpus.txt",
+    "corpus_sha256": "3318b478ddcfaa0dd6292212d7f5b69d0578bd56350099306501ac40edb9ce93",
+    "manifest_file": "fomc_training_corpus_manifest.json",
+    "manifest_sha256": "63c967167fed33f9755da65b8da0538471b8436d2082be02522c02d842cfa168"
+  },
+  "t_character_vocab": [
+    "U+000A",
+    "U+0020",
+    "U+0022",
+    "U+0023",
+    "U+0024",
+    "U+0026",
+    "U+0027",
+    "U+0028",
+    "U+0029",
+    "U+002A",
+    "U+002C",
+    "U+002D",
+    "U+002E",
+    "U+002F",
+    "U+0030",
+    "U+0031",
+    "U+0032",
+    "U+0033",
+    "U+0034",
+    "U+0035",
+    "U+0036",
+    "U+0037",
+    "U+0038",
+    "U+0039",
+    "U+003A",
+    "U+003B",
+    "U+0041",
+    "U+0042",
+    "U+0043",
+    "U+0044",
+    "U+0045",
+    "U+0046",
+    "U+0047",
+    "U+0048",
+    "U+0049",
+    "U+004A",
+    "U+004B",
+    "U+004C",
+    "U+004D",
+    "U+004E",
+    "U+004F",
+    "U+0050",
+    "U+0051",
+    "U+0052",
+    "U+0053",
+    "U+0054",
+    "U+0055",
+    "U+0056",
+    "U+0057",
+    "U+0058",
+    "U+0059",
+    "U+005A",
+    "U+005F",
+    "U+0061",
+    "U+0062",
+    "U+0063",
+    "U+0064",
+    "U+0065",
+    "U+0066",
+    "U+0067",
+    "U+0068",
+    "U+0069",
+    "U+006A",
+    "U+006B",
+    "U+006C",
+    "U+006D",
+    "U+006E",
+    "U+006F",
+    "U+0070",
+    "U+0071",
+    "U+0072",
+    "U+0073",
+    "U+0074",
+    "U+0075",
+    "U+0076",
+    "U+0077",
+    "U+0078",
+    "U+0079",
+    "U+007A",
+    "U+00BC",
+    "U+00BD",
+    "U+2012",
+    "U+20AC"
+  ]
+}
