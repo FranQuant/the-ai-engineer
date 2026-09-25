@@ -1,4 +1,4 @@
-"""Byte-pair encoding tokenizer for the BPE instrument (DESIGN.md v0.4, §5).
+"""Byte-pair encoding tokenizer for the BPE instrument (DESIGN.md v0.8, §5).
 
 Ported from v1's SimpleBPE. Changes:
 - fit on T bodies only, enforced: from_documents() is the only public way

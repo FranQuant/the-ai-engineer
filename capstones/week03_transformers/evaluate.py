@@ -1,4 +1,4 @@
-"""Per-document scoring (DESIGN.md v0.4, §4).
+"""Per-document scoring (DESIGN.md v0.8, §4).
 
 Adapted from v1's evaluate_unsmoothed_nll. Each document is scored on its
 own, starting from <BOS> + genre token, with deterministic sliding windows

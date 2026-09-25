@@ -1,10 +1,10 @@
-"""Corpus handling for the Week 3 v2 capstone (DESIGN.md v0.4, §2 and §3).
+"""Corpus handling for the Week 3 v2 capstone (DESIGN.md v0.8, §2, §3, §8).
 
 Single source of truth for everything between the static corpus snapshot and
 model input: SHA-256 checks, §3 normalization, the body parser, manifest and
 split loading, document records, serialization as BOS + genre token + body,
-the character vocabulary, and training-window sampling. Every check fails
-closed with ValueError.
+the character vocabulary, training-window sampling (T only) and
+N-monitoring windows (N only). Every check fails closed with ValueError.
 """
 
 from __future__ import annotations
@@ -197,14 +197,20 @@ def check_characters(docs: Iterable[Document]) -> dict[str, dict[str, int]]:
     return offending
 
 
-def _require_t(docs: Iterable[Document], what: str) -> list[Document]:
-    """Fail closed unless every document is in split T (§2, §5)."""
+def _require_split(docs: Iterable[Document], split: str, what: str
+                   ) -> list[Document]:
+    """Fail closed unless every document is in the given split."""
     docs = list(docs)
-    leaked = sorted({d.split for d in docs if d.split != "T"})
+    leaked = sorted({d.split for d in docs if d.split != split})
     if leaked:
-        raise ValueError(f"{what} is fit on T documents only; "
+        raise ValueError(f"{what} takes {split} documents only; "
                          f"got splits {leaked}")
     return docs
+
+
+def _require_t(docs: Iterable[Document], what: str) -> list[Document]:
+    """Fail closed unless every document is in split T (§2, §5)."""
+    return _require_split(docs, "T", what)
 
 
 # Guards private constructors: tokenizers are built from T documents via
@@ -322,3 +328,31 @@ class WindowSampler:
             self.block_size + 1)
         window = self.data[idx]
         return window[:, :-1], window[:, 1:], doc
+
+
+class NMonitorSampler:
+    """Windows from N documents for the §8 training curves only.
+
+    Kept apart from WindowSampler, which stays T-only: this class accepts
+    N documents only, and train.py accepts it only as the monitoring
+    sampler. The losses it yields are plotted, never used for a decision.
+    """
+
+    def __init__(self, windows: WindowSampler, *, _token: object = None):
+        if _token is not _PRIVATE:
+            raise TypeError("use NMonitorSampler.from_documents()")
+        self._windows = windows
+        self.block_size = windows.block_size
+
+    @classmethod
+    def from_documents(cls, docs: Iterable[Document], tokenizer: Tokenizer,
+                       block_size: int) -> NMonitorSampler:
+        docs = _require_split(docs, "N", "the N-monitoring sampler")
+        return cls(WindowSampler(
+            [serialize(tokenizer, d.genre, d.body) for d in docs],
+            block_size), _token=_PRIVATE)
+
+    def sample(self, batch_size: int,
+               generator: torch.Generator | None = None
+               ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        return self._windows.sample(batch_size, generator)

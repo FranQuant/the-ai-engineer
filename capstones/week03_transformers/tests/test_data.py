@@ -6,8 +6,8 @@ import pytest
 import torch
 
 import data
-from data import (BOS, GENRE_TOKENS, CharVocab, Document, WindowSampler,
-                  normalize, parse_documents, serialize)
+from data import (BOS, GENRE_TOKENS, CharVocab, Document, NMonitorSampler,
+                  WindowSampler, normalize, parse_documents, serialize)
 
 
 @pytest.mark.parametrize("raw, expected", [
@@ -168,3 +168,25 @@ def test_training_windows_from_real_t_documents(documents, t_documents):
 def test_short_documents_fail_closed():
     with pytest.raises(ValueError, match="shorter than block_size"):
         WindowSampler([[1, 2, 3]], block_size=3)
+
+
+def _toy_docs(split):
+    return [Document(f"{split}{i}", g, f"2020-0{i + 1}-01", split,
+                     "rates were held steady " * 3)
+            for i, g in enumerate(("statement", "minutes"))]
+
+
+def test_monitor_sampler_takes_n_documents_only():
+    vocab = CharVocab._from_chars("rates wheldy")
+    sampler = NMonitorSampler.from_documents(_toy_docs("N"), vocab, 16)
+    x, y, doc = sampler.sample(8, generator=torch.Generator().manual_seed(0))
+    assert x.shape == y.shape == (8, 16) and set(doc.tolist()) <= {0, 1}
+    for split in ("T", "F", "excluded"):
+        with pytest.raises(ValueError, match="N documents only"):
+            NMonitorSampler.from_documents(
+                _toy_docs("N") + _toy_docs(split), vocab, 16)
+    with pytest.raises(TypeError):
+        NMonitorSampler(WindowSampler([[0] * 20], block_size=4))
+    # The training sampler's T-only guard is unchanged.
+    with pytest.raises(ValueError, match="T documents only"):
+        WindowSampler.from_documents(_toy_docs("N"), vocab, 16)

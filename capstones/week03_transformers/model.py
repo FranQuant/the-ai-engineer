@@ -1,9 +1,10 @@
-"""Tiny decoder-only transformer (DESIGN.md v0.4, §5 and §11).
+"""Tiny decoder-only transformer (DESIGN.md v0.8, §5, §8 and §11).
 
 Ported from the v1 notebook. Changes: scaled_dot_product_attention accepts a
 boolean mask (True = keep) or an additive float mask (0 / -inf); label
 smoothing removed (plain cross-entropy, §5); top-p sampling dropped (greedy,
-temperature and top-k kept).
+temperature and top-k kept); the tied token embedding is initialized
+N(0, d_model^-1/2) (§8, v0.7).
 """
 
 from __future__ import annotations
@@ -159,6 +160,11 @@ class TinyTransformerLM(nn.Module):
         self.ln_f = nn.LayerNorm(cfg.d_model)
         self.head = nn.Linear(cfg.d_model, cfg.vocab_size, bias=False)
         self.head.weight = self.tok_emb.weight  # weight tying
+        # §8 (v0.7): N(0, 1), nn.Embedding's default, makes the tied
+        # output logits huge at init (~186 nats/token at C1); 0.02 made
+        # the token signal too small next to the sinusoidal positions.
+        nn.init.normal_(self.tok_emb.weight, mean=0.0,
+                        std=cfg.d_model ** -0.5)
 
     def forward(self, idx, targets=None):
         if idx.shape[1] > self.block_size:

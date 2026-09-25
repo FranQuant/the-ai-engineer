@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate the Week 3 v2 meeting-level time split (DESIGN.md v0.4, §2-3).
+"""Regenerate the Week 3 v2 meeting-level time split (DESIGN.md v0.8, §2-3).
 
 Reads the static corpus snapshot and its manifest, normalizes every document
 (§3), parses the bodies, assigns each meeting to Train / Near / Far by its

@@ -1,6 +1,6 @@
 # Week 3 Capstone v2 — Design (pre-registration)
 
-Status: FROZEN v0.6 (Phase 3 closed, logged below). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
+Status: FROZEN v0.8 (Phase 4 amendment from Codex review, logged below). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
 
 ## 1. Research question
 
@@ -56,7 +56,7 @@ The tiny decoder-only transformer (handout spec, built from scratch) is the meas
 
 ## 6. Hypotheses (confirmatory)
 
-All use the char transformer unless stated. Uncertainty: percentile bootstrap, 2,000 resamples of **meetings**, seed fixed. Result labels: **supported** if the 95% CI excludes 0 in the predicted direction; **contradicted** if the point estimate is ≤ 0; **inconclusive** otherwise.
+All use the char transformer unless stated. Uncertainty: percentile bootstrap, 2,000 resamples of **meetings**, seed fixed. Result labels: **supported** if the 95% CI excludes 0 in the predicted direction; **contradicted** if the point estimate is ≤ 0; **inconclusive** otherwise. Bootstrap seed 20260925; a resample with an undefined ρ (constant input) is excluded from the CI and counted; a point estimate ≤ 0 is "contradicted" regardless of the CI.
 
 - **H1 (drift):** Δ₁ = mean BPC(F) − mean BPC(N) > 0. Surprise grows with distance from the cutoff.
 - **H2 (genre):** Δ₂ = mean over matched F meetings of [BPC(minutes) − BPC(statement)] > 0. Statements are more formulaic. Unmatched meetings are excluded and counted.
@@ -67,7 +67,7 @@ A contradicted or inconclusive hypothesis is reported as such, never tuned away.
 ## 7. Exploratory analyses (no pass/fail)
 
 - **E1:** the 5 highest-BPC F documents, listed with dates. Discussed in context; no causal or market claim.
-- **E2:** Spearman ρ between char transformer and n-gram per-document BPC on F. Interpretation only: high ρ means the transformer adds little ranking information beyond local statistics.
+- **E2:** Spearman ρ between char transformer and n-gram per-document BPC on F. Interpretation only: high ρ means the transformer adds little ranking information beyond local statistics. The n-gram has no BOS or genre context (context resets at the document start).
 
 ## 8. Compute budget and pilot
 
@@ -89,12 +89,15 @@ A contradicted or inconclusive hypothesis is reported as such, never tuned away.
   - BPE vocab 2000 (vocab 4000 fit 95.4 s > 90 s).
   - No second char seed (needs 268.0 s, 24.1 s left).
   - Projected total 695.9 s.
-- **Frozen training hyperparameters:** AdamW, lr 3e-4 with 200 linear warm-up steps, then cosine decay to 3e-5 at the final step; weight decay 0.1 (both instruments); dropout 0.1; gradient-norm clip 1.0; seed 1. N monitoring at 10 evenly spaced evaluations, each on 20 batches of 64 windows, plotted only.
+- **Frozen training hyperparameters:** AdamW, lr 3e-4 with 200 linear warm-up steps, then cosine decay to 3e-5 at the final step; weight decay 0.1 (both instruments); dropout 0.1; gradient-norm clip 1.0; seed 1; token embedding (tied with the output layer) initialized N(0, d_model^-1/2) (std 0.0625 at C1); all other layers PyTorch defaults; weight decay 0.1 applied to all parameters. N monitoring at 10 evenly spaced evaluations, each on 20 batches of 64 windows, plotted only.
+- A step is one optimizer iteration; fp16 GradScaler-skipped updates are counted and reported, not replaced.
 - **Runtime contingency:** if the Phase 6 cold T4 Run all exceeds 15 min, multiply both runs' step count by the same factor so the projected total is ≤ 13.5 min. Nothing else changes. The new step count is logged here.
 
 ## 9. Reproducibility and Colab
 
 - First code cell clones the repository at the fixed tag `week03-v2` (depth 1) when the package is not present, then verifies the corpus and manifest SHA-256 and stops on mismatch. The tag is created on the submitted commit.
+- The confirmatory result is the first real run, executed from tag `week03-v2-run1`; its results.json is committed as `runs/confirmatory_results.json`. Later runs (Phase 6, graders) are reproductions; fp16 GPU training is not bit-reproducible, and differences from the confirmatory run are reported, not substituted.
+- A rehearsal (full frozen settings on a fake split built from T meetings only, never touching N/F) may run on the T4 to measure runtime.
 - Model code lives in `model.py`, `bpe.py`, `data.py`, `evaluate.py`; the notebook imports them after the clone.
 - Library versions (Python, torch, CUDA, GPU name) are printed. Colab's preinstalled torch is used without pins: pinning would add install time and risk CUDA mismatches. Accepted limitation (§14).
 - Notebook metadata requests a GPU (T4). The first code cell **stops** if CUDA is unavailable. Any CUDA GPU is accepted; the budget in §8 is set on a T4, the slowest standard Colab GPU.
@@ -138,3 +141,5 @@ Textual surprise is not market surprise. One cutoff, not a rolling backtest. N i
 - v0.4 (Phase 1 amendment, 2026-09-24, before any model training; no BPC or other outcome observed): Phase 1 found 3 N/F characters absent from T after v0.3 normalization: ø (21 in F, 2 in N; one staff name, "Vissing-Jørgensen"), U+200D zero-width joiner (2 in F, 1 in N), ® (1 in N, "Fedwire®"). NFD does not decompose ø, and format/symbol characters carry no language content. §3 normalization extended with steps (3)–(4). Fail-closed check unchanged. Also ratified three Phase 1 interpretations of §2 (see clarifications). Split counts at amendment time: T 104 docs, N 32, F 70 (35 matched pairs), 2 boundary meetings excluded. Observed effect of step (3) on the full corpus: removes 221 soft hyphens (U+00AD), 3 zero-width joiners and 1 left-to-right mark; T character vocabulary 85 → 83.
 - v0.5 (Phase 3 amendment, before any T4 measurement; only CPU smoke-run numbers (not used) had been seen): Precision added as a pilot setting; selection rule and seed-2 rule moved from the pilot notebook into §8 (Codex Phase 3 #2, #4).
 - v0.6 (Phase 3 closed): compute settings chosen by the §8 rule on a Colab T4 (`pilot/phase3_timing.json`); training hyperparameters and the runtime contingency frozen before any training on the real split.
+- v0.7 (Phase 4 amendment, before any training on the real split and before any N/F scoring): initial loss at C1 was ~186 nats/token vs ln V ≈ 4.45 because the tied embedding was initialized N(0, 1); token embedding init changed from N(0, 1) to N(0, d_model^-1/2) (0.0625 at C1). Chosen among N(0, 0.02), N(0, d^-1/2) and d^-1/2 init with √d input scaling, using a 300-step training-loss trial on T only (no N/F data): N(0, 0.02) left the model at the T unigram entropy after 300 steps because the token signal was small next to the sinusoidal positions; N(0, d^-1/2) keeps the handout's forward pass unchanged. Weight-decay scope, bootstrap seed and label edge cases made explicit. Phase 3 timings unaffected (init does not change step cost).
+- v0.8 (Phase 4 amendment from Codex review, before any real run): skipped-update accounting, confirmatory-run definition and tag pinning, rehearsal mode.

@@ -202,3 +202,19 @@ def test_sampling_modes():
     assert torch.equal(top1, greedy)  # top-1 sampling is greedy
     sampled = lm.generate(idx, 10, temperature=1.5, top_k=3, generator=g)
     assert sampled.shape == (1, 11) and int(sampled.max()) < 7
+
+
+@pytest.mark.parametrize("vocab", [86, 2000])
+def test_initial_loss_near_log_vocab_at_c1(vocab):
+    # §8 (v0.7): tied embedding N(0, d_model^-1/2). With N(0, 1) the C1
+    # char model started at ~186 nats/token.
+    torch.manual_seed(1)
+    lm = TinyTransformerLM(ModelConfig(vocab_size=vocab)).eval()
+    assert lm.tok_emb.weight.std().item() == pytest.approx(256 ** -0.5,
+                                                           rel=0.05)
+    idx = torch.randint(0, vocab, (8, 256))
+    with torch.no_grad():
+        _, loss = lm(idx, torch.randint(0, vocab, (8, 256)))
+    print(f"V={vocab}: initial loss {loss.item():.4f}, "
+          f"ln V {math.log(vocab):.4f}")
+    assert abs(loss.item() - math.log(vocab)) < 0.75
