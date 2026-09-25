@@ -57,7 +57,7 @@ python -m pytest tests
 | `fomc_statements_2015_2025.txt`, `fomc_statements_2015_2025_manifest.json` | Statements-only source corpus, input to the merge |
 | `build_fomc_corpus.py`, `build_fomc_minutes_corpus.py`, `merge_fomc_corpus.py` | Corpus builders (statements, minutes, merge); each has `--self-test` |
 | `tests/` | pytest suite for every module and for the notebooks |
-| `pilot/` | Phase 3 timing pilot (`phase3_timing.ipynb`, `.json`) and the Phase 4 rehearsal notebook |
+| `pilot/` | Archival: the Phase 3 timing pilot (`phase3_timing.ipynb`, `.json`, tag `week03-v2-pilot3`) and the Phase 4 rehearsal notebook; neither needs re-running. |
 | `runs/` | `confirmatory_results.json`, the executed confirmatory notebook `confirmatory_run.ipynb`, and its `figures/` |
 
 ## Data

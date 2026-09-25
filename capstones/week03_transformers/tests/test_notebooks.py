@@ -1,5 +1,5 @@
-"""The rehearsal notebook is the experiment notebook with two lines changed
-(DESIGN.md §9)."""
+"""The rehearsal notebook is the experiment notebook with the MODE line
+changed (DESIGN.md §9)."""
 
 import ast
 import json
@@ -20,7 +20,7 @@ def _lines(path):
                 for line in c["source"]]
 
 
-def test_rehearsal_differs_only_in_mode_and_ref():
+def test_rehearsal_differs_only_in_mode():
     main, main_lines = _lines(MAIN)
     reh, reh_lines = _lines(REHEARSAL)
     assert main["metadata"] == reh["metadata"]
@@ -28,9 +28,7 @@ def test_rehearsal_differs_only_in_mode_and_ref():
         (c["cell_type"], c["id"]) for c in reh["cells"]]
     assert len(main_lines) == len(reh_lines)
     diffs = [(a[1], b[1]) for a, b in zip(main_lines, reh_lines) if a != b]
-    assert diffs == [('MODE = "real"\n', 'MODE = "rehearsal"\n'),
-                     ('REF = "week03-v2-run1"\n',
-                      'REF = "capstone/week03-v2"\n')]
+    assert diffs == [('MODE = "real"\n', 'MODE = "rehearsal"\n')]
 
 
 def test_notebooks_are_saved_without_outputs():

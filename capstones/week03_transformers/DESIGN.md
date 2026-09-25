@@ -143,3 +143,8 @@ Textual surprise is not market surprise. One cutoff, not a rolling backtest. N i
 - v0.6 (Phase 3 closed): compute settings chosen by the §8 rule on a Colab T4 (`pilot/phase3_timing.json`); training hyperparameters and the runtime contingency frozen before any training on the real split.
 - v0.7 (Phase 4 amendment, before any training on the real split and before any N/F scoring): initial loss at C1 was ~186 nats/token vs ln V ≈ 4.45 because the tied embedding was initialized N(0, 1); token embedding init changed from N(0, 1) to N(0, d_model^-1/2) (0.0625 at C1). Chosen among N(0, 0.02), N(0, d^-1/2) and d^-1/2 init with √d input scaling, using a 300-step training-loss trial on T only (no N/F data): N(0, 0.02) left the model at the T unigram entropy after 300 steps because the token signal was small next to the sinusoidal positions; N(0, d^-1/2) keeps the handout's forward pass unchanged. Weight-decay scope, bootstrap seed and label edge cases made explicit. Phase 3 timings unaffected (init does not change step cost).
 - v0.8 (Phase 4 amendment from Codex review, before any real run): skipped-update accounting, confirmatory-run definition and tag pinning, rehearsal mode.
+
+## Run log
+
+- Confirmatory run: tag `week03-v2-run1` (d3abf6c), Colab Tesla T4, 2026-09-25, 747.7 s, results in `runs/confirmatory_results.json`.
+- Submission tag: `week03-v2`.
