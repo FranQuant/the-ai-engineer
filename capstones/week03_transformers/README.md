@@ -42,7 +42,7 @@ python -m pytest tests
 
 | Path | Contents |
 |---|---|
-| `week03_fomc_surprise.ipynb` | The paper: experiment, results, post-hoc exploration, limitations, references, AI-use statement. Saved without outputs. |
+| `week03_fomc_surprise.ipynb` | The paper: experiment, results, post-hoc exploration. Saved without outputs; limitations, references and the AI-use statement are in this README. |
 | `DESIGN.md` | Pre-registration (frozen; amendments made before the real run are in its change log) |
 | `data.py` | SHA-256 checks, normalization, body parser, split loading, serialization, char vocabulary, window samplers |
 | `bpe.py` | BPE tokenizer, fit on T bodies only |
@@ -72,6 +72,30 @@ FOMC post-meeting statements (2015–2026) and minutes (2010–2026) from federa
 - The confirmatory run was executed once from a tag (`week03-v2-run1`) in a fresh clone; the notebook refuses a real run on uncloned or off-tag code. Its results are archived unchanged.
 - Colab's preinstalled libraries are used without pins; versions are printed and saved with each run.
 
+## Limitations
+
+Stated before any result (DESIGN §14):
+
+- Textual surprise is not market surprise.
+- One cutoff, not a rolling backtest.
+- N includes 2020 pandemic-era language, which may raise N and make H1 harder to support (notebook sections 6.1 and 7).
+- Small models; absolute BPC is not comparable to published language models.
+- Tokenizer confounds (DESIGN §5): BPE sees more raw characters per block and has more vocabulary-dependent parameters.
+- Unpinned Colab libraries: results are reproducible to the printed library versions, not bit-identical across Colab updates.
+- BPE makes many more passes over its T tokens than char (the notebook prints both); with fixed steps and no early stopping it may overfit, which the N curve in Figure 1 would show. H3 compares rankings, not absolute BPC.
+
+Added with the results:
+
+- **Genre mix.** N has a larger share of statements than F (53.1% vs 50.0% in the confirmatory run; some 2020 unscheduled meetings issued a statement but no minutes). Statements score lower than minutes (H2), so the extra statements lower mean BPC(N) and push Δ₁ upward. The imbalance favours H1; it cannot explain the contradiction.
+- **One seed.** The DESIGN §8 rule left no budget for a second char seed, so every claim rests on seed 1. The bootstrap resamples meetings, not training runs: training variance is not in the intervals.
+- **Runtime.** The confirmatory Run all took 747.7 s (12.5 min) on a T4: over the 12-minute DESIGN §8 target, under the 15-minute CPF limit. The §8 contingency applies only above 15 minutes and was not triggered.
+
+## Future work
+
+- Rolling cutoffs: retrain at successive year boundaries, so drift is measured at several distances from the cutoff instead of one.
+- Market-reaction linkage: relate per-document BPC to market moves around each release; only that step could connect textual surprise to market surprise.
+- More seeds, to put training variance into the intervals.
+
 ## Use of AI tools
 
 - **Claude** (claude.ai chat, Anthropic): co-developed the research direction and the pre-registration (`DESIGN.md`) with the author, reviewed audit and review findings against the handout and the CPF rules, and drafted prompts.
@@ -84,12 +108,19 @@ The author is responsible for all content.
 
 ## References
 
-- Y. Hilpisch, *Attention Mechanisms and Tiny Transformers*, The AI Engineer (TAE) handout. The attention, multi-head attention, positional encoding and block code in `model.py` follows its skeletons.
-- yhilpisch/yoctoGPT, https://github.com/yhilpisch/yoctoGPT: reference implementation consulted for the model structure and the training loop.
-- Vaswani, A., et al. (2017). Attention is all you need. *Advances in Neural Information Processing Systems 30*.
-- Sennrich, R., Haddow, B., & Birch, A. (2016). Neural machine translation of rare words with subword units. *Proceedings of ACL 2016*, 1715–1725.
+**Reused code**
+
+- Y. Hilpisch, *Attention Mechanisms and Tiny Transformers*, The AI Engineer (TAE) handout. `model.py` follows the handout's skeletons for scaled dot-product attention and the causal mask (`scaled_dot_product_attention`, `make_causal_mask`), `SelfAttention`, `MultiHeadAttention`, sinusoidal `PositionalEncoding`, and the Pre-LN `TransformerBlock` with its `FeedForward`; `TinyTransformerLM` assembles them. The worked example and checks in notebook section 3 follow the handout's §4.3. The `model.py` docstring lists the changes.
+- yhilpisch/yoctoGPT (GitHub, https://github.com/yhilpisch/yoctoGPT): reference implementation consulted for the model structure (`model.py`) and the training loop (`train.py`).
+- Week 3 v1 of this capstone (character vs BPE tiny transformer, preserved at tag `week03-v1`): `model.py`, `bpe.py` and `evaluate.py` are ported from it; each docstring lists the changes.
+
+**Literature**
+
+- Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., & Polosukhin, I. (2017). Attention is all you need. *Advances in Neural Information Processing Systems 30*.
+- Sennrich, R., Haddow, B., & Birch, A. (2016). Neural machine translation of rare words with subword units. *Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics*, 1715–1725.
 - Witten, I. H., & Bell, T. C. (1991). The zero-frequency problem: Estimating the probabilities of novel events in adaptive text compression. *IEEE Transactions on Information Theory*, 37(4), 1085–1094.
 - Efron, B., & Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*. Chapman & Hall.
-- Board of Governors of the Federal Reserve System, FOMC statements and minutes, https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm.
 
-Week 3 v1 (character vs BPE tiny transformer) is preserved at tag `week03-v1`.
+**Data**
+
+- Board of Governors of the Federal Reserve System, FOMC statements and minutes, https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm. Collected by `build_fomc_corpus.py`, `build_fomc_minutes_corpus.py` and `merge_fomc_corpus.py`; the snapshot is frozen by SHA-256 (notebook section 2).
