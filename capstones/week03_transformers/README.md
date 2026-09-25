@@ -9,7 +9,7 @@ J. Francisco Salazar (FranQuant) · The AI Engineer, Week 3 · 2026-09-25
 
 ## Purpose
 
-A decoder-only transformer, built from scratch to the TAE handout's specification, is used as a measurement instrument rather than as the contribution. It is trained only on FOMC statements and minutes that were public before a cutoff and never updated after it. Each later document is scored by its bits per character (BPC): how surprising its wording is, given the Committee's earlier language.
+A decoder-only transformer, built from scratch to the TAE handout's specification, is used as a measurement instrument rather than as the contribution. It is trained only on FOMC statements and minutes that were public before a cutoff and never updated after it. Each later document is scored by its bits per character (BPC): how surprising its wording is, given the Committee's earlier language. Attention and MHA are hand-written and tested; training uses PyTorch's fused SDPA after the numeric parity checks in notebook section 3.
 
 ## Research question
 
@@ -27,7 +27,7 @@ The confirmatory result is the first real run, from tag `week03-v2-run1` on a Co
 
 ## How to run
 
-**Colab (the submission path).** Open the badge above and select *Runtime → Change runtime type → T4 GPU*, then *Run all*. The first cell clones this repository and checks the corpus SHA-256 values; the whole run takes about 13 minutes on a T4. The notebook stops without a CUDA GPU. Later runs are reproductions: fp16 GPU training is not bit-reproducible, so their values differ slightly from the confirmatory run, which each results section prints alongside.
+**Colab (the submission path).** Open the badge above and select *Runtime → Change runtime type → T4 GPU*, then *Run all*. The setup cell clones at `REF`; the data cell verifies the corpus and manifest SHA-256 values. The whole run takes about 13 minutes on a T4. The notebook stops without a CUDA GPU. Later runs are reproductions: fp16 GPU training is not bit-reproducible, so their values differ slightly from the confirmatory run, which each results section prints alongside.
 
 **Local tests** (Python 3.11+, `torch`, `numpy`, `matplotlib`, `pytest`, `git`):
 

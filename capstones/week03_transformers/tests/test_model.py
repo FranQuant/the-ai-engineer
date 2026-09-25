@@ -6,9 +6,9 @@ import pytest
 import torch
 import torch.nn.functional as F
 
-from model import (ModelConfig, MultiHeadAttention, SelfAttention,
-                   TinyTransformerLM, make_causal_mask,
-                   scaled_dot_product_attention)
+from model import (ModelConfig, MultiHeadAttention, PositionalEncoding,
+                   SelfAttention, TinyTransformerLM, TransformerBlock,
+                   make_causal_mask, scaled_dot_product_attention)
 
 # §4.3 worked example
 Q = torch.tensor([[1., 0], [0, 1], [1, 1]])
@@ -24,9 +24,13 @@ def test_worked_example():
     qkt = torch.tensor([[1., 1, 0], [0, 1, 1], [1, 2, 1]])
     assert torch.equal(Q @ K.T, qkt)
     r = 1 / math.sqrt(2)
+    s_raw = Q @ K.T / math.sqrt(2)  # the handout's S (§4.3, Appendix B)
+    assert torch.allclose(s_raw, r * qkt, atol=1e-6)
     # S is returned shifted by its row maximum (softmax-invariant).
     s_expected = torch.tensor([[0., 0, -r], [-r, 0, 0], [-r, 0, -r]])
     assert torch.allclose(S, s_expected, atol=1e-6)
+    assert torch.allclose(
+        S, s_raw - s_raw.max(dim=-1, keepdim=True).values, atol=1e-6)
     a = math.exp(-r)
     a_expected = torch.tensor([[1, 1, a], [a, 1, 1], [a, 1, a]])
     a_expected = a_expected / a_expected.sum(dim=-1, keepdim=True)
@@ -36,11 +40,15 @@ def test_worked_example():
 
 
 def test_worked_example_causal():
-    _, _, A = scaled_dot_product_attention(Q, K, V,
+    Y, _, A = scaled_dot_product_attention(Q, K, V,
                                            mask=make_causal_mask(3))
-    assert torch.equal(A[0], torch.tensor([1., 0., 0.]))
+    a_expected = torch.tensor([[1., 0, 0], [0.330238, 0.669762, 0],
+                               [0.248255, 0.503490, 0.248255]])
+    y_expected = torch.tensor([[1., 0], [0.330238, 1.339523],
+                               [0.993020, 1.255235]])
+    assert torch.allclose(A, a_expected, atol=1e-5)
+    assert torch.allclose(Y, y_expected, atol=1e-5)
     assert torch.count_nonzero(torch.triu(A, diagonal=1)) == 0
-    assert torch.allclose(A.sum(dim=-1), torch.ones(3))
 
 
 def test_boolean_and_float_masks_identical():
@@ -130,6 +138,83 @@ def test_mha_matches_per_head_reference(causal, use_fused):
     assert not torch.allclose(heads[0], heads[1], atol=1e-2)
 
 
+def _layer_norm(z, ln):
+    mu = z.mean(-1, keepdim=True)
+    var = z.var(-1, unbiased=False, keepdim=True)
+    return (z - mu) / torch.sqrt(var + ln.eps) * ln.weight + ln.bias
+
+
+def test_tiny_block_matches_manual():
+    """Appendix B: B = 1, T = 3, d_model = 4, H = 2, d_ff = 8, simple
+    weights, positional encoding, one Pre-LN block; heads sliced by hand."""
+    D, H, T, DH = 4, 2, 3, 2
+    blk = TransformerBlock(D, H, d_ff=8, causal=True)
+    with torch.no_grad():
+        for name, p in blk.named_parameters():
+            if p.dim() == 2:
+                p.copy_(((torch.arange(p.numel()) * 3) % 5 - 2)
+                        .reshape(p.shape) * 0.1)
+            else:
+                p.fill_(1.0 if name.startswith("ln")
+                        and name.endswith("weight") else 0.0)
+    x0 = torch.eye(T, D).unsqueeze(0)
+    x = PositionalEncoding(D, max_len=T)(x0)
+    captured = {}
+    hook = blk.attn.proj_qkv.register_forward_hook(
+        lambda mod, inp, out: captured.update(qkv=out))
+    with torch.no_grad():
+        out = blk(x)
+    hook.remove()
+    Qh, Kh, Vh = (t.transpose(1, 2) for t in captured["qkv"].view(
+        1, T, 3, H, DH).unbind(dim=2))
+    _, _, A = scaled_dot_product_attention(Qh, Kh, Vh,
+                                           mask=make_causal_mask(T))
+
+    with torch.no_grad():
+        pos = torch.arange(T).float()[:, None]
+        freq = 10000.0 ** (-torch.arange(0, D, 2).float() / D)
+        pe = torch.stack([torch.sin(pos * freq), torch.cos(pos * freq)],
+                         dim=-1).reshape(T, D)
+        xm = x0[0] + pe
+        qkv = _layer_norm(xm, blk.ln1) @ blk.attn.proj_qkv.weight.T
+        Qm, Km, Vm = qkv[:, :D], qkv[:, D:2 * D], qkv[:, 2 * D:]
+        keep = torch.tril(torch.ones(T, T, dtype=torch.bool))
+        a_man, heads = [], []
+        for h in range(H):
+            cols = slice(h * DH, (h + 1) * DH)
+            s = Qm[:, cols] @ Km[:, cols].T / math.sqrt(DH)
+            a_man.append(torch.softmax(s.masked_fill(~keep, float("-inf")),
+                                       dim=-1))
+            heads.append(a_man[-1] @ Vm[:, cols])
+        x1 = xm + torch.cat(heads, dim=-1) @ blk.attn.proj_out.weight.T
+        lin1, lin2 = blk.ff.net[0], blk.ff.net[2]
+        z = _layer_norm(x1, blk.ln2) @ lin1.weight.T + lin1.bias
+        y_man = x1 + (0.5 * z * (1 + torch.erf(z / math.sqrt(2)))
+                      @ lin2.weight.T + lin2.bias)
+
+    assert x.shape == out.shape == (1, T, D)
+    assert A.shape == (1, H, T, T)
+    assert torch.allclose(A.sum(dim=-1), torch.ones(1, H, T), atol=1e-6)
+    assert torch.allclose(x[0], xm, atol=1e-6)
+    assert torch.allclose(A[0], torch.stack(a_man), atol=1e-6)
+    assert torch.allclose(out[0], y_man, atol=1e-6)
+
+
+def test_uniform_logits_samples_are_uniform():
+    vocab = 87
+    lm = TinyTransformerLM(ModelConfig(
+        vocab_size=vocab, d_model=16, num_heads=2, num_layers=1, d_ff=32,
+        block_size=8, dropout=0.0))
+    with torch.no_grad():
+        lm.tok_emb.weight.zero_()
+    # 25,000 tokens: about 287 per token, so ±30% is about 5 sd.
+    sample = lm.generate(torch.zeros(50, 1, dtype=torch.long), 500,
+                         generator=torch.Generator().manual_seed(0))[:, 1:]
+    rel = torch.bincount(sample.flatten(), minlength=vocab)
+    rel = rel / sample.numel() * vocab
+    assert ((rel - 1).abs() <= 0.3).all(), (rel.min(), rel.max())
+
+
 def test_uniform_logits_loss_is_log_vocab():
     vocab = 50
     lm = TinyTransformerLM(ModelConfig(
@@ -173,6 +258,8 @@ def test_overfits_ab_pattern():
         loss.backward()
         opt.step()
     assert loss.item() < 0.05, loss.item()
+    out = lm.generate(torch.tensor([[0]]), 20, greedy=True)[0]
+    assert out.tolist() == [0, 1] * 10 + [0]  # "A" -> ABAB...A
 
 
 def test_v1_parameter_count():

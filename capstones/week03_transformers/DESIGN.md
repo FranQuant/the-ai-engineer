@@ -148,3 +148,4 @@ Textual surprise is not market surprise. One cutoff, not a rolling backtest. N i
 
 - Confirmatory run: tag `week03-v2-run1` (d3abf6c), Colab Tesla T4, 2026-09-25, 747.7 s, results in `runs/confirmatory_results.json`.
 - Submission tag: `week03-v2`.
+- Clarification: SHA-256 checks run in the data cell, not the setup cell.
