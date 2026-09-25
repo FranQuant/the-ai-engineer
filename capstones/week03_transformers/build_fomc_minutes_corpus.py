@@ -37,8 +37,6 @@ from build_fomc_corpus import (
     Fetcher,
     atomic_write,
     canonicalize_url,
-    discover_links,
-    parse_url_date,
     sha256_bytes,
     utc_now,
 )
@@ -55,7 +53,8 @@ from build_fomc_corpus import (
 FREEZE_START = dt.date(2010, 1, 1)
 KNOWN_COVERAGE_GAP = (
     "Minutes before ~2010 are published under the legacy /fomc/minutes/"
-    "{YYYYMMDD}.htm URL namespace, not /monetarypolicy/fomcminutes{YYYYMMDD}.htm. "
+    "{YYYYMMDD}.htm URL namespace, not "
+    "/monetarypolicy/fomcminutes{YYYYMMDD}.htm. "
     "This builder does not crawl that namespace; pre-2010 coverage is a "
     "scoped-out future extension, not a defect."
 )
@@ -71,14 +70,17 @@ FREEZE_END = PRE_WARSH_CUTOFF
 
 SCHEMA_VERSION = "1.0"
 CORPUS_ID = "fomc-minutes-1993-prewarsh-v1"
-NORMALIZATION_VERSION = "fomc-finance-preserving-v1"  # same normalization contract as statements
+# same normalization contract as statements
+NORMALIZATION_VERSION = "fomc-finance-preserving-v1"
 EXTRACTION_METHOD = "federalreserve_article_sections_v1"
 START_MARKER = "<|fomc_minutes|>"
 END_MARKER = "<|end_fomc_minutes|>"
 OUTPUT_CORPUS = "fomc_minutes_1993_prewarsh.txt"
 OUTPUT_MANIFEST = "fomc_minutes_1993_prewarsh_manifest.json"
 
-CALENDAR_URL = "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+CALENDAR_URL = (
+    "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+)
 # fomchistorical{year}.htm pages stop existing after 2020 -- the redesigned
 # fomccalendars.htm (already in DISCOVERY_URLS) covers 2021 onward in a
 # single page. The statements builder already encodes this boundary
@@ -157,7 +159,9 @@ class IncludedMinutes:
     warnings: list[str]
 
 
-def discover_minutes_links(source_url: str, source_html: bytes) -> list[tuple[str, dt.date, str]]:
+def discover_minutes_links(
+    source_url: str, source_html: bytes
+) -> list[tuple[str, dt.date, str]]:
     """Statement discover_links filters to statement-shaped URLs; this variant
     filters the same historical/calendar pages to minutes-shaped URLs."""
     soup = BeautifulSoup(source_html, "html.parser")
@@ -175,7 +179,9 @@ def discover_minutes_links(source_url: str, source_html: bytes) -> list[tuple[st
         match = MINUTES_URL_RE.match(path)
         if not match:
             continue
-        meeting_end_date = dt.datetime.strptime(match.group("date"), "%Y%m%d").date()
+        meeting_end_date = dt.datetime.strptime(
+            match.group("date"), "%Y%m%d"
+        ).date()
         if not (FREEZE_START <= meeting_end_date <= FREEZE_END):
             continue
         label = " ".join(anchor.get_text(" ", strip=True).split())
@@ -192,7 +198,9 @@ def discover_minutes_candidates(
     for source_url in DISCOVERY_URLS:
         try:
             fetched = fetcher.get(source_url)
-            links = discover_minutes_links(fetched.canonical_url, fetched.content)
+            links = discover_minutes_links(
+                fetched.canonical_url, fetched.content
+            )
             sources.append(
                 {
                     "url": fetched.canonical_url,
@@ -202,11 +210,15 @@ def discover_minutes_candidates(
                 }
             )
             for url, meeting_end_date, label in links:
-                item = evidence.setdefault(url, {"date": meeting_end_date, "sources": [], "labels": []})
+                item = evidence.setdefault(
+                    url,
+                    {"date": meeting_end_date, "sources": [], "labels": []},
+                )
                 item["sources"].append(fetched.canonical_url)
                 item["labels"].append(label)
         except BuildError as exc:
-            failures.append({"url": source_url, "stage": "discovery", "error": str(exc), "status": "unresolved"})
+            failures.append({"url": source_url, "stage": "discovery",
+                             "error": str(exc), "status": "unresolved"})
     candidates = [
         MinutesCandidate(
             canonical_url=url,
@@ -223,14 +235,17 @@ def discover_minutes_candidates(
                 "url": "(all discovery sources)",
                 "stage": "discovery",
                 "error": "Zero minutes candidates found in freeze window -- "
-                "verify MINUTES_URL_RE and DISCOVERY_URLS against current site structure",
+                "verify MINUTES_URL_RE and DISCOVERY_URLS against current "
+                "site structure",
                 "status": "unresolved",
             }
         )
     return candidates, sources, failures
 
 
-def classify_minutes_eligibility(candidate: MinutesCandidate, page_html: bytes) -> tuple[bool, str]:
+def classify_minutes_eligibility(
+    candidate: MinutesCandidate, page_html: bytes
+) -> tuple[bool, str]:
     """Mirrors the statements builder's classify_eligibility exactly: a
     properly-extracted title plus FULL (untruncated) page text. A truncated
     text slice is unsafe -- modern federalreserve.gov pages open with a
@@ -240,24 +255,36 @@ def classify_minutes_eligibility(candidate: MinutesCandidate, page_html: bytes) 
     title = extract_title(soup).lower()
     page_text = " ".join(soup.get_text(" ", strip=True).split()).lower()
     labels = " ".join(candidate.evidence_labels).lower()
-    if "minutes" in title or "minutes" in labels or "minutes of the federal open market committee" in page_text:
+    if (
+        "minutes" in title
+        or "minutes" in labels
+        or "minutes of the federal open market committee" in page_text
+    ):
         return True, "eligible_fomc_minutes"
     return False, "not_fomc_minutes"
 
 
 def extract_title(soup: BeautifulSoup) -> str:
-    heading = soup.select_one("#article h2, #article h3, .article__heading, #content .title")
+    heading = soup.select_one(
+        "#article h2, #article h3, .article__heading, #content .title"
+    )
     if heading:
         text = " ".join(heading.get_text(" ", strip=True).split())
         if text:
             return text
     if soup.title:
-        return re.sub(r"^Federal Reserve Board\s*-\s*", "", " ".join(soup.title.get_text(" ", strip=True).split()))
+        return re.sub(
+            r"^Federal Reserve Board\s*-\s*",
+            "",
+            " ".join(soup.title.get_text(" ", strip=True).split()),
+        )
     return "FOMC minutes"
 
 
 def _clean_paragraph(tag: Tag) -> str:
-    for removable in tag.select("script, style, noscript, .sr-only, .share, .social, sup, a.footnote"):
+    for removable in tag.select(
+        "script, style, noscript, .sr-only, .share, .social, sup, a.footnote"
+    ):
         removable.decompose()
     text = " ".join(tag.get_text(" ", strip=True).split())
     text = RETURN_TO_TEXT_RE.sub(" ", text)
@@ -269,8 +296,9 @@ def extract_minutes_body(page_html: bytes) -> tuple[str, str, list[str]]:
     """Extract section headings + substantive paragraphs from a minutes page.
 
     Unlike statements (a handful of undifferentiated paragraphs), minutes are
-    long-form with named sections (h2/h3 subheadings kept inline as plain-text
-    section markers, since they carry real structure a tiny LM can learn).
+    long-form with named sections (h2/h3 subheadings kept inline as
+    plain-text section markers, since they carry real structure a tiny LM can
+    learn).
 
     Older (pre-~2012) Fed page templates do not use the modern #article
     container; a broader selector list is tried in order, and the selector
@@ -278,7 +306,8 @@ def extract_minutes_body(page_html: bytes) -> tuple[str, str, list[str]]:
     three decades of markup stays visible in the manifest rather than silent.
     """
     soup = BeautifulSoup(page_html, "html.parser")
-    candidate_selectors = ["#article", "article", "main #content", "#content", "#leftText", ".content", "body"]
+    candidate_selectors = ["#article", "article", "main #content", "#content",
+                           "#leftText", ".content", "body"]
     container = None
     matched_selector = None
     for selector in candidate_selectors:
@@ -287,7 +316,9 @@ def extract_minutes_body(page_html: bytes) -> tuple[str, str, list[str]]:
             matched_selector = selector
             break
     if container is None:
-        raise BuildError(f"No recognized article container among {candidate_selectors}")
+        raise BuildError(
+            f"No recognized article container among {candidate_selectors}"
+        )
     warnings: list[str] = []
     if matched_selector not in ("#article",):
         warnings.append(f"legacy_container_selector:{matched_selector}")
@@ -300,13 +331,17 @@ def extract_minutes_body(page_html: bytes) -> tuple[str, str, list[str]]:
         lowered = text.lower()
         if lowered.startswith(NAVIGATION_LEAKAGE):
             if started:
-                # trailing nav/footer content after the substantive body begins
-                if any(k in lowered for k in ("stay connected", "follow us", "last update")):
+                # trailing nav/footer content after the substantive body
+                # begins
+                if any(k in lowered for k in (
+                    "stay connected", "follow us", "last update"
+                )):
                     break
             continue
         if not started:
             is_body_opening = (
-                "a joint meeting of the federal open market committee" in lowered
+                "a joint meeting of the federal open market committee"
+                in lowered
                 or "meeting of the federal open market committee" in lowered
             )
             if tag.name in ("h2", "h3") or is_body_opening:
@@ -318,14 +353,19 @@ def extract_minutes_body(page_html: bytes) -> tuple[str, str, list[str]]:
         else:
             parts.append(text)
     if not parts:
-        raise BuildError("Recognized article container yielded no substantive minutes paragraphs")
+        raise BuildError(
+            "Recognized article container yielded no substantive minutes "
+            "paragraphs"
+        )
     body = "\n\n".join(parts)
     return body, EXTRACTION_METHOD, warnings
 
 
 def assign_split(meeting_end_date: dt.date) -> str:
     if not (FREEZE_START <= meeting_end_date <= FREEZE_END):
-        raise BuildError(f"Minutes date outside freeze interval: {meeting_end_date}")
+        raise BuildError(
+            f"Minutes date outside freeze interval: {meeting_end_date}"
+        )
     # Mirror the statements builder's convention: most-recent slice held out.
     validation_start = FREEZE_END.replace(year=FREEZE_END.year - 1)
     return "validation" if meeting_end_date >= validation_start else "train"
@@ -341,7 +381,9 @@ def serialize_document(document: IncludedMinutes) -> str:
     )
 
 
-def build(output_dir: Path, timeout: float, retries: int) -> tuple[Path, Path, dict[str, Any]]:
+def build(
+    output_dir: Path, timeout: float, retries: int
+) -> tuple[Path, Path, dict[str, Any]]:
     output_dir.mkdir(parents=True, exist_ok=True)
     fetcher = Fetcher(timeout=timeout, retries=retries)
 
@@ -354,10 +396,14 @@ def build(output_dir: Path, timeout: float, retries: int) -> tuple[Path, Path, d
         try:
             fetched = fetcher.get(candidate.canonical_url)
         except BuildError as exc:
-            failures.append({"url": candidate.canonical_url, "stage": "fetch", "error": str(exc), "status": "unresolved"})
+            failures.append({"url": candidate.canonical_url,
+                             "stage": "fetch", "error": str(exc),
+                             "status": "unresolved"})
             continue
 
-        eligible, reason = classify_minutes_eligibility(candidate, fetched.content)
+        eligible, reason = classify_minutes_eligibility(
+            candidate, fetched.content
+        )
         if not eligible:
             exclusions.append(
                 {
@@ -372,7 +418,9 @@ def build(output_dir: Path, timeout: float, retries: int) -> tuple[Path, Path, d
         try:
             soup = BeautifulSoup(fetched.content, "html.parser")
             title = extract_title(soup)
-            body, extraction_method, warnings = extract_minutes_body(fetched.content)
+            body, extraction_method, warnings = extract_minutes_body(
+                fetched.content
+            )
         except BuildError as exc:
             if "no substantive minutes paragraphs" in str(exc):
                 # Confirmed via the Fed's own contemporaneous press releases:
@@ -385,13 +433,17 @@ def build(output_dir: Path, timeout: float, retries: int) -> tuple[Path, Path, d
                 exclusions.append(
                     {
                         "canonical_url": candidate.canonical_url,
-                        "observed_date": candidate.meeting_end_date.isoformat(),
+                        "observed_date": (
+                            candidate.meeting_end_date.isoformat()
+                        ),
                         "reason": "pre_html_era_pdf_only_no_htm_content",
                         "discovery_evidence": list(candidate.evidence_urls),
                     }
                 )
             else:
-                failures.append({"url": candidate.canonical_url, "stage": "extraction", "error": str(exc), "status": "unresolved"})
+                failures.append({"url": candidate.canonical_url,
+                                 "stage": "extraction", "error": str(exc),
+                                 "status": "unresolved"})
             continue
 
         try:
@@ -402,7 +454,9 @@ def build(output_dir: Path, timeout: float, retries: int) -> tuple[Path, Path, d
             normalized_body, norm_warnings = normalize_statement_body(body)
             warnings = [*warnings, *norm_warnings]
         except BuildError as exc:
-            failures.append({"url": candidate.canonical_url, "stage": "extraction", "error": str(exc), "status": "unresolved"})
+            failures.append({"url": candidate.canonical_url,
+                             "stage": "extraction", "error": str(exc),
+                             "status": "unresolved"})
             continue
 
         document_id = f"fomc-minutes-{candidate.meeting_end_date.isoformat()}"
@@ -414,7 +468,9 @@ def build(output_dir: Path, timeout: float, retries: int) -> tuple[Path, Path, d
                 title=title,
                 body=normalized_body,
                 normalized_characters=len(normalized_body),
-                normalized_sha256=sha256_bytes(normalized_body.encode("utf-8")),
+                normalized_sha256=sha256_bytes(
+                    normalized_body.encode("utf-8")
+                ),
                 raw_sha256=sha256_bytes(fetched.content),
                 raw_utf8_bytes=len(fetched.content),
                 split=assign_split(candidate.meeting_end_date),
@@ -437,8 +493,12 @@ def build(output_dir: Path, timeout: float, retries: int) -> tuple[Path, Path, d
         "extraction_method": EXTRACTION_METHOD,
         "normalization_version": NORMALIZATION_VERSION,
         "document_count": len(documents),
-        "train_document_count": sum(1 for d in documents if d.split == "train"),
-        "validation_document_count": sum(1 for d in documents if d.split == "validation"),
+        "train_document_count": sum(
+            1 for d in documents if d.split == "train"
+        ),
+        "validation_document_count": sum(
+            1 for d in documents if d.split == "validation"
+        ),
         "corpus_characters": len(corpus_text),
         "corpus_utf8_bytes": len(corpus_bytes),
         "corpus_sha256": sha256_bytes(corpus_bytes),
@@ -468,21 +528,34 @@ def build(output_dir: Path, timeout: float, retries: int) -> tuple[Path, Path, d
     corpus_path = output_dir / OUTPUT_CORPUS
     manifest_path = output_dir / OUTPUT_MANIFEST
     atomic_write(corpus_path, corpus_bytes)
-    atomic_write(manifest_path, json.dumps(manifest, indent=2, sort_keys=True).encode("utf-8"))
+    atomic_write(
+        manifest_path,
+        json.dumps(manifest, indent=2, sort_keys=True).encode("utf-8"),
+    )
     return corpus_path, manifest_path, manifest
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output-dir", type=Path, help="Explicit candidate output directory outside the repository (required unless --self-test)")
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Explicit candidate output directory outside the repository "
+        "(required unless --self-test)",
+    )
     parser.add_argument("--timeout", type=float, default=30.0)
     parser.add_argument("--retries", type=int, default=2, choices=range(0, 6))
-    parser.add_argument("--self-test", action="store_true", help="Run bounded offline pure-function tests and exit")
+    parser.add_argument(
+        "--self-test",
+        action="store_true",
+        help="Run bounded offline pure-function tests and exit",
+    )
     return parser.parse_args(argv)
 
 
 def run_self_tests() -> None:
-    """Offline, no-network tests for the pure extraction/classification functions."""
+    """Offline, no-network tests for the pure extraction/classification
+    functions."""
     sample_html = b"""
     <html><head><title>FOMC Minutes</title></head>
     <body><div id="article">
@@ -503,7 +576,9 @@ def run_self_tests() -> None:
 
     m = MINUTES_URL_RE.match("/monetarypolicy/fomcminutes20260129.htm")
     assert m and m.group("date") == "20260129"
-    assert MINUTES_URL_RE.match("/newsevents/pressreleases/monetary20260128a.htm") is None
+    assert MINUTES_URL_RE.match(
+        "/newsevents/pressreleases/monetary20260128a.htm"
+    ) is None
 
     assert assign_split(dt.date(2011, 3, 1)) == "train"
     assert assign_split(dt.date(2026, 2, 1)) == "validation"
@@ -512,20 +587,31 @@ def run_self_tests() -> None:
     # a long accessibility/.gov banner pushing real content past a naive
     # truncated text slice must NOT cause a false "not eligible" exclusion.
     banner_padded_html = (
-        b"<html><head><title>Federal Reserve Board - FOMC Minutes</title></head><body>"
+        b"<html><head><title>Federal Reserve Board - FOMC Minutes"
+        b"</title></head><body>"
         + b"<p>Skip to main content</p>"
-        + b"<p>" + b"An official website of the United States Government. " * 20 + b"</p>"
-        + b'<div id="article"><h2>Minutes of the Federal Open Market Committee</h2>'
-        + b"<p>A joint meeting of the Federal Open Market Committee was held.</p></div>"
+        + b"<p>"
+        + b"An official website of the United States Government. " * 20
+        + b"</p>"
+        + b'<div id="article">'
+        b"<h2>Minutes of the Federal Open Market Committee</h2>"
+        + b"<p>A joint meeting of the Federal Open Market Committee was held."
+        b"</p></div>"
         + b"</body></html>"
     )
     fake_candidate = MinutesCandidate(
-        canonical_url="https://www.federalreserve.gov/monetarypolicy/fomcminutes20260429.htm",
+        canonical_url="https://www.federalreserve.gov/monetarypolicy/"
+        "fomcminutes20260429.htm",
         meeting_end_date=dt.date(2026, 4, 29),
         evidence_urls=(), evidence_labels=(),
     )
-    eligible, reason = classify_minutes_eligibility(fake_candidate, banner_padded_html)
-    assert eligible, f"banner-padded modern page must still classify eligible, got reason={reason}"
+    eligible, reason = classify_minutes_eligibility(
+        fake_candidate, banner_padded_html
+    )
+    assert eligible, (
+        f"banner-padded modern page must still classify eligible, "
+        f"got reason={reason}"
+    )
 
     # Regression test for legacy (pre-2012) container markup: no #article,
     # but a #content div with the real minutes text -- must still extract,
@@ -543,7 +629,9 @@ def run_self_tests() -> None:
     """
     legacy_body, _, legacy_warnings = extract_minutes_body(legacy_html)
     assert "Minutes of the Federal Open Market Committee" in legacy_body
-    assert any("legacy_container_selector" in w for w in legacy_warnings), legacy_warnings
+    assert any(
+        "legacy_container_selector" in w for w in legacy_warnings
+    ), legacy_warnings
 
     # Regression test for the exact byte-level bug found in the second live
     # run: a stray Windows-1252 control character (U+0096, meant as an en
@@ -565,16 +653,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_self_tests()
         return 0
     if args.output_dir is None:
-        print("error: --output-dir is required unless --self-test", file=sys.stderr)
+        print("error: --output-dir is required unless --self-test",
+              file=sys.stderr)
         return 2
-    corpus_path, manifest_path, manifest = build(args.output_dir, args.timeout, args.retries)
+    corpus_path, manifest_path, manifest = build(
+        args.output_dir, args.timeout, args.retries
+    )
     print(f"documents included: {manifest['document_count']} "
-          f"(train {manifest['train_document_count']}, validation {manifest['validation_document_count']})")
+          f"(train {manifest['train_document_count']}, "
+          f"validation {manifest['validation_document_count']})")
     print(f"corpus: {corpus_path} ({manifest['corpus_characters']:,} chars)")
     print(f"manifest: {manifest_path}")
-    print(f"failures: {len(manifest['failures'])}, exclusions: {len(manifest['exclusions'])}")
+    print(f"failures: {len(manifest['failures'])}, "
+          f"exclusions: {len(manifest['exclusions'])}")
     if manifest["failures"]:
-        print("!! non-empty failures -- inspect manifest before treating corpus as final !!", file=sys.stderr)
+        print("!! non-empty failures -- inspect manifest before treating "
+              "corpus as final !!", file=sys.stderr)
     return 0
 
 
