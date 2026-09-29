@@ -13,6 +13,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS_DIR = PROJECT_ROOT / "artifacts"
 TELEMETRY_SINK = ARTIFACTS_DIR / "telemetry.jsonl"
+MEMORY_SNAPSHOT_PATH = ARTIFACTS_DIR / "memory_snapshot.json"
 
 MCP_PROTOCOL_VERSION = "2024-11-05"
 MCP_SUBPROTOCOL = "mcp"
@@ -26,9 +27,11 @@ MCP_CLIENT_VERSION = "1.0.0"
 
 DEFAULT_BUDGET_TOKENS = 2000
 DEFAULT_BUDGET_MS = 150
+# Dollars are recorded as 0.0 and never enforced: no paid model or tool is used.
 DEFAULT_BUDGET_DOLLARS = 0.0
 DEFAULT_MAX_STEPS = 5
 DEFAULT_MAX_FAILURES = 2
+DEFAULT_MAX_LOOPS = 3  # backstop; the planner normally decides earlier
 
 
 def fresh_telemetry_sink() -> Path:

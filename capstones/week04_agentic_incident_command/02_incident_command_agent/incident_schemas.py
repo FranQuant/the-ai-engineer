@@ -36,7 +36,7 @@ def get_tool_schemas() -> Dict[str, Dict[str, object]]:
             "properties": {
                 "command": {
                     "type": "string",
-                    "description": "Shell or kubectl command to execute in the sandbox",
+                    "description": "Diagnostic command whose fixture output is returned (not executed)",
                 },
                 "host": {
                     "type": "string",
@@ -184,6 +184,16 @@ def get_resource_schemas() -> Dict[str, Dict[str, object]]:
             "type": "array",
             "items": {"type": "object"},
         },
+        "memory://telemetry/snapshot": {
+            "type": "object",
+            "properties": {
+                "total_events": {"type": "integer"},
+                "by_phase": {"type": "object"},
+                "by_loop": {"type": "object"},
+                "last_events": {"type": "array"},
+            },
+            "required": ["total_events"],
+        },
         "memory://memory/deltas": {
             "type": "object",
             "properties": {
@@ -206,8 +216,8 @@ _TOOL_META: Dict[str, Dict[str, object]] = {
     },
     "run_diagnostic": {
         "description": (
-            "Execute a sandboxed diagnostic command on the specified host and return stdout/stderr. "
-            "Supports kubectl, log-fetch, and metric queries."
+            "Return deterministic fixture output for a diagnostic command on the specified host "
+            "(stdout, stderr and a verdict). No command is executed."
         ),
         "latency_hint_ms": 7,
         "cost_hint_tokens": 15,
@@ -257,6 +267,11 @@ _TOOL_META: Dict[str, Dict[str, object]] = {
         "cost_hint_tokens": 3,
     },
 }
+
+
+def tool_cost_tokens(name: str) -> int:
+    """Advertised cost hint for a tool; the server debits exactly this per call."""
+    return int(_TOOL_META[name]["cost_hint_tokens"]) if name in _TOOL_META else 0
 
 
 def tool_descriptions() -> List[Dict[str, object]]:

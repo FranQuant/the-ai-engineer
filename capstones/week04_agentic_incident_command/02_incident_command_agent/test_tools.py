@@ -11,7 +11,6 @@ from pathlib import Path
 # Ensure local modules are importable regardless of where pytest is invoked
 sys.path.insert(0, str(Path(__file__).parent))
 
-import pytest
 from mcp_server import tool_retrieve_runbook, tool_run_diagnostic, tool_summarize_incident
 from incident_memory import IncidentMemoryStore
 

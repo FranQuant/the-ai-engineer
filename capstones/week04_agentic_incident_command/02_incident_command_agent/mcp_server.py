@@ -25,10 +25,15 @@ from config import (
     MCP_SUBPROTOCOL,
     TELEMETRY_SINK,
 )
-from incident_schemas import get_tool_schemas, resource_descriptions, tool_descriptions
+from incident_loop import diagnostic_fixture
+from incident_schemas import (
+    get_tool_schemas,
+    resource_descriptions,
+    tool_cost_tokens,
+    tool_descriptions,
+)
 from telemetry import (
     Budget,
-    RunContext,
     TelemetryEvent,
     TelemetryLogger,
     new_correlation_id,
@@ -70,6 +75,7 @@ ALERT = {
     "detected_at": "2025-11-23T09:00:00Z",
 }
 
+# Latencies below are fixture values reported by the tools (not wall-clock measurements).
 RESOURCE_FIXTURES: Dict[str, Any] = {
     "memory://alerts/latest": ALERT,
     "memory://runbooks/index": RUNBOOKS,
@@ -124,12 +130,14 @@ def validate_arguments(schema: Dict[str, Any], arguments: Dict[str, Any]):
 # ---------------------------------------------------------------------------
 
 def _envelope(data: Dict[str, Any], latency_ms: int, cost_tokens: int = 10):
+    """cost_dollars is always 0.0: no paid model or tool exists, so dollars are not tracked."""
     return {
         "status": "ok",
         "data": data,
         "metrics": {
             "latency_ms": latency_ms,
             "cost_tokens": cost_tokens,
+            "cost_dollars": 0.0,
         },
     }
 
@@ -148,17 +156,19 @@ def tool_retrieve_runbook(arguments: Dict[str, Any]):
         or any(query in step.lower() for step in rb["steps"])
     ]
 
-    return _envelope({"results": hits[:top_k]}, latency_ms=5)
+    return _envelope({"results": hits[:top_k]}, latency_ms=5, cost_tokens=tool_cost_tokens("retrieve_runbook"))
 
 
 def tool_run_diagnostic(arguments: Dict[str, Any]):
+    fixture = diagnostic_fixture(arguments.get("command"))
     data = {
         "command": arguments.get("command"),
         "host": arguments.get("host"),
-        "stdout": "All pods healthy; CPU normalized.",
+        "stdout": fixture["stdout"],
         "stderr": "",
+        "verdict": fixture["verdict"],
     }
-    return _envelope(data, latency_ms=7)
+    return _envelope(data, latency_ms=7, cost_tokens=tool_cost_tokens("run_diagnostic"))
 
 
 def tool_summarize_incident(arguments: Dict[str, Any], memory: IncidentMemoryStore):
@@ -201,26 +211,39 @@ def tool_summarize_incident(arguments: Dict[str, Any], memory: IncidentMemorySto
     delta = {
         "alert_id": alert_id,
         "action": "summarize_incident",
+        "note": f"Summarized {alert_id} with {len(evidence)} evidence items",
         "summary": summary,
         "evidence": evidence,
     }
-    memory.append_delta(delta)
+    memory.append_delta(delta)  # the memory store stamps the ISO timestamp and key
 
-    return _envelope({"summary": summary, "citations": evidence}, latency_ms=6)
+    return _envelope(
+        {"summary": summary, "citations": evidence},
+        latency_ms=6,
+        cost_tokens=tool_cost_tokens("summarize_incident"),
+    )
 
 
 # Write OPAL plan into memory://plans/current
 def tool_write_plan(arguments: Dict[str, Any], memory: IncidentMemoryStore):
     plan = arguments.get("plan", [])
     memory.write_plan(plan)
-    return _envelope({"written": True, "plan_length": len(plan)}, latency_ms=1)
+    return _envelope(
+        {"written": True, "plan_length": len(plan)},
+        latency_ms=1,
+        cost_tokens=tool_cost_tokens("write_plan"),
+    )
 
 
 def tool_append_memory_delta(arguments: Dict[str, Any], memory: IncidentMemoryStore):
     """Append a structured loop-outcome delta to memory://deltas/recent."""
     delta = arguments.get("delta", arguments)
     result = memory.append_delta(delta)
-    return _envelope({"appended": True, "delta": result}, latency_ms=2)
+    return _envelope(
+        {"appended": True, "delta": result},
+        latency_ms=2,
+        cost_tokens=tool_cost_tokens("append_memory_delta"),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -257,7 +280,12 @@ def capabilities_payload(memory: IncidentMemoryStore):
     }
 
 
-def get_resource(memory: IncidentMemoryStore, uri: str, cursor=None):
+def get_resource(memory: IncidentMemoryStore, uri: str, cursor=None, telemetry=None):
+    if uri == "memory://telemetry/snapshot":
+        if telemetry is None:
+            raise ValueError("Telemetry snapshot unavailable: no logger attached")
+        return telemetry.snapshot()
+
     if uri in RESOURCE_FIXTURES:
         return RESOURCE_FIXTURES[uri]
 
@@ -278,15 +306,15 @@ def call_tool(memory, name, arguments):
     if name == "create_incident":
         incident_id = arguments.get("id", "INC-001")
         result = memory.update_incident(incident_id, arguments)
-        return _envelope(result, latency_ms=4)
+        return _envelope(result, latency_ms=4, cost_tokens=tool_cost_tokens("create_incident"))
 
     if name == "add_evidence":
         result = memory.write_evidence(arguments)
-        return _envelope(result, latency_ms=3)
+        return _envelope(result, latency_ms=3, cost_tokens=tool_cost_tokens("add_evidence"))
 
     if name == "append_delta":
         result = memory.append_delta(arguments)
-        return _envelope(result, latency_ms=2)
+        return _envelope(result, latency_ms=2, cost_tokens=tool_cost_tokens("append_delta"))
 
     if name == "append_memory_delta":
         return tool_append_memory_delta(arguments, memory)
@@ -316,7 +344,7 @@ async def handle_session(ws, logger, memory):
         ms=DEFAULT_BUDGET_MS,
         dollars=DEFAULT_BUDGET_DOLLARS,
     )
-    ctx = RunContext(correlation_id=new_correlation_id(), loop_id="loop-1")
+    fallback_correlation_id = new_correlation_id()
     tool_schemas = get_tool_schemas()
 
     async for raw in ws:
@@ -376,9 +404,14 @@ async def handle_session(ws, logger, memory):
 
         _meta = params.get("_meta")
         client_correlation_id = _meta.get("correlationId") if isinstance(_meta, dict) else None
-        event_correlation_id = client_correlation_id or ctx.correlation_id
-
-        phase = "observe" if method in ("initialize", "getResource") else "act"
+        event_correlation_id = client_correlation_id or fallback_correlation_id
+        # The client says which loop and OPAL phase a call belongs to; the method-derived
+        # phase is only the fallback for clients that send no _meta.
+        meta = _meta if isinstance(_meta, dict) else {}
+        event_loop_id = meta.get("loopId") or "unscoped"
+        default_phase = "observe" if method in ("initialize", "getResource") else "act"
+        client_phase = meta.get("phase")
+        phase = client_phase if client_phase in ("observe", "plan", "act", "learn") else default_phase
         status = "ok"
 
         # timing
@@ -398,7 +431,7 @@ async def handle_session(ws, logger, memory):
                 response = {
                     "jsonrpc": "2.0",
                     "id": req_id,
-                    "result": get_resource(memory, uri, cursor),
+                    "result": get_resource(memory, uri, cursor, logger),
                 }
 
             elif method == "callTool":
@@ -427,11 +460,15 @@ async def handle_session(ws, logger, memory):
                                 response = _validation_error_response(req_id, errors)
                             else:
                                 latency_ms, result = timed(call_tool, memory, name, arguments)
-                                session_budget.consume(tokens_used=10, latency_ms=latency_ms)
+                                session_budget.consume(
+                                    tokens_used=result["metrics"]["cost_tokens"], latency_ms=latency_ms
+                                )
                                 response = {"jsonrpc": "2.0", "id": req_id, "result": result}
                         else:
                             latency_ms, result = timed(call_tool, memory, name, arguments)
-                            session_budget.consume(tokens_used=10, latency_ms=latency_ms)
+                            session_budget.consume(
+                                tokens_used=result["metrics"]["cost_tokens"], latency_ms=latency_ms
+                            )
                             response = {"jsonrpc": "2.0", "id": req_id, "result": result}
 
             else:
@@ -455,12 +492,13 @@ async def handle_session(ws, logger, memory):
         logger.log(
             TelemetryEvent(
                 correlation_id=event_correlation_id,
-                loop_id=ctx.loop_id,
+                loop_id=event_loop_id,
                 phase=phase,
                 method=method,
                 status=status,
                 latency_ms=full_latency_ms,
                 budget=session_budget,
+                budget_owner="server",
                 payload={"request": request, "response": response},
             )
         )

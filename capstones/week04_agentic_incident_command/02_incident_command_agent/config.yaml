@@ -11,7 +11,7 @@
 # Environment toggles
 # ---------------------------------------------------------------------------
 env:
-  colab_tunnel: false          # Optional/future portability example; not an active runtime toggle
+  colab_tunnel: false          # Not a runtime toggle. The Colab path is documented in the README, not exercised here.
 
 # ---------------------------------------------------------------------------
 # MCP server connection
@@ -33,17 +33,21 @@ mcp:
 # OPAL loop budget + guardrails
 # ---------------------------------------------------------------------------
 budget:
-  tokens: 2000          # Recorded agent/client value; server separately enforces token availability
-  ms: 150               # Action/tool latency budget, not a full-loop wall-clock deadline
-  dollars: 0.0          # Descriptive value only; no real monetary spend is enforced
+  tokens: 2000          # Per-loop agent budget, debited by each tool's cost_hint_tokens; loop escalates at 0
+  ms: 150               # Per-loop budget, debited by the latency each tool reports (fixture values, not measured); escalates at 0
+  dollars: 0.0          # NOT TRACKED: no paid model or tool exists, cost_dollars is always 0.0 and nothing enforces it
   max_steps: 5          # Hard step-count ceiling per OPAL loop
   max_failures: 2       # Stop after two failed tool results; failed calls are not retried
+  max_loops: 3          # Backstop: loops per incident before escalated/max_loops_reached (loop_guardrail). The planner normally escalates earlier.
+  # Trace events carry budget_owner: "agent" (per-loop, also reported by client events) or
+  # "server" (server session budget: same token costs, measured wall time).
 
 # ---------------------------------------------------------------------------
 # Artifact paths (relative to 02_incident_command_agent/)
 # ---------------------------------------------------------------------------
 artifacts:
   telemetry_sink: "../artifacts/telemetry.jsonl"   # JSONL append-only telemetry
+  memory_snapshot: "../artifacts/memory_snapshot.json"   # written by demo_remote.py next to the trace
 
 # ---------------------------------------------------------------------------
 # Tool registry
@@ -62,14 +66,14 @@ tools:
       Search runbooks by keyword and return the top-k most relevant snippets.
       Used during Observe or Act to surface applicable remediation procedures.
     latency_hint_ms: 5
-    cost_hint_tokens: 10
+    cost_hint_tokens: 10    # the server debits exactly this per call
     required: [query]
     optional: [top_k]       # integer 1–5, default 3
 
   - name: run_diagnostic
     description: >
-      Execute a sandboxed diagnostic command on the specified host and return
-      stdout/stderr. Supports kubectl, log-fetch, and metric queries.
+      Return deterministic fixture output (stdout, stderr, verdict) for a
+      diagnostic command on the specified host. No command is executed.
     latency_hint_ms: 7
     cost_hint_tokens: 15
     required: [command, host]
@@ -140,7 +144,7 @@ resources:
     description: Evidence item (id, content, source)
 
   - uri: "memory://deltas/recent"
-    description: Ordered list of OPAL action deltas (items array)
+    description: Ordered list of OPAL action deltas (items array); each has alert_id, ISO timestamp and key alert_id@timestamp
 
   - uri: "memory://plans/current"
     description: Current persisted OPAL plan (plan array)
@@ -150,6 +154,9 @@ resources:
 
   - uri: "memory://runbooks/index"
     description: Array of runbook objects available for retrieval
+
+  - uri: "memory://telemetry/snapshot"
+    description: Deterministic summary of telemetry recorded by the server (total_events, by_phase, by_loop, last_events)
 
   - uri: "memory://memory/deltas"
     description: Alias delta store used by server resource fixtures (items array)

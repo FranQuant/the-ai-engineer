@@ -1,0 +1,172 @@
+{
+  "alert": {
+    "detected_at": "2025-11-23T09:00:00Z",
+    "id": "ALRT-0001",
+    "service": "staging-api",
+    "severity": "high",
+    "symptom": "CPU spike on node-3"
+  },
+  "deltas": {
+    "items": [
+      {
+        "action": "summarize_incident",
+        "alert_id": "ALRT-0001",
+        "evidence": [
+          "memory://alerts/latest#ALRT-0001",
+          "memory://runbooks/index#rb-101",
+          "diagnostic:{\"command\":\"kubectl top pod\",\"host\":\"staging-api\",\"result\":\"node-3 CPU at 88% of limit; no pod restarts; cause not identified.\",\"step\":\"step-2\"}"
+        ],
+        "key": "ALRT-0001@2026-09-29T18:49:17.314561+00:00",
+        "note": "Summarized ALRT-0001 with 3 evidence items",
+        "summary": "Incident ALRT-0001: CPU spikes observed on staging-api. Recorded diagnostic result: node-3 CPU at 88% of limit; no pod restarts; cause not identified. Recommend restart if sustained > 90% for 5 minutes. Capture logs before restart; monitor for recurrence.",
+        "timestamp": "2026-09-29T18:49:17.314561+00:00"
+      },
+      {
+        "alert_id": "ALRT-0001",
+        "command": "kubectl top pod",
+        "key": "ALRT-0001@2026-09-29T18:49:17.316120+00:00",
+        "kind": "loop_outcome",
+        "loop_id": "loop-1",
+        "note": "Diagnosed staging-api, ran kubectl top pod, outcome inconclusive: node-3 CPU at 88% of limit; no pod restarts; cause not identified.",
+        "outcome": "unresolved",
+        "run_id": "0c0f933c-21d5-4431-84ee-6d61bf34594b",
+        "timestamp": "2026-09-29T18:49:17.316120+00:00",
+        "verdict": "inconclusive"
+      },
+      {
+        "action": "summarize_incident",
+        "alert_id": "ALRT-0001",
+        "evidence": [
+          "memory://alerts/latest#ALRT-0001",
+          "memory://runbooks/index#rb-101",
+          "diagnostic:{\"command\":\"kubectl logs deploy/staging-api --tail=50\",\"host\":\"staging-api\",\"result\":\"Repeated GC pauses; sustained CPU 92% on node-3; root cause needs human review.\",\"step\":\"step-2\"}"
+        ],
+        "key": "ALRT-0001@2026-09-29T18:49:17.321079+00:00",
+        "note": "Summarized ALRT-0001 with 3 evidence items",
+        "summary": "Incident ALRT-0001: CPU spikes observed on staging-api. Recorded diagnostic result: Repeated GC pauses; sustained CPU 92% on node-3; root cause needs human review. Recommend restart if sustained > 90% for 5 minutes. Capture logs before restart; monitor for recurrence.",
+        "timestamp": "2026-09-29T18:49:17.321079+00:00"
+      },
+      {
+        "alert_id": "ALRT-0001",
+        "command": "kubectl logs deploy/staging-api --tail=50",
+        "key": "ALRT-0001@2026-09-29T18:49:17.322704+00:00",
+        "kind": "loop_outcome",
+        "loop_id": "loop-2",
+        "note": "Diagnosed staging-api, ran kubectl logs deploy/staging-api --tail=50, outcome degraded: Repeated GC pauses; sustained CPU 92% on node-3; root cause needs human review.",
+        "outcome": "unresolved",
+        "run_id": "0c0f933c-21d5-4431-84ee-6d61bf34594b",
+        "timestamp": "2026-09-29T18:49:17.322704+00:00",
+        "verdict": "degraded"
+      }
+    ]
+  },
+  "escalation_reason": "evidence_inconclusive_after_runbook_check",
+  "plan": {
+    "plan": [
+      {
+        "arguments": {
+          "query": "cpu",
+          "top_k": 2
+        },
+        "cites_deltas": [
+          {
+            "alert_id": "ALRT-0001",
+            "loop_id": "loop-1",
+            "note": "Diagnosed staging-api, ran kubectl top pod, outcome inconclusive: node-3 CPU at 88% of limit; no pod restarts; cause not identified.",
+            "timestamp": "2026-09-29T18:49:17.316120+00:00"
+          }
+        ],
+        "name": "retrieve_runbook",
+        "rationale": "Prior loop was unresolved (loop-1: Diagnosed staging-api, ran kubectl top pod, outcome inconclusive: node-3 CPU at 88% of limit; no pod restarts; cause not identified.); re-reading the runbook and running one further check.",
+        "step_id": "step-1",
+        "type": "callTool"
+      },
+      {
+        "arguments": {
+          "command": "kubectl logs deploy/staging-api --tail=50",
+          "host": "staging-api"
+        },
+        "cites_deltas": [
+          {
+            "alert_id": "ALRT-0001",
+            "loop_id": "loop-1",
+            "note": "Diagnosed staging-api, ran kubectl top pod, outcome inconclusive: node-3 CPU at 88% of limit; no pod restarts; cause not identified.",
+            "timestamp": "2026-09-29T18:49:17.316120+00:00"
+          }
+        ],
+        "name": "run_diagnostic",
+        "rationale": "Prior loop was unresolved (loop-1: Diagnosed staging-api, ran kubectl top pod, outcome inconclusive: node-3 CPU at 88% of limit; no pod restarts; cause not identified.); re-reading the runbook and running one further check.",
+        "step_id": "step-2",
+        "type": "callTool"
+      },
+      {
+        "arguments": {
+          "alert_id": "ALRT-0001",
+          "evidence": [
+            "memory://alerts/latest#ALRT-0001",
+            "memory://runbooks/index#rb-101",
+            "diagnostic:{\"command\":\"kubectl logs deploy/staging-api --tail=50\",\"host\":\"staging-api\",\"result\":\"Repeated GC pauses; sustained CPU 92% on node-3; root cause needs human review.\",\"step\":\"step-2\"}"
+          ]
+        },
+        "cites_deltas": [
+          {
+            "alert_id": "ALRT-0001",
+            "loop_id": "loop-1",
+            "note": "Diagnosed staging-api, ran kubectl top pod, outcome inconclusive: node-3 CPU at 88% of limit; no pod restarts; cause not identified.",
+            "timestamp": "2026-09-29T18:49:17.316120+00:00"
+          }
+        ],
+        "name": "summarize_incident",
+        "rationale": "Prior loop was unresolved (loop-1: Diagnosed staging-api, ran kubectl top pod, outcome inconclusive: node-3 CPU at 88% of limit; no pod restarts; cause not identified.); re-reading the runbook and running one further check.",
+        "step_id": "step-3",
+        "type": "callTool"
+      }
+    ]
+  },
+  "run_id": "0c0f933c-21d5-4431-84ee-6d61bf34594b",
+  "telemetry": {
+    "by_loop": {
+      "loop-1": 12,
+      "loop-2": 15
+    },
+    "by_phase": {
+      "act": 6,
+      "learn": 11,
+      "observe": 10
+    },
+    "last_events": [
+      {
+        "loop_id": "loop-2",
+        "method": "getResource",
+        "phase": "learn",
+        "status": "ok"
+      },
+      {
+        "loop_id": "loop-2",
+        "method": "callTool",
+        "phase": "learn",
+        "status": "ok"
+      },
+      {
+        "loop_id": "loop-2",
+        "method": "getResource",
+        "phase": "learn",
+        "status": "ok"
+      },
+      {
+        "loop_id": "loop-2",
+        "method": "getResource",
+        "phase": "learn",
+        "status": "ok"
+      },
+      {
+        "loop_id": "loop-2",
+        "method": "getResource",
+        "phase": "learn",
+        "status": "ok"
+      }
+    ],
+    "total_events": 27
+  },
+  "terminal_state": "escalated"
+}

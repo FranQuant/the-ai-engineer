@@ -18,6 +18,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
+from incident_loop import utc_now_iso
+
 
 class IncidentMemoryStore:
     def __init__(self, initial_data: Optional[Dict[str, Any]] = None) -> None:
@@ -76,6 +78,7 @@ class IncidentMemoryStore:
             {"uri": "memory://plans/current", "type": "plan"},
             {"uri": "memory://alerts/latest", "type": "alert"},
             {"uri": "memory://runbooks/index", "type": "runbook_list"},
+            {"uri": "memory://telemetry/snapshot", "type": "telemetry_snapshot"},
             # Backward-compatible alias for older callers that still use the legacy URI.
             {"uri": "memory://memory/deltas", "type": "delta_list"},
         ]
@@ -103,7 +106,15 @@ class IncidentMemoryStore:
         raise ValueError(f"Unknown resource URI: {uri}")
 
     def write_delta(self, delta: Dict[str, Any]) -> Dict[str, Any]:
-        """Append an action delta to memory://deltas/recent."""
+        """Append an action delta to memory://deltas/recent.
+
+        Every delta is indexed by alert ID plus an ISO-8601 UTC timestamp
+        ("key": "<alert_id>@<timestamp>"); missing fields are filled in here.
+        """
+        delta = dict(delta)
+        delta.setdefault("alert_id", self._data["alerts"].get("latest", {}).get("id", "unknown"))
+        delta.setdefault("timestamp", utc_now_iso())
+        delta.setdefault("key", f"{delta['alert_id']}@{delta['timestamp']}")
         self._data["deltas"].append(delta)
         return delta
 

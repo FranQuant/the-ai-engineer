@@ -1,7 +1,6 @@
 import asyncio
 import json
 
-import pytest
 
 from incident_agent import IncidentAgent
 from incident_memory import IncidentMemoryStore

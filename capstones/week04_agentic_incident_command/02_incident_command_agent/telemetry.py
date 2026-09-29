@@ -3,7 +3,7 @@ Structured telemetry utilities for the Incident Command Agent.
 
 Responsibilities:
 - Generate correlation IDs and loop IDs.
-- Track budgets (tokens, milliseconds, dollars).
+- Track budgets (tokens, milliseconds, dollars); tools and the agent debit them, the logger does not.
 - Emit telemetry events for observe/plan/act/learn phases.
 - Provide JSONL logger compatible with warm-up harness patterns.
 """
@@ -15,7 +15,7 @@ import time
 import uuid
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 
 def new_correlation_id() -> str:
@@ -60,6 +60,9 @@ class TelemetryEvent:
     latency_ms: int
     budget: Budget
     payload: Dict[str, Any]
+    # Who owns the budget object in this event: "agent" (per-loop, also used by the
+    # client) or "server" (session budget enforced by the MCP server).
+    budget_owner: str = "agent"
 
 
 # ---------------------------------------------------------------------------
@@ -70,26 +73,28 @@ class TelemetryLogger:
     def __init__(self, sink: Path) -> None:
         """Initialize telemetry logger with JSONL sink."""
         self.sink = sink
+        self._recent: List[Dict[str, str]] = []
+        self._by_phase: Dict[str, int] = {}
+        self._by_loop: Dict[str, int] = {}
 
     def log(self, event: TelemetryEvent) -> None:
         """
-        Record telemetry event and consume budget.
+        Record a telemetry event.
 
-        Budget consumption per event:
-        - tokens: 1 token per event
-        - ms: use event.latency_ms
-        - dollars: unchanged (0.0)
+        The logger only records. Budgets are debited by whoever performs the work
+        (the agent for tool cost and latency, the server for its session budget),
+        so an event never changes the budget it reports.
         """
-        event.budget.consume(
-            latency_ms=event.latency_ms,
-            tokens_used=1,
-            dollars_used=0.0,
-        )
-
-        # Serialize event
         record = asdict(event)
         record["timestamp"] = time.time()
         line = json.dumps(record)
+
+        self._by_phase[event.phase] = self._by_phase.get(event.phase, 0) + 1
+        self._by_loop[event.loop_id] = self._by_loop.get(event.loop_id, 0) + 1
+        self._recent.append(
+            {"loop_id": event.loop_id, "phase": event.phase, "method": event.method, "status": event.status}
+        )
+        del self._recent[:-5]
 
         # Echo to console
         print(line)
@@ -100,6 +105,15 @@ class TelemetryLogger:
         # Append to JSONL file
         with self.sink.open("a", encoding="utf-8") as fp:
             fp.write(line + "\n")
+
+    def snapshot(self) -> Dict[str, Any]:
+        """Deterministic summary of what this logger has recorded so far (memory://telemetry/snapshot)."""
+        return {
+            "total_events": sum(self._by_phase.values()),
+            "by_phase": dict(sorted(self._by_phase.items())),
+            "by_loop": dict(sorted(self._by_loop.items())),
+            "last_events": list(self._recent),
+        }
 
 
 # ---------------------------------------------------------------------------

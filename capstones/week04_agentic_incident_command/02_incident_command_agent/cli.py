@@ -14,7 +14,7 @@ from incident_agent import IncidentAgent
 from incident_memory import IncidentMemoryStore
 from incident_planner import IncidentPlanner
 from replay import load_events, ReplayRunner
-from telemetry import RunContext, TelemetryLogger, new_correlation_id
+from telemetry import TelemetryLogger
 
 
 async def run_agent() -> None:
@@ -23,9 +23,8 @@ async def run_agent() -> None:
     telemetry = TelemetryLogger(fresh_telemetry_sink())
     agent = IncidentAgent(memory, planner, telemetry)
 
-    ctx = RunContext(correlation_id=new_correlation_id(), loop_id="loop-1")
-    summary = await agent.run_loop(ctx)
-    print(summary)
+    incident = await agent.run_incident()
+    print(f"State: {incident['state']} ({incident['reason']}); loops: {len(incident['loops'])}")
 
 
 def run_replay(path: Path) -> None:

@@ -13,7 +13,7 @@ building the full Incident Command Agent in 02_incident_command_agent/.
 
 </td>
 <td align="right" width="200">
-<img src="../../../assets/tae_logo.png" alt="TAE Banner" width="160">
+<img src="https://theaiengineer.dev/tae_logo_gw_flatter.png" alt="TAE Banner" width="160">
 </td>
 </tr>
 </table>
@@ -22,9 +22,9 @@ building the full Incident Command Agent in 02_incident_command_agent/.
 
 The warm-up harness uses a relaxed `40 000 ms` ceiling because it is a
 non-production trace demonstration. The capstone agent in
-`02_incident_command_agent/` uses `150 ms` per the coaching guide's latency
-discipline requirement. The mismatch is intentional and documented here so it
-is not mistaken for a bug.
+`02_incident_command_agent/` uses `150 ms`, which is our own budget choice (the
+coaching guide does not set it). The mismatch is intentional and documented here
+so it is not mistaken for a bug.
 
 ## Submission Scope
 
@@ -37,7 +37,6 @@ demonstrate the mechanics that feed into it.
 - **mcp_tool_harness_client.py** — runs a single deterministic OPAL loop  
 - **schemas.py** — JSON schemas for tools and resources  
 - **telemetry.py** — structured telemetry + JSONL logging  
-- **samples/** — example server/client logs  
 
 ## How to Run
 
@@ -52,7 +51,7 @@ python mcp_tool_harness_server.py
 python mcp_tool_harness_client.py
 ```
 
-Logs will appear under `samples/`.
+Logs are written to a local `samples/` folder when you run the harness. That folder is git-ignored (`*.log`), so it is not part of the repository.
 
 
 ## Purpose

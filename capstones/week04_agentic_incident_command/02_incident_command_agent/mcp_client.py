@@ -83,6 +83,7 @@ class MCPClient:
             dollars=DEFAULT_BUDGET_DOLLARS,
         )
         self.ctx: Optional[RunContext] = None
+        self.phase: Optional[str] = None
 
         self.server_info: Optional[Dict[str, Any]] = None
         self.server_protocol: Optional[str] = None
@@ -90,6 +91,14 @@ class MCPClient:
     def set_context(self, ctx: RunContext) -> None:
         """Attach a run context for correlation-id aware telemetry."""
         self.ctx = ctx
+
+    def set_phase(self, phase: Optional[str]) -> None:
+        """Tell the server which OPAL phase the next calls belong to."""
+        self.phase = phase
+
+    def set_budget(self, budget: Budget) -> None:
+        """Report the agent's per-loop budget in client events (the client keeps none of its own)."""
+        self.budget = budget
 
     async def connect(self) -> None:
         """Open WebSocket connection using MCP subprotocol."""
@@ -114,7 +123,10 @@ class MCPClient:
         self._next_id += 1
 
         if self.ctx:
-            params = {**params, "_meta": {"correlationId": self.ctx.correlation_id}}
+            meta = {"correlationId": self.ctx.correlation_id, "loopId": self.ctx.loop_id}
+            if self.phase:
+                meta["phase"] = self.phase
+            params = {**params, "_meta": meta}
 
         request = {"jsonrpc": "2.0", "id": req_id, "method": method, "params": params}
 
