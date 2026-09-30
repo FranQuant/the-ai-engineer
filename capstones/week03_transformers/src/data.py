@@ -21,9 +21,10 @@ if TYPE_CHECKING:
     import torch
 
 HERE = Path(__file__).resolve().parent
-CORPUS = HERE / "fomc_training_corpus.txt"
-MANIFEST = HERE / "fomc_training_corpus_manifest.json"
-SPLIT_MANIFEST = HERE / "split_manifest.json"
+CORPUS_DIR = HERE.parent / "corpus"
+CORPUS = CORPUS_DIR / "fomc_training_corpus.txt"
+MANIFEST = CORPUS_DIR / "fomc_training_corpus_manifest.json"
+SPLIT_MANIFEST = CORPUS_DIR / "split_manifest.json"
 
 # Frozen snapshot (§2, §9): any mismatch stops the pipeline.
 CORPUS_SHA256 = (

@@ -25,7 +25,7 @@ import torch
 from data import NMonitorSampler, WindowSampler
 from model import ModelConfig, TinyTransformerLM
 
-# §8 frozen compute settings (Phase 3 pilot, pilot/phase3_timing.json)
+# §8 frozen compute settings (Phase 3 pilot, tag week03-v2-pilot3)
 ARCH = {"d_model": 256, "num_layers": 6, "num_heads": 8, "d_ff": 1024}
 BLOCK_SIZE = 256
 BPE_VOCAB = 2000

@@ -1,5 +1,4 @@
-"""The rehearsal notebook is the experiment notebook with the MODE line
-changed (DESIGN.md §9)."""
+"""Notebook hygiene and the setup-cell functions (DESIGN.md §9)."""
 
 import ast
 import json
@@ -11,32 +10,13 @@ import pytest
 
 HERE = Path(__file__).resolve().parents[1]
 MAIN = HERE / "week03_fomc_surprise.ipynb"
-REHEARSAL = HERE / "pilot" / "phase4_rehearsal.ipynb"
-
-
-def _lines(path):
-    nb = json.loads(path.read_text())
-    return nb, [(i, line) for i, c in enumerate(nb["cells"])
-                for line in c["source"]]
-
-
-def test_rehearsal_differs_only_in_mode():
-    main, main_lines = _lines(MAIN)
-    reh, reh_lines = _lines(REHEARSAL)
-    assert main["metadata"] == reh["metadata"]
-    assert [(c["cell_type"], c["id"]) for c in main["cells"]] == [
-        (c["cell_type"], c["id"]) for c in reh["cells"]]
-    assert len(main_lines) == len(reh_lines)
-    diffs = [(a[1], b[1]) for a, b in zip(main_lines, reh_lines) if a != b]
-    assert diffs == [('MODE = "real"\n', 'MODE = "rehearsal"\n')]
 
 
 def test_notebooks_are_saved_without_outputs():
-    for path in (MAIN, REHEARSAL):
-        nb = json.loads(path.read_text())
-        code = [c for c in nb["cells"] if c["cell_type"] == "code"]
-        assert all(c["outputs"] == [] and c["execution_count"] is None
-                   for c in code), path.name
+    nb = json.loads(MAIN.read_text())
+    code = [c for c in nb["cells"] if c["cell_type"] == "code"]
+    assert all(c["outputs"] == [] and c["execution_count"] is None
+               for c in code)
 
 
 def _setup_function(name):

@@ -1,6 +1,6 @@
 # Week 3 Capstone v2 — Design (pre-registration)
 
-Status: FROZEN v0.8 (Phase 4 amendment from Codex review, logged below). Revised after Codex review rounds 1–2. Freeze before any model is trained on the real split. Changes after freeze go in the change log.
+Status: FROZEN v0.8 (design). v0.9 editorial update after the confirmatory run, logged below; no design decision changed. Changes after freeze go in the change log.
 
 ## 1. Research question
 
@@ -71,7 +71,7 @@ A contradicted or inconclusive hypothesis is reported as such, never tuned away.
 
 ## 8. Compute budget and pilot
 
-- Whole notebook ≤ 12 min on a Colab T4 (CPF limit 15), measured by a cold "Run all", including data fetch, checks, both transformers, n-gram, scoring and figures.
+- Whole notebook ≤ 12 min on a Colab T4, measured by a cold "Run all", including data fetch, checks, both transformers, n-gram, scoring and figures.
 - **Phase 3 timing pilot:** trains on T data only, scores nothing on N or F, and its models are discarded. It may change only compute settings: d_model, layers, heads, d_ff, block_size, batch size, step count, BPE vocab size, numeric precision (fp16 autocast or fp32). Once set, these are logged here and frozen before the real run.
 - **Selection rule (pre-registered):**
   - Budget 720 s.
@@ -82,7 +82,7 @@ A contradicted or inconclusive hypothesis is reported as such, never tuned away.
   - Seed 2 (char only) is added only if one more char run at the same config and steps, plus its monitoring and F scoring, fits in the budget left after the selection. It never changes config or steps.
   - If nothing qualifies: NO CONFIG FITS, and the study is infeasible under §10.
 - If budget allows (rule above), a second seed for the char transformer; its ρ with seed 1 on F is reported as model uncertainty. Otherwise all claims are limited to seed 1.
-- **Frozen compute settings (Phase 3 pilot, Colab Tesla T4, torch 2.11.0+cu128, commit 1f0cd9d, `pilot/phase3_timing.json`):**
+- **Frozen compute settings (Phase 3 pilot, Colab Tesla T4, torch 2.11.0+cu128, commit 1f0cd9d; pilot archived at tag `week03-v2-pilot3`):**
   - C1: d_model 256, 6 layers, 8 heads, d_ff 1024.
   - fp16 autocast with GradScaler for training; fp32 scoring (`evaluate.py`).
   - block_size 256, batch 64, 3,696 steps for each of the char and BPE seed-1 runs.
@@ -95,10 +95,10 @@ A contradicted or inconclusive hypothesis is reported as such, never tuned away.
 
 ## 9. Reproducibility and Colab
 
-- First code cell clones the repository at the fixed tag `week03-v2` (depth 1) when the package is not present, then verifies the corpus and manifest SHA-256 and stops on mismatch. The tag is created on the submitted commit.
+- First code cell clones the repository at a fixed tag (`week03-v2` for the confirmatory run; `week03-v3` for the final submission) (depth 1) when the package is not present, then verifies the corpus and manifest SHA-256 and stops on mismatch. The tag is created on the submitted commit.
 - The confirmatory result is the first real run, executed from tag `week03-v2-run1`; its results.json is committed as `runs/confirmatory_results.json`. Later runs (Phase 6, graders) are reproductions; fp16 GPU training is not bit-reproducible, and differences from the confirmatory run are reported, not substituted.
 - A rehearsal (full frozen settings on a fake split built from T meetings only, never touching N/F) may run on the T4 to measure runtime.
-- Model code lives in `model.py`, `bpe.py`, `data.py`, `evaluate.py`; the notebook imports them after the clone.
+- Model code lives in `src/` (`model.py`, `bpe.py`, `data.py`, `evaluate.py`, `train.py`, `ngram.py`, `analysis.py`); the notebook imports them after the clone.
 - Library versions (Python, torch, CUDA, GPU name) are printed. Colab's preinstalled torch is used without pins: pinning would add install time and risk CUDA mismatches. Accepted limitation (§14).
 - Notebook metadata requests a GPU (T4). The first code cell **stops** if CUDA is unavailable. Any CUDA GPU is accepted; the budget in §8 is set on a T4, the slowest standard Colab GPU.
 - Every number in prose is printed from variables.
@@ -109,26 +109,28 @@ If the §2 thresholds fail after boundary exclusion, or the §3 character check 
 
 ## 11. Handout coverage (kept, condensed)
 
-From-scratch: scaled dot-product attention (boolean and additive float masks), causal mask, self-attention, multi-head attention, FFN, Pre-LN block, sinusoidal positional encoding, TinyTransformerLM, greedy + temperature sampling (one short demo).
+From-scratch: scaled dot-product attention (boolean and additive float masks), causal mask, self-attention, multi-head attention, FFN, Pre-LN block, sinusoidal positional encoding, TinyTransformerLM, greedy + temperature sampling (gallery: 2 prompts × greedy, T 0.8, T 1.2; added in v0.9, read by no statistic).
+Engineering: config and seed fixed; each transformer's final weights saved as a checkpoint and reloaded with an equality check (v0.9); run record in `runs/<MODE>/results.json`.
 Checks: §4.3 worked example (print + assert QKᵀ, S, A, Y; causal rerun), fused vs manual SDPA parity, MHA = single-head at H = 1, uniform logits ≈ log V, trivial-pattern overfit.
 
 ## 12. Dropped from v1
 
-Resume phases, label smoothing, early stopping, Char-KL, attention-map figure, 3-prompt sampling gallery, contiguous 90/10 split, date/ID headers in model input.
+Resume phases, label smoothing, early stopping, Char-KL, attention-map figure, contiguous 90/10 split, date/ID headers in model input.
 
 ## 13. Notebook outline
 
 1. Title, author, date, abstract
-2. Introduction and hypotheses
+2. Introduction
 3. Data, normalization, split
-4. Model (imported) and verification checks
+4. Model and checks
 5. Training
-6. Scoring protocol
-7. Results: H1, H2, H3; exploratory E1, E2
-8. Limitations and future work
-9. References and reused code
-10. Use of AI tools
-11. Runtime
+6. Scoring
+7. Results (H1: drift; H2: genre; H3: instrument robustness; exploratory E1 and E2)
+8. Post-hoc exploration (not pre-registered)
+9. Data source
+10. Runtime
+
+Limitations, references and the AI-use statement are in README.md.
 
 ## 14. Known limitations (stated up front)
 
@@ -143,9 +145,10 @@ Textual surprise is not market surprise. One cutoff, not a rolling backtest. N i
 - v0.6 (Phase 3 closed): compute settings chosen by the §8 rule on a Colab T4 (`pilot/phase3_timing.json`); training hyperparameters and the runtime contingency frozen before any training on the real split.
 - v0.7 (Phase 4 amendment, before any training on the real split and before any N/F scoring): initial loss at C1 was ~186 nats/token vs ln V ≈ 4.45 because the tied embedding was initialized N(0, 1); token embedding init changed from N(0, 1) to N(0, d_model^-1/2) (0.0625 at C1). Chosen among N(0, 0.02), N(0, d^-1/2) and d^-1/2 init with √d input scaling, using a 300-step training-loss trial on T only (no N/F data): N(0, 0.02) left the model at the T unigram entropy after 300 steps because the token signal was small next to the sinusoidal positions; N(0, d^-1/2) keeps the handout's forward pass unchanged. Weight-decay scope, bootstrap seed and label edge cases made explicit. Phase 3 timings unaffected (init does not change step cost).
 - v0.8 (Phase 4 amendment from Codex review, before any real run): skipped-update accounting, confirmatory-run definition and tag pinning, rehearsal mode.
+- v0.9 (2026-09-30, after the confirmatory run; editorial and engineering only): references to external course rules removed; paths updated after moving modules to `src/` and data to `corpus/`; pilot folder removed from main (tag `week03-v2-pilot3`); checkpoint save + reload check and a 2-prompt sampling gallery added for the course rubric; clone tag `week03-v3`. No split, normalization, scoring rule, setting, hyperparameter, statistic or label changed; the confirmatory result stands as recorded.
 
 ## Run log
 
 - Confirmatory run: tag `week03-v2-run1` (d3abf6c), Colab Tesla T4, 2026-09-25, 747.7 s, results in `runs/confirmatory_results.json`.
-- Submission tag: `week03-v2`.
+- Submission tag: `week03-v3` (confirmatory result from `week03-v2-run1`, unchanged).
 - Clarification: SHA-256 checks run in the data cell, not the setup cell.

@@ -78,6 +78,9 @@ logs/
 **/runs/*
 !capstones/week03_transformers/runs/confirmatory_*
 !capstones/week03_transformers/runs/figures/
+# Week 3 evidence checkpoint of the final run (all other checkpoints stay ignored)
+!capstones/week03_transformers/runs/week03-v3/
+!capstones/week03_transformers/runs/week03-v3/char_final.pt
 mlruns/
 wandb/
 
