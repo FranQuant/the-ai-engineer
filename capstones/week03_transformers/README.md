@@ -33,11 +33,11 @@ The handout's attention example with and without the causal mask; checks of ever
 | `src/` | `model.py` (attention → TinyTransformerLM), `train.py`, `data.py`, `bpe.py`, `evaluate.py`, `ngram.py`, `analysis.py` |
 | `corpus/` | Frozen FOMC corpus, provenance manifest, meeting-level split; `builders/` rebuilds them |
 | `tests/` | pytest suite |
-| `runs/` | Confirmatory results and figures; executed notebook and checkpoint of the final run |
+| `runs/` | confirmatory run (`confirmatory_results.json`, executed `confirmatory_run.ipynb`, `figures/`) and the submission run (`week03-v3/`: executed notebook, results, checkpoint) |
 
 ## Data
 
-210 FOMC documents (93 statements, 117 minutes), 6,731,426 characters, from federalreserve.gov; split by meeting into train (to 2019), near (2020–21) and far (2022 on).
+210 FOMC documents (93 statements, 117 minutes) from federalreserve.gov. Split by meeting into train (to 2019, 104 documents), near (2020–21, 32) and far (2022 on, 70); 4 documents from meetings within 30 days of a split boundary are excluded.
 
 ## Limitations
 

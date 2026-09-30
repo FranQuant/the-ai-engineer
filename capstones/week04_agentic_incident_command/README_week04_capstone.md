@@ -49,18 +49,6 @@ The run ends in one of two terminal states:
 
 The committed scenario is deterministic: loop 1 runs `kubectl top pod` (inconclusive), loop 2 reads that delta plus the runbook and runs one further check (`kubectl logs …`, degraded). No known check remains, so the planner's `plan_decision` after loop 2 is `escalate` and the run ends `escalated` after two of the three allowed loops.
 
----
-
-## Key Capabilities
-
-- **Adaptive planning:** tool selection responds to observed incident evidence rather than returning one fixed plan.
-- **MCP client/server workflow:** tools and `memory://` resources are accessed through JSON-RPC over WebSockets.
-- **Multi-loop control:** the agent loops until `resolved` or `escalated`, with a max-loop guardrail.
-- **Guarded execution:** step, failure, millisecond and token budgets constrain each loop; dollars are recorded as 0 and not enforced.
-- **Traceable evidence:** correlation and loop identifiers connect client events, server events, tool results, and summaries.
-- **Deterministic replay:** recorded JSONL events can be inspected without rerunning tools or reconstructing server state.
-- **Human handoff:** each remote run produces an evidence-grounded incident summary suitable for escalation.
-
 `config.py` is the runtime source of truth. `config.yaml` is retained as a documentation and portability mirror only.
 
 **Local execution is canonical.** The Colab path below is documented, not exercised in this repo.
