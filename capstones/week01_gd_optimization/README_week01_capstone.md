@@ -4,48 +4,14 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FranQuant/the-ai-engineer/blob/main/capstones/week01_gd_optimization/gd_capstone.ipynb)
 
-Implements and visualizes gradient descent (GD) and stochastic gradient
-descent (SGD) from scratch on two one-dimensional objectives — a convex
-quadratic baseline and a nonconvex, nonsmooth piecewise-cubic objective.
+Notebook: [gd_capstone.ipynb](gd_capstone.ipynb) · Repository: https://github.com/FranQuant/the-ai-engineer
 
-## What's inside
+GD and SGD from scratch on the nonconvex, nonsmooth objective $f(x)=\left|\tfrac12x^3-\tfrac32x^2\right|+\tfrac12x$, with a quadratic stability baseline: analytic minimizer, gradient check, step-size sweep, constant vs diminishing SGD schedules, and final gap, best gap and steps-to-tolerance for every run.
 
-| Section | Contents |
-|---|---|
-| Objectives | Quadratic baseline (convex, smooth) + nonconvex, nonsmooth piecewise-cubic objective |
-| GD | Deterministic gradient descent, step-size sweep |
-| SGD | Constant and diminishing step-size schedules |
-| Reproducibility | Explicit per-run NumPy generators with recorded seeds; matching seeds pair noise across configurations. |
-| Diagnostics | Per-seed SGD summaries, success/non-hit counts, conditional first-hit statistics, and mean/SE comparisons with linearized theory |
+## Run
 
-## Results
+**Colab:** badge → Runtime → Run all (CPU, under 2 minutes).
 
-Figures and diagnostic tables are displayed inline in `gd_capstone.ipynb`.
-Run all cells and save the notebook to retain the outputs.
+**Locally**, from the repository root: `pip install -r requirements.txt`, then `jupyter lab capstones/week01_gd_optimization/gd_capstone.ipynb`.
 
-## Run it
-
-Colab badge above → Run All. NumPy + Matplotlib computations, no GPU needed,
-with a target runtime under two minutes with dependencies installed.
-Fresh hosted Colab verification of the revised notebook is pending.
-
-Locally, from the repository root:
-
-```bash
-cd capstones/week01_gd_optimization
-jupyter lab gd_capstone.ipynb
-```
-
-## Deliverables
-
-```text
-week01_gd_optimization/
-├── gd_capstone.ipynb              # full implementation, plots, diagnostics
-└── README_week01_capstone.md
-```
-
-## Notes
-
-- Numerical and plotting dependencies: NumPy and Matplotlib.
-  HTML tables use IPython.display; local execution requires Jupyter.
-- A fresh generator initialized with the same seed reproduces the same noise sequence. Different seeds produce different realizations.
+Seeds are fixed; reruns reproduce every number and figure.
