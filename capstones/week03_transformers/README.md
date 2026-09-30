@@ -29,7 +29,7 @@ The handout's attention example with and without the causal mask; checks of ever
 | `week03_fomc_surprise.ipynb` | The notebook (saved without outputs) |
 | `DESIGN.md` | Pre-registration: split, scoring, statistics, settings |
 | `src/` | `model.py` (attention → TinyTransformerLM), `train.py`, `data.py`, `bpe.py`, `evaluate.py`, `ngram.py`, `analysis.py` |
-| `corpus/` | Frozen FOMC corpus, provenance manifest, meeting-level split; `build/` rebuilds them |
+| `corpus/` | Frozen FOMC corpus, provenance manifest, meeting-level split; `builders/` rebuilds them |
 | `tests/` | pytest suite |
 | `runs/` | Confirmatory results and figures; executed notebook and checkpoint of the final run |
 
@@ -40,11 +40,3 @@ The handout's attention example with and without the causal mask; checks of ever
 ## Limitations
 
 Textual surprise is not market surprise; one cutoff; one seed; small models (absolute BPC not comparable to published LMs). Full list in DESIGN.md §14.
-
-## Use of AI tools
-
-Claude and Claude Code (Anthropic) co-developed the design, code and text under the author's direction; Codex (OpenAI) gave read-only reviews. The author made every decision, ran every Colab execution and made every commit.
-
-## References
-
-Y. Hilpisch, *Attention Mechanisms and Tiny Transformers* (TAE); yhilpisch/yoctoGPT; Vaswani et al. (2017); Sennrich et al. (2016); Witten & Bell (1991); Efron & Tibshirani (1993).
