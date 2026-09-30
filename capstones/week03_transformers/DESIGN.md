@@ -130,7 +130,7 @@ Resume phases, label smoothing, early stopping, Char-KL, attention-map figure, c
 9. Data source
 10. Runtime
 
-Limitations, references and the AI-use statement are in README.md.
+Limitations: README.md and §14.
 
 ## 14. Known limitations (stated up front)
 
@@ -152,3 +152,4 @@ Textual surprise is not market surprise. One cutoff, not a rolling backtest. N i
 - Confirmatory run: tag `week03-v2-run1` (d3abf6c), Colab Tesla T4, 2026-09-25, 747.7 s, results in `runs/confirmatory_results.json`.
 - Submission tag: `week03-v3` (confirmatory result from `week03-v2-run1`, unchanged).
 - Clarification: SHA-256 checks run in the data cell, not the setup cell.
+- Submission run: tag `week03-v3` (a71ab49), Colab Tesla T4, 2026-09-30, 779.6 s, results in `runs/week03-v3/results.json`; all three labels identical to the confirmatory run.

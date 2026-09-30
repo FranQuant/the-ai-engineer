@@ -12,6 +12,8 @@ A tiny decoder-only transformer, built from scratch (attention, multi-head atten
 - **H2, minutes more surprising than statements: supported.** Δ₂ = +0.1233 (95% CI +0.1008 to +0.1438), 35 matched meetings.
 - **H3, ranking stable across tokenizers: supported.** ρ(char, BPE) = 0.936 (95% CI 0.877 to 0.964).
 
+The submission run (tag `week03-v3`, [runs/week03-v3/](runs/week03-v3/)) gives the same three labels: Δ₁ = −0.0234, Δ₂ = +0.1357, ρ = 0.923.
+
 ## What the notebook shows
 
 The handout's attention example with and without the causal mask; checks of every module; char and BPE transformers trained with a fixed recipe and logged train/held-out loss; a saved and reloaded checkpoint; a sampling gallery (greedy and temperature); per-document scoring against a 5-gram baseline; bootstrap tests; and a `results.json` run record.
